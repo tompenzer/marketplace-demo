@@ -1,0 +1,12 @@
+// Output all sides for various spacing options.
+@mixin margin-sides($size, $margin) {
+	@each $key, $side in $sides {
+		.margin-#{$key}-#{$size} {
+			margin-#{$side}: #{$margin};
+		}
+	}
+}
+
+@each $size, $spacing in $spacings {
+	@include margin-sides($size, $spacing);
+}

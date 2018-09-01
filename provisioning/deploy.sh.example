@@ -1,0 +1,17 @@
+image_name=marketplace_app
+dockerfile_path=marketplace_server/production/Dockerfile
+repo_uri=[server image repository URI]
+
+if [ "$1" == 'nginx' ]; then
+  image_name=marketplace_nginx
+  dockerfile_path=nginx/Dockerfile
+  repo_uri=[nginx image repository URI]
+fi
+
+docker build -f $dockerfile_path -t $image_name ..
+
+docker tag $image_name $repo_uri:latest
+
+$(aws ecr get-login --no-include-email)
+
+docker push $repo_uri:latest

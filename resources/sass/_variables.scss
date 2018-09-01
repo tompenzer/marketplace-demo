@@ -1,0 +1,60 @@
+// -----------------------------------------------------------------------------
+// Colors
+// -----------------------------------------------------------------------------
+$white:         #fff;
+$black:         #000;
+
+$darken5:       rgba(0, 0, 0, 0.05);
+$darken8:       rgba(0, 0, 0, 0.08);
+$darken10:      rgba(0, 0, 0, 0.1);
+$darken15:      rgba(0, 0, 0, 0.15);
+$darken20:      rgba(0, 0, 0, 0.2);
+$darken30:      rgba(0, 0, 0, 0.3);
+$darken50:      rgba(0, 0, 0, 0.5);
+
+
+// -----------------------------------------------------------------------------
+// Fonts
+// -----------------------------------------------------------------------------
+$font-family-base: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+
+// -----------------------------------------------------------------------------
+// Spacing
+// -----------------------------------------------------------------------------
+$rem-pixels: 10;
+
+@function rem-calc($px) {
+  @return 1rem * $px / $rem-pixels;
+}
+
+$spacing-2xs: rem-calc(4);
+$spacing-xs: rem-calc(8);
+$spacing-s: rem-calc(12);
+$spacing-m: rem-calc(20);
+$spacing-l: rem-calc(30);
+$spacing-xl: rem-calc(45);
+$spacing-2xl: rem-calc(60);
+$spacing-3xl: rem-calc(100);
+
+$spacings: (
+    '0': 0,
+	'2xs': $spacing-2xs,
+	'xs': $spacing-xs,
+	's': $spacing-s,
+	'm': $spacing-m,
+	'l': $spacing-l,
+	'xl': $spacing-xl,
+	'2xl': $spacing-2xl,
+    '3xl': $spacing-3xl,
+);
+
+// -----------------------------------------------------------------------------
+// Sides
+// -----------------------------------------------------------------------------
+$sides: (
+	'b': 'bottom',
+	'l': 'left',
+	'r': 'right',
+	't': 'top'
+);

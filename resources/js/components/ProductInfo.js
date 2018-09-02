@@ -155,33 +155,30 @@ class ProductInfo extends React.Component {
                     </Col>
 
                     <Col md={4} sm={12}>
-                        <div className={"product-info-price"}>
+                        <div className={"product-info-price margin-t-m text-right"}>
                             <span className={"product-deal-price"}>{this.state.product.currency.abbreviation} {this.state.product.price}</span>
                         </div>
 
-                        <div className={"product-info-left-margin"}>
-                            <FormGroup controlId="formQuantitySelect" className={"quantity-select"}>
-                                <ControlLabel>Quantity</ControlLabel>
-                                <FormControl
-                                    type="number"
-                                    value={this.state.quantity}
-                                    onChange={this.onQuantityChange}
-                                    onBlur={this.onQuantityBlur}
-                                />
-                            </FormGroup>
-                        </div>
+                        {this.props.authentication.isAuthenticated &&
+                            <div>
+                                <FormGroup controlId="formQuantitySelect" className={"quantity-select"}>
+                                    <ControlLabel>Quantity</ControlLabel>
+                                    <FormControl
+                                        type="number"
+                                        value={this.state.quantity}
+                                        onChange={this.onQuantityChange}
+                                        onBlur={this.onQuantityBlur}
+                                    />
+                                </FormGroup>
 
-                        <div className={"product-info-left-margin"}>
-                            <span>
-                                {this.props.authentication.isAuthenticated &&
                                 <Button
                                     bsStyle={"primary"}
                                     className={"add-to-cart-product"}
                                     onClick={this.addToCartOnClick}
                                 >Add to Cart
                                 </Button>}
-                            </span>
-                        </div>
+                            </div>
+                        }
                     </Col>
                 </Row>
 

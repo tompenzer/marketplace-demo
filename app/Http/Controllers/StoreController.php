@@ -52,34 +52,51 @@ class StoreController extends Controller
 
     public function store(StoreRequest $request)
     {
-        if (Auth::check()) {
-            $store = Store::create(array_filter($request->only(['name', 'description'])));
-
-            // Give store admin role to the user who created the store.
-            Auth::user()->stores()->attach($store->id, [
-                'role_id' => Role::name(Role::ROLE_ADMIN)
-                    ->roleScope(RoleScope::ROLE_SCOPE_STORE)
-                    ->first()->id
-            ]);
-
-            return response()->json($store);
+        if (! Auth::check()) {
+            abort(403, 'Unauthorized action.');
         }
 
-        return redirect()->route('login');
+        $store = Store::create($request->validated());
+
+        // Give store admin role to the user who created the store.
+        Auth::user()->stores()->attach($store->id, [
+            'role_id' => Role::name(Role::ROLE_ADMIN)
+                ->roleScope(RoleScope::ROLE_SCOPE_STORE)
+                ->first()->id
+        ]);
+
+        Cache::tags(self::CACHE_TAG)->flush();
+
+        return response()->json($store);
+    }
+
+    public function update(StoreRequest $request, Store $store)
+    {
+        if (! $store->userHasAuth()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $store->update($request->validated());
+
+        Cache::tags(self::CACHE_TAG)->flush();
+
+        return response()->json($store);
     }
 
     public function destroy(Store $store)
     {
-        if ($store->userHasAuth()) {
-            $store->destroy();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'The store has been removed.'
-            ]);
+        if (! $store->userHasAuth()) {
+            abort(403, 'Unauthorized action.');
         }
 
-        return redirect()->route('login');
+        $store->destroy();
+
+        Cache::tags(self::CACHE_TAG)->flush();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'The store has been removed.'
+        ]);
     }
 
     public function auth(Store $store)

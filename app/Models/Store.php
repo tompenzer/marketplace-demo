@@ -74,11 +74,22 @@ class Store extends Model
         });
     }
 
+    /**
+     * Whether the authenticated user has authorization to modify the store.
+     */
     public function userHasAuth(): bool
     {
-        return Auth::check();
+        return Auth::check() && (
+            Auth::user()->isSiteAdmin()
+            || $this->users()->where('user_id', Auth::user()->id)->isNotEmpty()
+        );
     }
 
+    /**
+     * Whether the user has authorization to modify the store.
+     *
+     * @param string $user_id The user to which you would like to scope.
+     */
     public function hasUser($user_id): bool
     {
         return $this->users()->where('user_id', $user_id)->isNotEmpty();

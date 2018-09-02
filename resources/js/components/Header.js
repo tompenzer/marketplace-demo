@@ -15,63 +15,37 @@ class Header extends React.Component{
         isOpenElectronics: false,
         isOpenBook: false,
         isOpenHome: false,
-        placeholder: "Search products",
-        searchMenuItems: ["Products", "Stores"],
-        dropDownSelected: "Products",
-        searchBoxText: "",
+        placeholder: 'Search products',
+        searchMenuItems: [ 'Products', 'Stores' ],
+        searchMenuItemsActive: [ 'Products', 'Stores' ],
+        dropDownSelected: 'Products',
+        searchBoxText: '',
         shoppingCartOpen: false,
-        menuItemMUI: ["Log In", "Register"],
+        menuItemMUI: [ 'Log In', 'Register' ],
         open: false
     };
 
-    categoryStateChangeHelper = (t) => {
-        switch(t.toLowerCase()){
-            case 'stores':
-                this.setState((prevState) => {
-                    return {
-                        placeholder: "Search stores",
-                        searchMenuItems: prevState.searchMenuItems.concat(prevState.dropDownSelected).filter((menuItem) => (
-                            menuItem !== "Stores"
-                        )),
-                        dropDownSelected: "Stores"
-                    }
-                });
-                break;
-            case 'products':
-            default:
-                this.setState((prevState) => {
-                    return {
-                        placeholder: "Search products",
-                        searchMenuItems:
-                            prevState.searchMenuItems.concat(prevState.dropDownSelected).filter((menuItem) => (
-                                menuItem !== "Products"
-                            )),
-                        dropDownSelected: "Products"
-                    }
-                });
-                break;
-        }
+    categoryStateChangeHelper = (category) => {
+        this.setState(() => ({
+            placeholder: 'Search ' + category.toLowerCase(),
+            searchMenuItemsActive: this.state.searchMenuItems.filter((v) => (v !== category)),
+            dropDownSelected: category
+        }));
     };
 
     changeMenuMUIOptionsAuthenticated = () => {
-        this.setState(() => ({menuItemMUI: ["My account", "My Orders", "Divider", "Log out"]}));
+        this.setState(() => ({ menuItemMUI: [ 'My account', 'My Orders', 'Divider', 'Log out' ] }));
     };
 
     changeMenuMUIOptionsUnauthenticated = () => {
-        this.setState(() => ({menuItemMUI: ["Log In", "Register"]}));
+        this.setState(() => ({menuItemMUI: ['Log In', 'Register']}));
     };
 
     componentWillReceiveProps(nextProps){
-        let currentPath = this.props.location.pathname.toString();
-        let nextPath = nextProps.location.pathname.toString();
-        if(currentPath !== nextPath || this.props.authentication.isAuthenticated !== nextProps.authentication.isAuthenticated){
-            // path is been changed
-            let t = nextPath.split('/',2)[1];
-            this.categoryStateChangeHelper(t);
-            if(nextProps.authentication.isAuthenticated){
+        if (this.props.authentication.isAuthenticated !== nextProps.authentication.isAuthenticated) {
+            if (nextProps.authentication.isAuthenticated) {
                 this.changeMenuMUIOptionsAuthenticated();
-            }
-            else{
+            } else {
                 this.changeMenuMUIOptionsUnauthenticated();
             }
         }
@@ -84,38 +58,9 @@ class Header extends React.Component{
         else{
             this.changeMenuMUIOptionsUnauthenticated();
         }
+
+        this.categoryStateChangeHelper(this.state.dropDownSelected);
     }
-
-
-
-    categoryOnHoverIn = (e) => {
-        switch(e.target.id){
-            case "electronics-nav-dropdown":{
-                this.setState({ isOpenElectronics: true });
-                break;
-            }
-            case "books-nav-dropdown":{
-                this.setState({ isOpenBook: true });
-                break;
-            }
-            case "home-requirements-nav-dropdown":{
-                this.setState({ isOpenHome: true });
-                break;
-            }
-        }
-
-    };
-
-    categoryOnHoverOut = () => {
-        this.setState(() => {
-           return {
-               isOpenElectronics: false,
-               isOpenBook: false,
-               isOpenHome: false
-           }
-        });
-
-    };
 
     categoryClickHandler = (routeName) => {
         this.props.history.push(routeName);
@@ -216,7 +161,7 @@ class Header extends React.Component{
                                     title={this.state.dropDownSelected}
                                 >
                                     {
-                                        this.state.searchMenuItems.map((menuItem) => (
+                                        this.state.searchMenuItemsActive.map((menuItem) => (
                                             <MenuItem key={menuItem}
                                                       onSelect={() => this.searchCategoryChange(menuItem)}>{menuItem}</MenuItem>
                                         ))

@@ -68,44 +68,47 @@ class ProductController extends Controller
     {
         $store = Store::find($request->input('store_id'))->first();
 
-        if ($store->userHasAuth()) {
-            $product = Product::create(array_filter($request->only([
-                'store_id',
-                'name',
-                'description',
-                'width',
-                'width_unit_id',
-                'height',
-                'height_unit_id',
-                'length',
-                'length_unit_id',
-                'weight',
-                'weight_unit_id',
-                'price',
-                'currency_id',
-            ])));
-
-            return response()->json($product);
+        if (! $store->userHasAuth()) {
+            abort(403, 'Unauthorized action.');
         }
 
-        return redirect()->route('login');
+        $product = Product::create($request->validated());
+
+        Cache::tags(self::CACHE_TAG)->flush();
+
+        return response()->json($product);
     }
 
-    public function destroy(Store $store, Product $product)
+    public function update(ProductRequest $request, Product $product)
     {
-        if (Auth::check()
-            && (Auth::user()->isSiteAdmin()
-                || $store->hasUser(Auth::user()->id)
-            )
-        ) {
-            $product->destroy();
+        $store = Store::find($request->input('store_id'))->first();
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'The product has been removed.'
-            ]);
+        if (! $store->userHasAuth()) {
+            abort(403, 'Unauthorized action.');
         }
 
-        return redirect()->route('login');
+        $product->update($request->validated());
+
+        Cache::tags(self::CACHE_TAG)->flush();
+
+        return response()->json($product);
+    }
+
+    public function destroy(Product $product)
+    {
+        $store = Store::find($product->store_id)->first();
+
+        if (! $store->userHasAuth()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $product->destroy();
+
+        Cache::tags(self::CACHE_TAG)->flush();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'The product has been removed.'
+        ]);
     }
 }

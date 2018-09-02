@@ -15,7 +15,7 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Models\Store::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
-        'description' => $faker->text,
+        'name' => $faker->company,
+        'description' => $faker->catchPhrase,
     ];
 });

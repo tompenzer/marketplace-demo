@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -71,6 +72,11 @@ class Store extends Model
         return $query->whereHas('users', function ($query) use ($user_id) {
             $query->where('store_users.user_id', $user_id);
         });
+    }
+
+    public function userHasAuth(): bool
+    {
+        return Auth::check();
     }
 
     public function hasUser($user_id): bool

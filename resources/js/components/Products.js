@@ -36,10 +36,19 @@ class Products extends React.Component {
     loadProducts(query) {
         this.setState(() => ({ isLoading: true }));
 
-        let options = {};
+        let options = {},
+            params = {};
 
         if (query) {
-            options.params = { q: query };
+            params.q = query;
+        }
+
+        if (this.props.storeId) {
+            params.store_id = this.props.storeId;
+        }
+
+        if (Object.keys(params).length) {
+            options.params = params;
         }
 
         // Fetch the products.
@@ -58,6 +67,12 @@ class Products extends React.Component {
     }
 
     componentDidMount() {
+        let q;
+
+        if (this.props.match && this.props.match.params.q) {
+            q = this.props.match.params.q;
+        }
+
         // Make an object of unit abbreviations keyed to their IDs.
         axios.get(unitsApi).then((response) => {
             let units = {};
@@ -80,7 +95,7 @@ class Products extends React.Component {
             this.setState({ currencies: currencies });
         });
 
-        this.loadProducts(this.props.match.params.q);
+        this.loadProducts(q);
     }
 
     componentWillReceiveProps(nextProps){
@@ -139,7 +154,7 @@ class Products extends React.Component {
                 <Grid>
                     <Row className="margin-b-m">
                         <Col md={12} sm={12}>
-                            <h2 className="text-center">fetching products...</h2>
+                            <h3 className="text-center">fetching products...</h3>
                         </Col>
                     </Row>
 
@@ -164,7 +179,7 @@ class Products extends React.Component {
             <Grid>
                 <Row className="margin-b-m">
                     <Col md={12} sm={12}>
-                        <h2 className="text-center">Choose from a selection of products listed below</h2>
+                        <h3 className="text-center">Choose from a selection of products listed below</h3>
                     </Col>
                 </Row>
 
@@ -187,10 +202,10 @@ class Products extends React.Component {
                                         return (
                                             <TableRow key={item.id}>
                                                 <TableCell component="th" scope="row">
-                                                    <Link to={'products/' + item.id}>{item.name}</Link>
+                                                    <Link to={'product/' + item.id}>{item.name}</Link>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Link to={'stores/' + item.store.id}>{item.store.name}</Link>
+                                                    <Link to={'store/' + item.store.id}>{item.store.name}</Link>
                                                 </TableCell>
                                                 <TableCell numeric>{item.price + ' ' + this.state.currencies[item.currency_id]}</TableCell>
                                                 <TableCell numeric>{`${item.width} ${this.state.units[item.width_unit_id]}, ${item.height} ${this.state.units[item.height_unit_id]}, ${item.length} ${this.state.units[item.length_unit_id]}`}</TableCell>

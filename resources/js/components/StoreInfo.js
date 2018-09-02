@@ -5,186 +5,98 @@ import {addToCart, removeFromCart} from "../actions/shoppingCart";
 import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import axios from "../api/axiosInstance";
-import {productInfoAPI} from "../api/apiURLs";
+import { storeInfoApi, storeAuthApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import {addToWishlist, removeFromWishlist} from "../actions/wishlist";
-import {ADDED_TO_CART_SNACKBAR, ADDED_TO_WISHLIST_SNACKBAR} from "../api/strings";
+import { addToWishlist, removeFromWishlist } from "../actions/wishlist";
+import { ADDED_TO_CART_SNACKBAR, ADDED_TO_WISHLIST_SNACKBAR, ACCESS_TOKEN } from "../api/strings";
+import Products from '../components/Products';
 
 class StoreInfo extends React.Component {
 
     state = {
-      product: {},
+      store: {},
       prevPrice: null,
       quantity: 1,
-      productID: undefined,
+      storeId: undefined,
       autoHideDuration: 3000,
       snackbarOpen:false,
       isLoading: false,
-      productNotFound: false,
-      snackbarMessage: ""
+      storeNotFound: false,
+      snackbarMessage: "",
+      userHasAuth: false
     };
 
-    loadProductDetails = (productID) => {
-        this.setState(() => ({productID, isLoading:true}));
-        const url = productInfoAPI(productID);
-        axios.get(url).then((response) => (this.setState(
+    loadStoreDetails = (storeId) => {
+        this.setState(() => ({ storeId, isLoading: true }));
+
+        axios.get(storeInfoApi(storeId)).then((response) => (this.setState(
             {
-                product: response.data,
+                store: response.data,
                 isLoading: false,
-                productNotFound: false
+                storeNotFound: false
             }
         ))).catch((error) => (
             this.setState(() => ({
                 isLoading: false,
-                productNotFound: true
+                storeNotFound: true
             }))
         ));
+
+        // Check if logged in user has authorization to edit store.
+        const access_token = window.localStorage.getItem(ACCESS_TOKEN);
+        const headers = { Accept: "application/json", Authorization: `Bearer ${access_token}` };
+        axios.get(storeAuthApi(storeId), { headers }).then((response) => {
+            this.setState({ userHasAuth: response.data } )
+        });
     };
 
     componentWillReceiveProps(nextProps){
-        if(this.props.match.params.id !== nextProps.match.params.id){
-            let productID = nextProps.match.params.id;
-            this.loadProductDetails(productID);
+        if (this.props.match.params.id !== nextProps.match.params.id) {
+            this.loadStoreDetails(nextProps.match.params.id);
         }
     }
 
     componentDidMount(){
-        let productID = this.props.match.params.id;
-        // load the product details here
-        this.loadProductDetails(productID);
+        // load the store details here
+        this.loadStoreDetails(this.props.match.params.id);
     }
 
-    addToCartOnClick = () => {
-        // dispatching an action to redux store
-        const product = {
-            productName: this.state.product.name,
-            productImage: this.state.product.image,
-            sellerName: this.state.product.sellerName,
-            quantity: this.state.quantity,
-            price: this.state.product.price,
-            productID: this.state.productID
-        };
-        this.props.dispatch(addToCart(product));
-        this.setState(() => ({snackbarOpen: true, snackbarMessage: ADDED_TO_CART_SNACKBAR}))
-    };
-
-    onQuantityChange = (e) => {
-        let quantity = e.target.value;
-        if(parseInt(quantity.length) < 3){
-            this.setState(() => ({quantity}));
-        }
-    };
-
-    onQuantityBlur = () => {
-        if(this.state.quantity.length === 0 || (this.state.quantity.length > 0 && parseInt(this.state.quantity) < 1)){
-            this.setState(() => ({quantity: 1}))
-        }
-    };
-
-    handleSnackbarRequestClose = () => {
-        this.setState({
-            snackbarOpen: false,
-        });
-    };
-
-    static removeItemFromCart = (productID, props) => {
-        let productToRemove = {
-            productID
-        };
-        props.dispatch(removeFromCart(productToRemove));
-    };
-
-    handleUndoAction = () => {
-        if(this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR){
-            ProductInfo.removeItemFromCart(this.state.productID, this.props);
-        }
-        else{
-            this.props.dispatch(removeFromWishlist(this.state.productID));
-        }
-        this.handleSnackbarRequestClose();
-    };
-
-    handleAddToWishlist = () => {
-        const product = {
-            productName: this.state.product.name,
-            productImage: this.state.product.image,
-            sellerName: this.state.product.sellerName,
-            quantity: this.state.quantity,
-            price: this.state.product.price,
-            productID: this.state.productID,
-            prevPrice: this.state.product.originalPrice
-        };
-        this.props.dispatch(addToWishlist(product));
-        this.setState(() => ({snackbarOpen: true, snackbarMessage: ADDED_TO_WISHLIST_SNACKBAR}));
-    };
-
     render(){
+        let addProduct;
 
-        if(this.state.isLoading){
-            return <LoadingScreen/>
+        if (this.state.userHasAuth) {
+            addProduct = (
+                <Button
+                    bsStyle={"primary"}
+                    className={"add-store-product"}
+                    onClick={() => (this.props.history.push(`/store/${this.state.store.id}/products/add`))}
+                >
+                    Add store product
+                </Button>
+            )
         }
-        else if(this.state.productNotFound){
+
+        if (this.state.isLoading) {
+            return <LoadingScreen/>
+        } else if (this.state.storeNotFound) {
             return <InformationPanel
-                    panelTitle={"Product Not available"}
-                    informationHeading={"You are on the wrong page!"}
-                    message={"Please click on the appropriate product link to view this product."}
+                    panelTitle={"Store Not available"}
+                    informationHeading={"The requested store was not found."}
+                    message={"Something went wrong; not sure how you got here, but that wasn't supposed to happen..."}
                     />
         }
 
         return (
             <Grid>
                 <Row>
-                    <Col lg={10} md={10}>
-                        <div className={"margin-div-five"}>
-                            <h2>{this.state.product.name}</h2>
-                            <div className={"product-info-seller-name"}>
-                                <span>Sold by: {this.state.product.sellerName}</span>
+                    <Col lg={12} md={12}>
+                        <div className={"store-info-left-margin"}>
+                            <h2>{this.state.store.name}</h2>
+                            <div className={"store-info-seller-name"}>
+                                <span>{this.state.store.sellerName}</span>
                             </div>
                             <hr />
-                        </div>
-
-                        <div className={"product-info-price"}>
-                            {this.state.product.originalPrice &&
-                            <span className={"product-deal-price-st"}>${this.state.product.originalPrice} </span>}
-                            <span className={"product-deal-price"}>${this.state.product.price}</span>
-                            {this.state.product.originalPrice &&
-                                <p className={"product-info-savings"}>
-                                    You save - ${(this.state.product.originalPrice - this.state.product.price).toFixed(2)}
-                                </p>
-                            }
-                        </div>
-
-                        <div className={"product-info-left-margin"}>
-                            <FormGroup controlId="formQuantitySelect" className={"quantity-select"}>
-                                <ControlLabel>Quantity</ControlLabel>
-                                <FormControl
-                                    type="number"
-                                    value={this.state.quantity}
-                                    onChange={this.onQuantityChange}
-                                    onBlur={this.onQuantityBlur}
-                                />
-                            </FormGroup>
-                        </div>
-
-                        {this.state.product.fastShipping ?
-                        <div className={"product-info-left-margin margin-bottom-three"}>
-                            <span className={"fast-shipping-span"}>
-                                <Glyphicon glyph={"ok"} className={"color-darkcyan"}/> This item qualifies for fast shipping.
-                            </span>
-                        </div> : ''}
-
-                        <div className={"product-info-left-margin"}>
-                            <span>
-                                <Button
-                                    bsStyle={"primary"}
-                                    className={"add-to-cart-product"}
-                                    onClick={this.addToCartOnClick}
-                                >Add to Cart
-                                </Button>
-                                {this.props.authentication.isAuthenticated &&
-                                <Button onClick={this.handleAddToWishlist}>Add to Wishlist</Button>}
-                            </span>
                         </div>
                     </Col>
                 </Row>
@@ -192,12 +104,22 @@ class StoreInfo extends React.Component {
                 <br />
 
                 <Row>
-                    <Col lgOffset={4} mdOffset={4} lg={6} md={6}>
-                        <div className={"product-info-left-margin"}>
-                            <h2 className={"product-description-heading"}>Product Description:</h2>
+                    <Col lg={12} md={12}>
+                        <div className={"store-info-left-margin"}>
+                            <h3 className={"store-description-heading"}>Store Description:</h3>
                             <hr/>
-                            <p className={"product-description"}>{this.state.product.productDescription}</p>
+                            <p className={"store-description"}>{this.state.store.description}</p>
                         </div>
+                    </Col>
+                </Row>
+
+                <br />
+
+                <Row>
+                    <Col lg={12} md={12}>
+                        <h3 className={"store-description-heading"}>Our products:</h3>
+                        {addProduct}
+
                     </Col>
                 </Row>
 

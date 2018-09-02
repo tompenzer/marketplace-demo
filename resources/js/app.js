@@ -43,26 +43,19 @@ const product = {
 };
 
 // initial load, check if user is logged in
-const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-const headers = {Accept: "application/json", Authorization: `Bearer ${access_token}`};
-axios.get(getUserCartAPI, {headers})
-    .then((response) => {
-        store.dispatch(loginUser());
-        response.data.map((item) => {
-            store.dispatch(addToCartHelper({
-                productName: item.name,
-                productImage: item.description,
-                sellerName: item.sellerName,
-                quantity: 1,
-                price: item.price,
-                productID: item.productId
-            }));
-        })
-    })
-    .catch((error) => {
-        window.localStorage.removeItem(ACCESS_TOKEN);
-        store.dispatch(logoutUser());
-    });
+// const access_token = window.localStorage.getItem(ACCESS_TOKEN);
+// const headers = {Accept: "application/json", Authorization: `Bearer ${access_token}`};
+// axios.get(getUserCartAPI, {headers})
+//     .then((response) => {
+//         store.dispatch(loginUser());
+//         response.data.map((item) => {
+//             store.dispatch(addToCartHelper(item));
+//         })
+//     })
+//     .catch((error) => {
+//         window.localStorage.removeItem(ACCESS_TOKEN);
+//         store.dispatch(logoutUser());
+//     });
 
 const appRoot = document.getElementById('app');
 ReactDOM.render(jsx, appRoot);

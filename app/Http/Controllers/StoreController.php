@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Admin\StoreRequest;
+use App\Http\Requests\StoreRequest;
+use App\Models\Role;
+use App\Models\RoleScope;
 use App\Models\Store;
+use Auth;
 use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -61,15 +64,13 @@ class StoreController extends Controller
 
             return response()->json($store);
         }
+
+        return redirect()->route('login');
     }
 
     public function destroy(Store $store)
     {
-        if (Auth::check()
-            && (Auth::user()->isSiteAdmin()
-                || $store->hasUser(Auth::user()->id)
-            )
-        ) {
+        if ($store->userHasAuth()) {
             $store->destroy();
 
             return response()->json([
@@ -77,5 +78,12 @@ class StoreController extends Controller
                 'message' => 'The store has been removed.'
             ]);
         }
+
+        return redirect()->route('login');
+    }
+
+    public function auth(Store $store)
+    {
+        return response()->json($store->userHasAuth());
     }
 }

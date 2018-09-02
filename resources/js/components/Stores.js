@@ -128,15 +128,33 @@ class Stores extends React.Component {
         }
 
         else if(this.state.storesNotFound){
-            return <InformationPanel
-                    panelTitle={"There are no stores currently available"}
-                    informationHeading={"Something went wrong."}
-                    message={"We were unable to find any stores, which wasn't expected. Please try again later in the hopes it's been fixed."}
-                    />
+            return (
+                <div>
+                    <InformationPanel
+                        panelTitle={"There are no stores currently available"}
+                        informationHeading={"Something went wrong."}
+                        message={"We were unable to find any stores, which wasn't expected. Please try again later in the hopes it's been fixed."}
+                        />
+                    <Button
+                        bsStyle={"primary"}
+                        className={"add-store"}
+                        onClick={() => (this.props.history.push('/store/add'))}
+                    >Add store
+                    </Button>
+                </div>
+            )
         }
 
         return (
             <Grid>
+                <Button
+                    bsStyle={"primary"}
+                    className={"add-store"}
+                    onClick={() => (this.props.history.push('/store/add'))}
+                >
+                    Add store
+                </Button>
+
                 <Row className="margin-b-m">
                     <Col md={12} sm={12}>
                         <h2 className="text-center">Choose from a selection of stores listed below</h2>
@@ -157,7 +175,9 @@ class Stores extends React.Component {
                                     {this.state.stores.map(item => {
                                         return (
                                             <TableRow key={item.id}>
-                                                <TableCell component="th" scope="row">{item.name}</TableCell>
+                                                <TableCell component="th" scope="row">
+                                                    <Link to={'store/' + item.id}>{item.name}</Link>
+                                                </TableCell>
                                                 <TableCell>{item.description}</TableCell>
                                             </TableRow>
                                         );

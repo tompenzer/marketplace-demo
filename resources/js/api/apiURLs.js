@@ -1,13 +1,21 @@
 export const modelAPI = (model) => (
-    `api/${model}`
+    `/api/${model}`
 );
 
 export const searchProductsAPI = (category, query) => (
-    `api/search/${category}/${query}`
+    `/api/search/${category}/${query}`
 );
 
-export const productInfoAPI = (productID) => (
-    `api/product/${productID}`
+export const productInfoAPI = (productId) => (
+    `/api/products/${productId}`
+);
+
+export const storeInfoApi = (storeId) => (
+    `/api/stores/${storeId}`
+);
+
+export const storeAuthApi = (storeId) => (
+    `/api/stores/${storeId}/auth`
 );
 
 export const subcategoryProductAPI = (subcategory) => (

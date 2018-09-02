@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Models\Store;
+use Auth;
 use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -53,20 +55,22 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    public function show($product_id)
+    public function show(Product $product)
     {
-        $product = Product::find($product_id)->with('store', 'currency')->first();
+        // Add store and currency related data.
+        $product->setRelation('store', $product->store()->first());
+        $product->setRelation('currency', $product->currency()->first());
+
         return response()->json($product);
     }
 
-    public function store(ProductRequest $request, Store $store)
+    public function store(ProductRequest $request)
     {
-        if (Auth::check()
-            && (Auth::user()->isSiteAdmin()
-                || $store->hasUser(Auth::user()->id)
-            )
-        ) {
+        $store = Store::find($request->input('store_id'))->first();
+
+        if ($store->userHasAuth()) {
             $product = Product::create(array_filter($request->only([
+                'store_id',
                 'name',
                 'description',
                 'width',
@@ -79,10 +83,12 @@ class ProductController extends Controller
                 'weight_unit_id',
                 'price',
                 'currency_id',
-            ] + [ 'store_id' => $store->id ])));
+            ])));
 
             return response()->json($product);
         }
+
+        return redirect()->route('login');
     }
 
     public function destroy(Store $store, Product $product)
@@ -99,5 +105,7 @@ class ProductController extends Controller
                 'message' => 'The product has been removed.'
             ]);
         }
+
+        return redirect()->route('login');
     }
 }

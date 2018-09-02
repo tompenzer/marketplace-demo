@@ -5,7 +5,7 @@ import {addToCartAPI, removeFromCartAPI} from "../api/apiURLs";
 // ADD_TO_CART
 export const addToCartHelper = (
     {
-        productID,
+        productId,
         name,
         quantity = 1,
         price,
@@ -14,7 +14,7 @@ export const addToCartHelper = (
 ) => ({
     type: ADD_TO_CART,
     shoppingCart: {
-        productID,
+        productId,
         name,
         quantity,
         price,
@@ -23,15 +23,15 @@ export const addToCartHelper = (
 });
 
 // REMOVE_FROM_CART
-const removeFromCartHelper = (productID) => ({
+const removeFromCartHelper = (productId) => ({
     type: REMOVE_FROM_CART,
-    productID
+    productId
 });
 
 // EDIT_CART
-export const editCart = (productID, updates) => ({
+export const editCart = (productId, updates) => ({
     type: EDIT_CART,
-    productID,
+    productId,
     updates
 });
 
@@ -40,7 +40,7 @@ export const emptyCart = () => ({
     type: EMPTY_CART
 });
 
-export const removeFromCart = ({ productID } = {}) => {
+export const removeFromCart = ({ productId } = {}) => {
     return (dispatch, getState) => {
         const {authentication} = getState();
         if(authentication.isAuthenticated){
@@ -48,7 +48,7 @@ export const removeFromCart = ({ productID } = {}) => {
             const access_token = window.localStorage.getItem(ACCESS_TOKEN);
             const headers = {Accept: "application/json", Authorization: `Bearer ${access_token}`};
 
-            axios.delete(removeFromCartAPI(productID), {headers: {...headers}})
+            axios.delete(removeFromCartAPI(productId), {headers: {...headers}})
                 .then((response) => {
                     console.log(response.data);
                 })
@@ -56,7 +56,7 @@ export const removeFromCart = ({ productID } = {}) => {
                     console.log(error.response);
                 });
         }
-        dispatch(removeFromCartHelper(productID));
+        dispatch(removeFromCartHelper(productId));
     }
 };
 
@@ -67,9 +67,9 @@ export const addToCart = (product = {}) => {
             // make an API call
             const access_token = window.localStorage.getItem(ACCESS_TOKEN);
             const headers = {Accept: "application/json", Authorization: `Bearer ${access_token}`};
-            const {id, name, quantity, price, currency} = product;
+            const {productId, name, quantity, price, currency} = product;
             const data = {
-                product_id: id,
+                product_id: productId,
                 name,
                 quantity: 1,
                 price,

@@ -22,6 +22,8 @@ import People from "../components/People";
 import Contact from "../components/Contact";
 import Products from "../components/Products";
 import Stores from "../components/Stores";
+import StoreAdd from "../components/StoreAdd";
+import ProductAdd from "../components/ProductAdd";
 
 const appRouter = () => (
     <BrowserRouter>
@@ -34,6 +36,8 @@ const appRouter = () => (
                 <Route path="/product/:id" exact={true} component={ProductInfo} />
                 <Route path="/stores" exact={true} component={Stores} />
                 <Route path="/stores/:q" exact={true} component={Products} />
+                <Route path="/store/add" exact={true} component={StoreAdd} />
+                <Route path="/store/:storeId/products/add" exact={true} component={ProductAdd} />
                 <Route path="/store/:id" exact={true} component={StoreInfo} />
                 <Route path="/checkout" exact={true} component={Checkout} />
                 <Route path="/order" exact={true} component={Order}/>

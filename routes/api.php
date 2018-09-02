@@ -33,15 +33,16 @@ Route::post('placeorder', 'OrderController@place_order');
 //Route::get('testemail', 'OrderController@test_email');
 Route::post('contact', 'ContactController@contact');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return response()->json($request->user());
-});
-
 Route::group(["middleware" => 'auth:api'], function () {
+    Route::get('user', ['as' => 'login', function (Request $request) {
+        return response()->json($request->user());
+    }]);
+
     Route::post('stores', 'StoreController@store');
     Route::delete('stores/{store}', 'StoreController@destroy');
+    Route::get('stores/{store}/auth', 'StoreController@auth');
     // create/delete products
-    Route::post('stores/{store}/products', 'ProductController@store');
+    Route::post('products', 'ProductController@store');
     Route::delete('stores/{store}/products/{product}', 'ProductController@destroy');
     // wishlist routes
     Route::get('getuserwishlist', 'WishlistController@get_user_wishlist');

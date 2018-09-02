@@ -1,23 +1,24 @@
 import React from "react";
-import {Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon} from "react-bootstrap";
-import {image} from "./image";
-import {addToCart, removeFromCart} from "../actions/shoppingCart";
+import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
+import { image } from "./image";
+import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import axios from "../api/axiosInstance";
-import {productInfoAPI} from "../api/apiURLs";
+import { productInfoAPI } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import {addToWishlist, removeFromWishlist} from "../actions/wishlist";
-import {ADDED_TO_CART_SNACKBAR, ADDED_TO_WISHLIST_SNACKBAR} from "../api/strings";
+import { addToWishlist, removeFromWishlist } from "../actions/wishlist";
+import { ADDED_TO_CART_SNACKBAR, ADDED_TO_WISHLIST_SNACKBAR } from "../api/strings";
 
 class ProductInfo extends React.Component {
 
     state = {
-      product: {},
-      prevPrice: null,
-      quantity: 1,
-      productID: undefined,
+      product: {
+          store: {},
+          currency: {}
+      },
+      productId: undefined,
       autoHideDuration: 3000,
       snackbarOpen:false,
       isLoading: false,
@@ -25,16 +26,16 @@ class ProductInfo extends React.Component {
       snackbarMessage: ""
     };
 
-    loadProductDetails = (productID) => {
-        this.setState(() => ({ productID, isLoading: true }));
+    loadProductDetails = (productId) => {
+        this.setState(() => ({ productId, isLoading: true }));
 
-        axios.get(productInfoAPI(productID)).then((response) => (this.setState(
-            {
+        axios.get(productInfoAPI(productId)).then((response) => (
+            this.setState({
                 product: response.data,
                 isLoading: false,
                 productNotFound: false
-            }
-        ))).catch((error) => (
+            })
+        )).catch((error) => (
             this.setState(() => ({
                 isLoading: false,
                 productNotFound: true
@@ -42,13 +43,13 @@ class ProductInfo extends React.Component {
         ));
     };
 
-    componentWillReceiveProps(nextProps){
-        if(this.props.match.params.id !== nextProps.match.params.id){
+    componentWillReceiveProps(nextProps) {
+        if (this.props.match.params.id !== nextProps.match.params.id) {
             this.loadProductDetails(nextProps.match.params.id);
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         // load the product details here
         this.loadProductDetails(this.props.match.params.id);
     }
@@ -56,13 +57,16 @@ class ProductInfo extends React.Component {
     addToCartOnClick = () => {
         // dispatching an action to redux store
         this.props.dispatch(addToCart({
-            productID: this.state.productId,
+            productId: this.state.product.id,
             name: this.state.product.name,
             quantity: this.state.quantity,
             price: this.state.product.price,
             currency: this.state.product.currency.abbreviation
         }));
-        this.setState(() => ({snackbarOpen: true, snackbarMessage: ADDED_TO_CART_SNACKBAR}))
+        this.setState(() => ({
+            snackbarOpen: true,
+            snackbarMessage: ADDED_TO_CART_SNACKBAR
+        }))
     };
 
     onQuantityChange = (e) => {
@@ -84,16 +88,16 @@ class ProductInfo extends React.Component {
         });
     };
 
-    static removeItemFromCart = (productID, props) => {
-        props.dispatch(removeFromCart({ productID }));
+    static removeItemFromCart = (productId, props) => {
+        props.dispatch(removeFromCart({ productId }));
     };
 
     handleUndoAction = () => {
         if(this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR){
-            ProductInfo.removeItemFromCart(this.state.productID, this.props);
+            ProductInfo.removeItemFromCart(this.state.productId, this.props);
         }
         else{
-            this.props.dispatch(removeFromWishlist(this.state.productID));
+            this.props.dispatch(removeFromWishlist(this.state.productId));
         }
         this.handleSnackbarRequestClose();
     };
@@ -105,7 +109,7 @@ class ProductInfo extends React.Component {
             sellerName: this.state.product.sellerName,
             quantity: this.state.quantity,
             price: this.state.product.price,
-            productID: this.state.productID,
+            productId: this.state.productId,
             prevPrice: this.state.product.originalPrice
         };
         this.props.dispatch(addToWishlist(product));
@@ -132,20 +136,27 @@ class ProductInfo extends React.Component {
                         <div className={"margin-div-five"}>
                             <h2>{this.state.product.name}</h2>
                             <div className={"product-info-seller-name"}>
-                                <span>Sold by: {this.state.product.sellerName}</span>
+                                <span>Sold by: {this.state.product.store.name}</span>
                             </div>
                             <hr />
                         </div>
+                    </Col>
+                </Row>
 
+                <br />
+
+                <Row>
+                    <Col md={6} sm={12}>
+                        <div className={"product-info-left-margin"}>
+                            <h2 className={"product-description-heading"}>Product Description:</h2>
+                            <hr/>
+                            <p className={"product-description"}>{this.state.product.description}</p>
+                        </div>
+                    </Col>
+
+                    <Col md={4} sm={12}>
                         <div className={"product-info-price"}>
-                            {this.state.product.originalPrice &&
-                            <span className={"product-deal-price-st"}>${this.state.product.originalPrice} </span>}
-                            <span className={"product-deal-price"}>${this.state.product.price}</span>
-                            {this.state.product.originalPrice &&
-                                <p className={"product-info-savings"}>
-                                    You save - ${(this.state.product.originalPrice - this.state.product.price).toFixed(2)}
-                                </p>
-                            }
+                            <span className={"product-deal-price"}>{this.state.product.currency.abbreviation} {this.state.product.price}</span>
                         </div>
 
                         <div className={"product-info-left-margin"}>
@@ -160,36 +171,16 @@ class ProductInfo extends React.Component {
                             </FormGroup>
                         </div>
 
-                        {this.state.product.fastShipping ?
-                        <div className={"product-info-left-margin margin-bottom-three"}>
-                            <span className={"fast-shipping-span"}>
-                                <Glyphicon glyph={"ok"} className={"color-darkcyan"}/> This item qualifies for fast shipping.
-                            </span>
-                        </div> : ''}
-
                         <div className={"product-info-left-margin"}>
                             <span>
+                                {this.props.authentication.isAuthenticated &&
                                 <Button
                                     bsStyle={"primary"}
                                     className={"add-to-cart-product"}
                                     onClick={this.addToCartOnClick}
                                 >Add to Cart
-                                </Button>
-                                {this.props.authentication.isAuthenticated &&
-                                <Button onClick={this.handleAddToWishlist}>Add to Wishlist</Button>}
+                                </Button>}
                             </span>
-                        </div>
-                    </Col>
-                </Row>
-
-                <br />
-
-                <Row>
-                    <Col lgOffset={4} mdOffset={4} lg={6} md={6}>
-                        <div className={"product-info-left-margin"}>
-                            <h2 className={"product-description-heading"}>Product Description:</h2>
-                            <hr/>
-                            <p className={"product-description"}>{this.state.product.productDescription}</p>
                         </div>
                     </Col>
                 </Row>

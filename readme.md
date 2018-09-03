@@ -1,69 +1,128 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
-
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
-
-## About Laravel
 
 ```
 $ docker-compose run --rm marketplace-server php artisan passport:client --password
 ```
+# Marketplace Demo repository
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+The source for the marketplace demo repo hosted at
+https://github.com/tompenzer/marketplace-demo. This is a demonstration of a
+marketplace where users can add stores and list products with them. This project
+has a Laravel 5.7-based back-end with MySQL and Redis for data storage, and a
+React/Redux front-end with Passport-implemented OAuth2 authentication.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The front-end architecture is largely ~~lifted from~~ inspired by the
+https://github.com/mithunjmistry/ecommerce-React-Redux-Laravel project.
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications.
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of any modern web application framework, making it a breeze to get started learning the framework.
+Development environment requirements:
+- [Git](https://git-scm.com/) - on Mac, you will be prompted to install the CLI
+dev tools including `git` upon attempting to `git clone` in the command below if
+you don't already have it installed.
+- [Docker](https://store.docker.com/search?offering=community&type=edition) - On
+Mac, you can download the installer directly without needing a Docker account
+[here](https://download.docker.com/mac/stable/Docker.dmg). For Windows, it's
+available [here](https://download.docker.com/win/stable/Docker%20for%20Windows%20Installer.exe).
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 1100 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+Clone the repo and start up the development environment using the terminal on
+your local machine:
+```
+$ git clone git@github.com:tompenzer/marketplace-demo.git
+$ cd marketplace-demo
+$ ./startup.sh
+```
 
-## Laravel Sponsors
+Once the entire startup.sh process is complete, you will need to generate an
+OAuth client for password-based authentication by running the following command:
+```
+$ docker-compose run --rm marketplace-server php artisan passport:client --password
+```
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell):
+You should be given a client ID and a client secret, both of which need to be
+copied into the `.env` file that got created by the startup script in the
+project root, in the `PASSWORD_CLIENT_ID` and `PASSWORD_CLIENT_SECRET` fields,
+respectively.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
+The commands run by the `startup.sh` script might be useful to run individually
+as needed, so I'll copy them here for reference:
+```
+$ cp .env.example .env
+$ docker-compose run --rm --no-deps marketplace-server composer install
+$ docker-compose run --rm --no-deps marketplace-server php artisan key:generate
+$ docker-compose up -d
+$ docker-compose run --rm node-server yarn install
+$ docker-compose run --rm node-server yarn run dev
+$ docker-compose run --rm marketplace-server php artisan migrate --seed
+$ docker-compose run --rm marketplace-server php artisan passport:install
+```
 
-## Contributing
+## Note - potential sql error
+If you get a DB PDO error at the end of the startup process, try connecting to
+the docker mysql image server with any SQL client (i.e. Sequel Pro if you're on
+a Mac), with the following credentials:
+```
+host: 0.0.0.0
+port: 3306
+user: root
+pass: secret
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+And then try running the database migrations manually:
+```
+$ docker-compose run --rm blog-server php artisan migrate --seed
+```
 
-## Security Vulnerabilities
+This will create the default admin user that you can use to sign in.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+
+## Usage
+
+The dev env site should be accessible in your web browser at the following URL:
+
+http://localhost:8000
+
+You can register your own user account, or use the default admin account
+credentials to log in:
+```
+Email: admin@example.com
+Password: admin
+```
+
+
+## Stopping the dev environment
+
+To have docker take down the server container, wipe the built docker images, and
+erase the database cache, ensuring a fresh build next time, run the following
+command from inside the project directory:
+```
+$ docker-compose down
+$ rm -rf storage/tmp/db
+```
+
+
+## Starting the docker environment in production Mode
+
+If you pass the word `production` as an argument to `startup.sh`, it'll build
+the front-end in production mode and skip DB migrations:
+```
+$ ./startup.sh production
+```
+
+
+## Cleaning up Docker remnants
+
+After running `docker-compose down` and shutting down this environment, Docker
+will leave a lot of cached data in various obscure parts of the filesystem,
+using up your storage. To get Docker to purge ALL THE THINGS, run the following
+commands:
+```
+$ docker system prune -a
+$ docker volume rm $(docker volume ls -qf dangling=true)
+```
+
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Marketplace Demo project is open-sourced software licensed under the
+[MIT license](https://opensource.org/licenses/MIT).

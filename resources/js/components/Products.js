@@ -27,32 +27,23 @@ class Products extends React.Component {
       unitsDimension: {},
       unitsWeight: {},
       currencies: {},
-      query: '',
+      query: "",
       storeId: null,
       autoHideDuration: 3000,
       isLoading: false,
       productsNotFound: false,
       snackbarOpen: false,
-      snackbarMessage: '',
+      snackbarMessage: "",
       userHasAuth: false
     };
 
-    loadProducts() {
+    loadProducts(query) {
         this.setState(() => ({ isLoading: true }));
 
-        let options = {},
-            params = {};
+        let options = {};
 
-        if (this.state.query) {
-            params.q = this.state.query;
-        }
-
-        if (this.state.storeId) {
-            params.store_id = this.state.storeId;
-        }
-
-        if (Object.keys(params).length) {
-            options.params = params;
+        if (query) {
+            options.params = { q: query };
         }
 
         // Fetch the products.
@@ -71,24 +62,21 @@ class Products extends React.Component {
     }
 
     componentDidMount() {
+        let query;
+
         if (this.props.match && this.props.match.params.q) {
-            this.setState({ query: this.props.match.params.q });
+            query = this.props.match.params.q;
         }
 
-        if (this.props.storeId) {
-            this.setState({ storeId: this.props.storeId });
-        }
+        this.loadProducts(query);
 
         this.fillUnits();
         this.fillCurrencies();
-
-        this.loadProducts();
     }
 
     componentWillReceiveProps(nextProps){
         if(this.props.match.params.q !== nextProps.match.params.q){
-            this.setState({ query: nextProps.match.params.q });
-            this.loadProducts();
+            this.loadProducts(nextProps.match.params.q);
         }
     }
 

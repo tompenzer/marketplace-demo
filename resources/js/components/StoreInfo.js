@@ -56,8 +56,8 @@ class StoreInfo extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.match.params.id !== nextProps.match.params.id) {
-            this.loadStoreDetails(nextProps.match.params.id);
+        if (this.props.match.params.storeId !== nextProps.match.params.storeId) {
+            this.loadStoreDetails(nextProps.match.params.storeId);
         }
     }
 
@@ -66,7 +66,7 @@ class StoreInfo extends React.Component {
         this.fillCurrencies();
 
         // load the store details here
-        this.loadStoreDetails(this.props.match.params.id);
+        this.loadStoreDetails(this.props.match.params.storeId);
     }
 
     fillUnits() {
@@ -110,13 +110,23 @@ class StoreInfo extends React.Component {
     };
 
     render() {
-        let addProduct;
+        let editStore,
+            addProduct;
 
         if (this.state.userHasAuth) {
+            editStore = (
+                <Button
+                    bsStyle={"info"}
+                    className={"edit-store margin-b-s"}
+                    onClick={() => (this.props.history.push(`/store/${this.state.store.id}/edit`))}
+                >
+                    Edit store
+                </Button>
+            )
             addProduct = (
                 <Button
                     bsStyle={"primary"}
-                    className={"add-store-product"}
+                    className={"add-store-product margin-b-s"}
                     onClick={() => (this.props.history.push(`/store/${this.state.store.id}/products/add`))}
                 >
                     Add store product
@@ -138,9 +148,12 @@ class StoreInfo extends React.Component {
             <Grid>
                 <Row>
                     <Col lg={12} md={12}>
-                        <div className={"store-info-left-margin"}>
-                            <h2>{this.state.store.name}</h2>
-                            <div className={"store-info-seller-name"}>
+                        <div className="store-info-left-margin">
+                            <h2 className="d-flex">
+                                {this.state.store.name}
+                                <span className="margin-l-a">{editStore}</span>
+                            </h2>
+                            <div className="store-info-seller-name">
                                 <span>{this.state.store.sellerName}</span>
                             </div>
                             <hr />

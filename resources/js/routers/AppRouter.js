@@ -35,11 +35,12 @@ const appRouter = () => (
                 <Route path="/products/:q" exact={true} component={Products} />
                 <Route path="/product/:id" exact={true} component={ProductInfo} />
                 <Route path="/stores" exact={true} component={Stores} />
-                <Route path="/stores/:q" exact={true} component={Products} />
+                <Route path="/stores/:q" exact={true} component={Stores} />
                 <Route path="/store/add" exact={true} component={StoreAdd} />
+                <Route path="/store/:storeId" exact={true} component={StoreInfo} />
+                <Route path="/store/:storeId/edit" exact={true} component={StoreAdd} />
                 <Route path="/store/:storeId/products/add" exact={true} component={ProductAdd} />
                 <Route path="/store/:storeId/product/:productId/edit" exact={true} component={ProductAdd} />
-                <Route path="/store/:id" exact={true} component={StoreInfo} />
                 <Route path="/checkout" exact={true} component={Checkout} />
                 <Route path="/order" exact={true} component={Order}/>
                 <Route path="/login" exact={true} component={LoginComponent}/>

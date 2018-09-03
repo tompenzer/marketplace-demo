@@ -49,14 +49,14 @@ const ProductList = (props) => (
                             <TableCell numeric>
                                 <Button
                                     bsStyle={"primary"}
-                                    className={"add-to-cart-product"}
+                                    className={"add-to-cart-product margin-b-s"}
                                     onClick={() => props.handleAddToCart(Object.assign({}, item, { currency: props.currencies[item.currency_id] }))}
                                 >Add to Cart
                                 </Button>
                                 {props.userHasAuth &&
                                 <Button
-                                    bsStyle={"secondary"}
-                                    className={"margin-l-m edit-store-product"}
+                                    bsStyle={"info"}
+                                    className={"edit-store-product margin-l-m"}
                                     onClick={() => (props.history.push(`/store/${props.store ? props.store.id : item.store.id}/product/${item.id}/edit`))}
                                 >Edit Product
                                 </Button>}

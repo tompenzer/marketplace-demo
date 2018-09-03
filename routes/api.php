@@ -37,8 +37,9 @@ Route::group(["middleware" => 'auth:api'], function () {
     Route::get('user', ['as' => 'login', function (Request $request) {
         return response()->json($request->user());
     }]);
-
+    // create/delete stores, get auth status
     Route::post('stores', 'StoreController@store');
+    Route::put('stores/{store}/update', 'StoreController@update');
     Route::delete('stores/{store}', 'StoreController@destroy');
     Route::get('stores/{store}/auth', 'StoreController@auth');
     // create/delete products

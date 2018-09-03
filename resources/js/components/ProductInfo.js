@@ -174,7 +174,7 @@ class ProductInfo extends React.Component {
         return (
             <Grid>
                 <Row>
-                    <Col lg={10} md={10}>
+                    <Col lg={12} md={12}>
                         <div className={"margin-div-five"}>
                             <h2>{this.state.product.name}</h2>
                             <div className={"product-info-seller-name"}>
@@ -189,7 +189,7 @@ class ProductInfo extends React.Component {
                 <br />
 
                 <Row>
-                    <Col md={6} sm={12}>
+                    <Col md={8} sm={12}>
                         <div className={"product-info-left-margin"}>
                             <h2 className={"product-description-heading"}>Product Description:</h2>
 

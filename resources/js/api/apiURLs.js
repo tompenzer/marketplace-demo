@@ -10,8 +10,16 @@ export const productInfoAPI = (productId) => (
     `/api/products/${productId}`
 );
 
+export const productUpdateApi = (productId) => (
+    `/api/products/${productId}/update`
+);
+
 export const storeInfoApi = (storeId) => (
     `/api/stores/${storeId}`
+);
+
+export const storeUpdateApi = (storeId) => (
+    `/api/stores/${storeId}/update`
 );
 
 export const storeAuthApi = (storeId) => (
@@ -24,7 +32,7 @@ export const subcategoryProductAPI = (subcategory) => (
 
 export const loginAPI = "oauth/token";
 
-export const getUserAPI = "api/user";
+export const getUserAPI = "/api/user";
 
 export const logoutAPI = "api/logout";
 

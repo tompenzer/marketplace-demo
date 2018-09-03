@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Panel, HelpBlock } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios, { getAuthHeaders } from "../api/axiosInstance";
-import { storeAuthApi, productsApi, productInfoAPI, unitsApi, currenciesApi } from "../api/apiURLs";
+import { storeAuthApi, productsApi, productInfoAPI, productUpdateApi, unitsApi, currenciesApi } from "../api/apiURLs";
 import { loginUser, logoutUser } from "../actions/authentication";
 import { ACCESS_TOKEN } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
@@ -160,12 +160,12 @@ class ProductAdd extends React.Component{
     };
 
     handleNameChange = (e) => {
-        const name = e.target.value;
+        const productName = e.target.value;
         let productNameValidation = null;
 
-        if (name.length > 0 && name.length < 255){
+        if (productName.length > 0 && productName.length < 255){
             productNameValidation = "success";
-            this.setState(() => ({ productName: name, productNameValidation }));
+            this.setState(() => ({ productName, productNameValidation }));
         } else {
             productNameValidation = "error";
             this.setState(() => ({ productNameValidation }));
@@ -337,8 +337,10 @@ class ProductAdd extends React.Component{
         let url = productsApi;
 
         if (this.state.productId !== null) {
+            // Laravel uses POST requests with a pseudo-method `_method`
+            // postfield for actions other than GET and POST.
             data._method = 'put';
-            url = productInfoAPI(this.state.productId) + '/update';
+            url = productUpdateApi(this.state.productId);
         }
 
         axios.post(url, data, getAuthHeaders())
@@ -354,10 +356,10 @@ class ProductAdd extends React.Component{
     };
 
     render(){
-        let submitLabel = 'Add product';
+        let addOrEdit = 'Add';
 
         if (this.state.productId) {
-            submitLabel = 'Edit product';
+            addOrEdit = 'Edit';
         }
 
         if (this.state.isLoading) {
@@ -368,7 +370,7 @@ class ProductAdd extends React.Component{
             <Grid>
                 <Row>
                     <Col mdOffset={2} lgOffset={2} lg={7} md={7}>
-                        <h3 className={"text-center"}>Add a product</h3>
+                        <h3 className={"text-center"}>{addOrEdit} a product</h3>
                         {this.state.errors.length > 0 &&
                         <div>
                             <Panel bsStyle="danger">
@@ -594,7 +596,7 @@ class ProductAdd extends React.Component{
                             this.state.weightUnitValidation === s &&
                             this.state.priceValidation === s &&
                             this.state.currencyValidation === s &&
-                            <Button type={"submit"} bsStyle={"primary"}>{submitLabel}</Button>
+                            <Button type={"submit"} bsStyle={"primary"}>{addOrEdit} product</Button>
                             }
                         </form>
                     </Col>

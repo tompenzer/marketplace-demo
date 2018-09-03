@@ -43,6 +43,7 @@ Route::group(["middleware" => 'auth:api'], function () {
     Route::get('stores/{store}/auth', 'StoreController@auth');
     // create/delete products
     Route::post('products', 'ProductController@store');
+    Route::put('products/{product}/update', 'ProductController@update');
     Route::delete('stores/{store}/products/{product}', 'ProductController@destroy');
     // wishlist routes
     Route::get('getuserwishlist', 'WishlistController@get_user_wishlist');

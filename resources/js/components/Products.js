@@ -18,33 +18,37 @@ import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
 import { addToWishlist, removeFromWishlist } from "../actions/wishlist";
 import { ADDED_TO_CART_SNACKBAR, ADDED_TO_WISHLIST_SNACKBAR } from "../api/strings";
+import ProductList from './ProductList';
 
 class Products extends React.Component {
 
     state = {
       products: [],
-      units: {},
+      unitsDimension: {},
+      unitsWeight: {},
       currencies: {},
       query: '',
+      storeId: null,
       autoHideDuration: 3000,
       isLoading: false,
       productsNotFound: false,
       snackbarOpen: false,
-      snackbarMessage: ''
+      snackbarMessage: '',
+      userHasAuth: false
     };
 
-    loadProducts(query) {
+    loadProducts() {
         this.setState(() => ({ isLoading: true }));
 
         let options = {},
             params = {};
 
-        if (query) {
-            params.q = query;
+        if (this.state.query) {
+            params.q = this.state.query;
         }
 
-        if (this.props.storeId) {
-            params.store_id = this.props.storeId;
+        if (this.state.storeId) {
+            params.store_id = this.state.storeId;
         }
 
         if (Object.keys(params).length) {
@@ -59,31 +63,57 @@ class Products extends React.Component {
                 productsNotFound: false
             }
         ))).catch((error) => (
-            this.setState(() => ({
+            this.setState({
                 isLoading: false,
                 productsNotFound: true
-            }))
+            })
         ));
     }
 
     componentDidMount() {
-        let q;
-
         if (this.props.match && this.props.match.params.q) {
-            q = this.props.match.params.q;
+            this.setState({ query: this.props.match.params.q });
         }
 
+        if (this.props.storeId) {
+            this.setState({ storeId: this.props.storeId });
+        }
+
+        this.fillUnits();
+        this.fillCurrencies();
+
+        this.loadProducts();
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(this.props.match.params.q !== nextProps.match.params.q){
+            this.setState({ query: nextProps.match.params.q });
+            this.loadProducts();
+        }
+    }
+
+    fillUnits() {
         // Make an object of unit abbreviations keyed to their IDs.
         axios.get(unitsApi).then((response) => {
-            let units = {};
+            let unitsDimension = {},
+                unitsWeight = {};
 
             for (let unit of response.data) {
-                units[unit.id] = unit.abbreviation;
+                switch (unit.type.name) {
+                    case 'dimension':
+                        unitsDimension[unit.id] = unit.abbreviation;
+                        break;
+                    case 'weight':
+                        unitsWeight[unit.id] = unit.abbreviation;
+                        break;
+                }
             }
 
-            this.setState({ units: units });
+            this.setState({ unitsDimension, unitsWeight });
         });
+    }
 
+    fillCurrencies() {
         // Make an object of currency abbreviations keyed to their IDs.
         axios.get(currenciesApi).then((response) => {
             let currencies = {};
@@ -94,14 +124,6 @@ class Products extends React.Component {
 
             this.setState({ currencies: currencies });
         });
-
-        this.loadProducts(q);
-    }
-
-    componentWillReceiveProps(nextProps){
-        if(this.props.match.params.q !== nextProps.match.params.q){
-            this.loadProducts(nextProps.match.params.q);
-        }
     }
 
     handleAddToCart = (product) => {
@@ -185,45 +207,13 @@ class Products extends React.Component {
 
                 <Row>
                     <Col md={12} sm={12}>
-                        <Paper>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Product name</TableCell>
-                                        <TableCell>Sold by</TableCell>
-                                        <TableCell numeric>Price</TableCell>
-                                        <TableCell numeric>Dimensions (w, h, l)</TableCell>
-                                        <TableCell numeric>Weight</TableCell>
-                                        <TableCell numeric>Actions</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {this.state.products.map(item => {
-                                        return (
-                                            <TableRow key={item.id}>
-                                                <TableCell component="th" scope="row">
-                                                    <Link to={'product/' + item.id}>{item.name}</Link>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Link to={'store/' + item.store.id}>{item.store.name}</Link>
-                                                </TableCell>
-                                                <TableCell numeric>{item.price + ' ' + this.state.currencies[item.currency_id]}</TableCell>
-                                                <TableCell numeric>{`${item.width} ${this.state.units[item.width_unit_id]}, ${item.height} ${this.state.units[item.height_unit_id]}, ${item.length} ${this.state.units[item.length_unit_id]}`}</TableCell>
-                                                <TableCell numeric>{item.weight + ' ' + this.state.units[item.weight_unit_id]}</TableCell>
-                                                <TableCell numeric>
-                                                    <Button
-                                                        bsStyle={"primary"}
-                                                        className={"add-to-cart-product"}
-                                                        onClick={() => this.handleAddToCart(Object.assign({}, item, { currency: this.state.currencies[item.currency_id] }))}
-                                                    >Add to Cart
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                                </TableBody>
-                            </Table>
-                        </Paper>
+                        <ProductList
+                            products={this.state.products}
+                            currencies={this.state.currencies}
+                            unitsDimension={this.state.unitsDimension}
+                            unitsWeight={this.state.unitsWeight}
+                            handleAddToCart={this.handleAddToCart}
+                        />
                     </Col>
                 </Row>
 

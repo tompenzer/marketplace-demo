@@ -39,6 +39,16 @@ class Role extends Model
     }
 
     /**
+     * Scope a query to filter available author users.
+     */
+    public function scopeSiteAdmin(Builder $query): Builder
+    {
+        return $query->name(Role::ROLE_ADMIN)
+                  ->roleScope(RoleScope::ROLE_SCOPE_SITE);
+    }
+
+
+    /**
      * Scope a query by role scope.
      *
      * @param string $scope The role scope to which you would like to scope.

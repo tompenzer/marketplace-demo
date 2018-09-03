@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRequest;
+use App\Models\Currency;
 use App\Models\Role;
 use App\Models\RoleScope;
 use App\Models\Store;
+use App\Models\Unit;
 use Auth;
 use Cache;
 use Illuminate\Http\Request;
@@ -47,6 +49,9 @@ class StoreController extends Controller
 
     public function show(Store $store)
     {
+        $store->setRelation('products', $store->products()->get());
+        $store->setRelation('addresses', $store->addresses()->get());
+
         return response()->json($store);
     }
 

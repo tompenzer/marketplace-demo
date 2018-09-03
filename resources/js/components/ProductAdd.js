@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Panel, HelpBlock } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios, { getAuthHeaders } from "../api/axiosInstance";
-import { storeAuthApi, productsApi, unitsApi, currenciesApi } from "../api/apiURLs";
+import { storeAuthApi, productsApi, productInfoAPI, unitsApi, currenciesApi } from "../api/apiURLs";
 import { loginUser, logoutUser } from "../actions/authentication";
 import { ACCESS_TOKEN } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
@@ -14,6 +14,8 @@ class ProductAdd extends React.Component{
 
     state = {
         storeId: null,
+        productId: null,
+        productNotFound: null,
         unitsDimension: {},
         unitsWeight: {},
         currencies: {},
@@ -50,37 +52,41 @@ class ProductAdd extends React.Component{
     componentDidMount() {
         const access_token = window.localStorage.getItem(ACCESS_TOKEN);
 
-        if (access_token && this.props.match && this.props.match.params.storeId) {
-            let storeId = this.props.match.params.storeId;
-
-            // means the user is already logged in, check if it is valid
-            this.setState(() => ({
-                isLoading: true,
-                storeId: storeId
-            }));
-
-            axios.get(storeAuthApi(storeId), getAuthHeaders())
-                .then((response) => {
-                    this.setState(() => ({
-                        isLoading: false,
-                        userHasAuth: response.data
-                     }));
-
-                     this.fillUnits();
-                     this.fillCurrencies();
-                     console.log(this.state);
-                })
-                .catch((error) => {
-                    console.log('test');
-                    window.localStorage.removeItem(ACCESS_TOKEN);
-                    this.props.dispatch(logoutUser());
-                    this.setState(() => ({ isLoading: false }));
-                    this.props.history.push("/login");
-                });
-        } else {
-            console.log(this.props);
+        // Must be logged in and be passed store context.
+        if (! access_token && this.props.match && this.props.match.params.storeId) {
             this.props.dispatch(logoutUser());
             this.props.history.push("/login");
+        }
+
+        let storeId = this.props.match.params.storeId;
+
+        // means the user is already logged in, check if it is valid
+        this.setState(() => ({
+            isLoading: true,
+            storeId: storeId
+        }));
+
+        axios.get(storeAuthApi(storeId), getAuthHeaders())
+            .then((response) => {
+                this.setState(() => ({
+                    isLoading: false,
+                    userHasAuth: response.data
+                 }));
+
+                 this.fillUnits();
+                 this.fillCurrencies();
+            })
+            .catch((error) => {
+                window.localStorage.removeItem(ACCESS_TOKEN);
+                this.props.dispatch(logoutUser());
+                this.setState(() => ({ isLoading: false }));
+                this.props.history.push("/login");
+            });
+
+        // If passed a product prop, pre-fill the data and we'll do a product
+        // update rather than adding a new product.
+        if (this.props.match.params.productId) {
+            this.loadProductDetails(this.props.match.params.productId);
         }
     }
 
@@ -118,13 +124,48 @@ class ProductAdd extends React.Component{
         });
     }
 
+    loadProductDetails = (productId) => {
+        this.setState(() => ({ productId, isLoading: true }));
+
+        axios.get(productInfoAPI(productId)).then((response) => (
+            this.setState(() => ({
+                productName: response.data.name,
+                productNameValidation: s,
+                description: response.data.description,
+                descriptionValidation: s,
+                width: response.data.width,
+                widthValidation: s,
+                widthUnitId: response.data.width_unit_id,
+                height: response.data.height,
+                heightValidation: s,
+                heightUnitId: response.data.height_unit_id,
+                length: response.data.length,
+                lengthValidation: s,
+                lengthUnitId: response.data.length_unit_id,
+                weight: response.data.weight,
+                weightValidation: s,
+                weightUnitId: response.data.weight_unit_id,
+                price: response.data.price,
+                priceValidation: s,
+                currencyId: response.data.currency_id,
+                isLoading: false,
+                productNotFound: false
+            }))
+        )).catch((error) => (
+            this.setState(() => ({
+                isLoading: false,
+                productNotFound: true
+            }))
+        ));
+    };
+
     handleNameChange = (e) => {
         const name = e.target.value;
         let productNameValidation = null;
 
         if (name.length > 0 && name.length < 255){
             productNameValidation = "success";
-            this.setState(() => ({ name, productNameValidation }));
+            this.setState(() => ({ productName: name, productNameValidation }));
         } else {
             productNameValidation = "error";
             this.setState(() => ({ productNameValidation }));
@@ -279,7 +320,7 @@ class ProductAdd extends React.Component{
         this.setState(() => ({ isLoading: true }));
         const data = {
             store_id: this.state.storeId,
-            name: this.state.name,
+            name: this.state.productName,
             description: this.state.description,
             width: this.state.width,
             width_unit_id: this.state.widthUnitId,
@@ -293,24 +334,33 @@ class ProductAdd extends React.Component{
             currency_id: this.state.currencyId
         };
 
-        const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-        const headers = { Accept: "application/json", Authorization: `Bearer ${access_token}` };
-        axios.post(productsApi, data, { headers })
+        let url = productsApi;
+
+        if (this.state.productId !== null) {
+            data._method = 'put';
+            url = productInfoAPI(this.state.productId) + '/update';
+        }
+
+        axios.post(url, data, getAuthHeaders())
             .then((response) => {
                 if (response.data.id) {
                     this.setState(() => ({ isLoading: false }));
-                    this.props.history.push("/product/" + response.data.id);
+                    this.props.history.push('/product/' + response.data.id);
                 }
             })
             .catch((error) => {
-                 const errors = Object.values(error.response.data.errors);
-                 this.setState(() => ({isLoading: false, errors }));
+                 this.setState(() => ({ isLoading: false, errors: Object.values(error.response.data.errors) }));
             });
     };
 
     render(){
+        let submitLabel = 'Add product';
 
-        if(this.state.isLoading){
+        if (this.state.productId) {
+            submitLabel = 'Edit product';
+        }
+
+        if (this.state.isLoading) {
             return <LoadingScreen/>
         }
 
@@ -346,7 +396,7 @@ class ProductAdd extends React.Component{
                                 <ControlLabel>Product name</ControlLabel>
                                 <FormControl
                                     type="text"
-                                    value={this.state.name}
+                                    value={this.state.productName}
                                     placeholder="Product name"
                                     onChange={this.handleNameChange}
                                 />
@@ -394,7 +444,7 @@ class ProductAdd extends React.Component{
                                             componentClass="select"
                                             onChange={this.handleWidthUnitChange}
                                         >
-                                            {Object.keys(this.state.unitsDimension).map((key) => (<option value={key}>{this.state.unitsDimension[key]}</option>))}
+                                            {Object.keys(this.state.unitsDimension).map((key) => (<option key={'width-' + key} value={key}>{this.state.unitsDimension[key]}</option>))}
                                         </FormControl>
                                     </FormGroup>
                                 </Col>
@@ -427,7 +477,7 @@ class ProductAdd extends React.Component{
                                             componentClass="select"
                                             onChange={this.handleHeightUnitChange}
                                         >
-                                            {Object.keys(this.state.unitsDimension).map((key) => (<option value={key}>{this.state.unitsDimension[key]}</option>))}
+                                            {Object.keys(this.state.unitsDimension).map((key) => (<option key={'height-' + key} value={key}>{this.state.unitsDimension[key]}</option>))}
                                         </FormControl>
                                     </FormGroup>
                                 </Col>
@@ -460,7 +510,7 @@ class ProductAdd extends React.Component{
                                             componentClass="select"
                                             onChange={this.handleLengthUnitChange}
                                         >
-                                            {Object.keys(this.state.unitsDimension).map((key) => (<option value={key}>{this.state.unitsDimension[key]}</option>))}
+                                            {Object.keys(this.state.unitsDimension).map((key) => (<option key={'length-' + key} value={key}>{this.state.unitsDimension[key]}</option>))}
                                         </FormControl>
                                     </FormGroup>
                                 </Col>
@@ -493,7 +543,7 @@ class ProductAdd extends React.Component{
                                             componentClass="select"
                                             onChange={this.handleWeightUnitChange}
                                         >
-                                            {Object.keys(this.state.unitsWeight).map((key) => (<option value={key}>{this.state.unitsWeight[key]}</option>))}
+                                            {Object.keys(this.state.unitsWeight).map((key) => (<option key={'weight-' + key} value={key}>{this.state.unitsWeight[key]}</option>))}
                                         </FormControl>
                                     </FormGroup>
                                 </Col>
@@ -526,7 +576,7 @@ class ProductAdd extends React.Component{
                                             componentClass="select"
                                             onChange={this.handleCurrencyChange}
                                         >
-                                            {Object.keys(this.state.currencies).map((key) => (<option value={key}>{this.state.currencies[key]}</option>))}
+                                            {Object.keys(this.state.currencies).map((key) => (<option key={'curr-' + key} value={key}>{this.state.currencies[key]}</option>))}
                                         </FormControl>
                                     </FormGroup>
                                 </Col>
@@ -544,7 +594,7 @@ class ProductAdd extends React.Component{
                             this.state.weightUnitValidation === s &&
                             this.state.priceValidation === s &&
                             this.state.currencyValidation === s &&
-                            <Button type={"submit"} bsStyle={"primary"}>Add product</Button>
+                            <Button type={"submit"} bsStyle={"primary"}>{submitLabel}</Button>
                             }
                         </form>
                     </Col>

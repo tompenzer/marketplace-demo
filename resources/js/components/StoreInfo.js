@@ -4,18 +4,23 @@ import {image} from "./image";
 import {addToCart, removeFromCart} from "../actions/shoppingCart";
 import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
-import axios from "../api/axiosInstance";
-import { storeInfoApi, storeAuthApi } from "../api/apiURLs";
+import axios, { getAuthHeaders } from "../api/axiosInstance";
+import { storeInfoApi, storeAuthApi, unitsApi, currenciesApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
 import { addToWishlist, removeFromWishlist } from "../actions/wishlist";
 import { ADDED_TO_CART_SNACKBAR, ADDED_TO_WISHLIST_SNACKBAR, ACCESS_TOKEN } from "../api/strings";
-import Products from '../components/Products';
+import ProductList from './ProductList';
 
 class StoreInfo extends React.Component {
 
     state = {
-      store: {},
+      store: {
+          products: []
+      },
+      unitsDimension: {},
+      unitsWeight: {},
+      currencies: {},
       prevPrice: null,
       quantity: 1,
       storeId: undefined,
@@ -28,41 +33,83 @@ class StoreInfo extends React.Component {
     };
 
     loadStoreDetails = (storeId) => {
-        this.setState(() => ({ storeId, isLoading: true }));
+        this.setState({ storeId, isLoading: true });
 
-        axios.get(storeInfoApi(storeId)).then((response) => (this.setState(
-            {
+        // Get the store info
+        axios.get(storeInfoApi(storeId)).then((response) => (
+            this.setState({
                 store: response.data,
                 isLoading: false,
                 storeNotFound: false
-            }
-        ))).catch((error) => (
-            this.setState(() => ({
+            })
+        )).catch((error) => (
+            this.setState({
                 isLoading: false,
                 storeNotFound: true
-            }))
+            })
         ));
 
         // Check if logged in user has authorization to edit store.
-        const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-        const headers = { Accept: "application/json", Authorization: `Bearer ${access_token}` };
-        axios.get(storeAuthApi(storeId), { headers }).then((response) => {
+        axios.get(storeAuthApi(storeId), getAuthHeaders()).then((response) => {
             this.setState({ userHasAuth: response.data } )
         });
     };
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         if (this.props.match.params.id !== nextProps.match.params.id) {
             this.loadStoreDetails(nextProps.match.params.id);
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
+        this.fillUnits();
+        this.fillCurrencies();
+
         // load the store details here
         this.loadStoreDetails(this.props.match.params.id);
     }
 
-    render(){
+    fillUnits() {
+        // Make an object of unit abbreviations keyed to their IDs.
+        axios.get(unitsApi).then((response) => {
+            let unitsDimension = {},
+                unitsWeight = {};
+
+            for (let unit of response.data) {
+                switch (unit.type.name) {
+                    case 'dimension':
+                        unitsDimension[unit.id] = unit.abbreviation;
+                        break;
+                    case 'weight':
+                        unitsWeight[unit.id] = unit.abbreviation;
+                        break;
+                }
+            }
+
+            this.setState({ unitsDimension, unitsWeight });
+        });
+    }
+
+    fillCurrencies() {
+        // Make an object of currency abbreviations keyed to their IDs.
+        axios.get(currenciesApi).then((response) => {
+            let currencies = {};
+
+            for (let currency of response.data) {
+                currencies[currency.id] = currency.abbreviation;
+            }
+
+            this.setState({ currencies: currencies });
+        });
+    }
+
+    handleAddToCart = (product) => {
+        // dispatching an action to redux store
+        this.props.dispatch(addToCart(product));
+        this.setState(() => ({snackbarOpen: true, snackbarMessage: ADDED_TO_CART_SNACKBAR}))
+    };
+
+    render() {
         let addProduct;
 
         if (this.state.userHasAuth) {
@@ -119,7 +166,16 @@ class StoreInfo extends React.Component {
                     <Col lg={12} md={12}>
                         <h3 className={"store-description-heading"}>Our products:</h3>
                         {addProduct}
-
+                        <ProductList
+                            products={this.state.store.products}
+                            store={{ id: this.state.store.id, name: this.state.store.name }}
+                            currencies={this.state.currencies}
+                            unitsDimension={this.state.unitsDimension}
+                            unitsWeight={this.state.unitsWeight}
+                            handleAddToCart={this.handleAddToCart}
+                            userHasAuth={this.state.userHasAuth}
+                            history={this.props.history}
+                        />
                     </Col>
                 </Row>
 

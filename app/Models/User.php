@@ -125,10 +125,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Scope a query to filter available author users.
+     * Whether a user is a site admin.
      */
-    public function isSiteAdmin(): Builder
+    public function isSiteAdmin(): bool
     {
-        return $this->roles()->siteAdmin()->isNotEmpty();
+        return $this->roles()->siteAdmin()->get()->isNotEmpty();
     }
 }

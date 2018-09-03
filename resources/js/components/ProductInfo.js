@@ -1,11 +1,12 @@
 import React from "react";
+import { Link, withRouter } from 'react-router-dom';
 import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
 import { image } from "./image";
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import axios from "../api/axiosInstance";
-import { productInfoAPI } from "../api/apiURLs";
+import { productInfoAPI, unitsApi, currenciesApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
 import { addToWishlist, removeFromWishlist } from "../actions/wishlist";
@@ -18,6 +19,10 @@ class ProductInfo extends React.Component {
           store: {},
           currency: {}
       },
+      unitsDimension: {},
+      unitsWeight: {},
+      currencies: {},
+      quantity: '',
       productId: undefined,
       autoHideDuration: 3000,
       snackbarOpen:false,
@@ -52,6 +57,43 @@ class ProductInfo extends React.Component {
     componentDidMount() {
         // load the product details here
         this.loadProductDetails(this.props.match.params.id);
+
+        this.fillUnits();
+        this.fillCurrencies();
+    }
+
+    fillUnits() {
+        // Make an object of unit abbreviations keyed to their IDs.
+        axios.get(unitsApi).then((response) => {
+            let unitsDimension = {},
+                unitsWeight = {};
+
+            for (let unit of response.data) {
+                switch (unit.type.name) {
+                    case 'dimension':
+                        unitsDimension[unit.id] = unit.abbreviation;
+                        break;
+                    case 'weight':
+                        unitsWeight[unit.id] = unit.abbreviation;
+                        break;
+                }
+            }
+
+            this.setState({ unitsDimension, unitsWeight });
+        });
+    }
+
+    fillCurrencies() {
+        // Make an object of currency abbreviations keyed to their IDs.
+        axios.get(currenciesApi).then((response) => {
+            let currencies = {};
+
+            for (let currency of response.data) {
+                currencies[currency.id] = currency.abbreviation;
+            }
+
+            this.setState({ currencies: currencies });
+        });
     }
 
     addToCartOnClick = () => {
@@ -136,7 +178,8 @@ class ProductInfo extends React.Component {
                         <div className={"margin-div-five"}>
                             <h2>{this.state.product.name}</h2>
                             <div className={"product-info-seller-name"}>
-                                <span>Sold by: {this.state.product.store.name}</span>
+                                <span>Sold by: </span>
+                                <Link to={'/store/' + this.state.product.store.id}>{this.state.product.store.name}</Link>
                             </div>
                             <hr />
                         </div>
@@ -149,8 +192,21 @@ class ProductInfo extends React.Component {
                     <Col md={6} sm={12}>
                         <div className={"product-info-left-margin"}>
                             <h2 className={"product-description-heading"}>Product Description:</h2>
+
                             <hr/>
+
                             <p className={"product-description"}>{this.state.product.description}</p>
+
+                            <br/>
+
+                            <h4>Product specifications</h4>
+
+                            <p>
+                                Width: {this.state.product.width} {this.state.unitsDimension[this.state.product.width_unit_id]}<br/>
+                                Height: {this.state.product.height} {this.state.unitsDimension[this.state.product.height_unit_id]}<br/>
+                                Length: {this.state.product.length} {this.state.unitsDimension[this.state.product.length_unit_id]}<br/>
+                                Weight: {this.state.product.weight} {this.state.unitsWeight[this.state.product.weight_unit_id]}
+                            </p>
                         </div>
                     </Col>
 
@@ -176,7 +232,7 @@ class ProductInfo extends React.Component {
                                     className={"add-to-cart-product"}
                                     onClick={this.addToCartOnClick}
                                 >Add to Cart
-                                </Button>}
+                                </Button>
                             </div>
                         }
                     </Col>

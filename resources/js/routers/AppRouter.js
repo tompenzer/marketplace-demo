@@ -50,8 +50,6 @@ const appRouter = () => (
                 <Route path="/myorders" exact={true} component={MyOrders}/>
                 <Route path="/order/:id" exact={true} component={OrderDetail} />
                 <Route path="/about" exact={true} component={About}/>
-                <Route path="/people" exact={true} component={People}/>
-                <Route path="/contact" exact={true} component={Contact}/>
                 <Route component={NotFoundPage} />
             </Switch>
             <Footer/>

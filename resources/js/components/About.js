@@ -9,7 +9,7 @@ const About = () => (
             <hr/>
             <Col lg={12} md={12}>
                 <a
-                    href={"https://github.com/tompenzer/"}
+                    href={"https://github.com/tompenzer/marketplace-demo"}
                     target="_blank">
                     Project Github link
                 </a>
@@ -41,7 +41,7 @@ const About = () => (
                                     <ListGroupItem>SASS with SASS loader</ListGroupItem>
                                     <ListGroupItem>Webpack</ListGroupItem>
                                     <ListGroupItem>Babel</ListGroupItem>
-                                    <ListGroupItem>Redis</ListGroupItem>
+                                    <ListGroupItem>Faker</ListGroupItem>
                                 </ListGroup>
                             </Col>
                         </Row>
@@ -54,19 +54,19 @@ const About = () => (
                                        speed={1000}
                                        wait={1000}>
                     <div>
-                        <p className={"sixzero-weight"}>Database and Cloud technologies :</p>
+                        <p className={"sixzero-weight"}>Data storage & environment management:</p>
                         <Row>
                             <Col lg={6} md={6}>
                                 <ListGroup>
                                     <ListGroupItem>MySQL</ListGroupItem>
-                                    <ListGroupItem>RDBMS on AWS</ListGroupItem>
+                                    <ListGroupItem>Redis</ListGroupItem>
                                 </ListGroup>
                             </Col>
 
                             <Col lg={6} md={6}>
                                 <ListGroup>
-                                    <ListGroupItem>Google App Engine</ListGroupItem>
-                                    <ListGroupItem>Docker Image</ListGroupItem>
+                                    <ListGroupItem>Docker</ListGroupItem>
+                                    <ListGroupItem>Composer & NPM</ListGroupItem>
                                 </ListGroup>
                             </Col>
                         </Row>

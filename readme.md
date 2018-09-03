@@ -1,7 +1,3 @@
-
-```
-$ docker-compose run --rm marketplace-server php artisan passport:client --password
-```
 # Marketplace Demo repository
 
 The source for the marketplace demo repo hosted at

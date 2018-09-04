@@ -2,6 +2,8 @@ export const ACCESS_TOKEN = "access_token_marketplace_demo";
 
 export const REFRESH_TOKEN = "refresh_token_marketplace_demo";
 
+export const CART_UID = "cart_uid_marketplace_demo";
+
 export const LOG_IN = "LOG_IN";
 
 export const LOG_OUT = "LOG_OUT";

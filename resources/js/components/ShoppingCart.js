@@ -18,13 +18,13 @@ class ShoppingCart extends React.Component{
     render(){
         let itemCount = this.props.shoppingCart.length;
         let cartContent;
-        if(itemCount > 0){
+        if (itemCount > 0) {
             let total = this.props.shoppingCart.reduce(totalReducer, 0);
             cartContent = (
                 <div>
                     <ListGroup className={"shopping-cart-listgroup"}>
-                        {this.props.shoppingCart.map((item, key) => {
-                            return <CustomListGroupItem key={item.productID} {...item} {...this.props} />;
+                        {this.props.shoppingCart.map((item) => {
+                            return <CustomListGroupItem key={item.productId} {...item} {...this.props} />;
                         })}
                     </ListGroup>
                     <hr/>

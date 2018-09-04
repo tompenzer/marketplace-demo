@@ -21,7 +21,7 @@ class CustomListGroupItemCart extends React.Component{
         let updates = {
           quantity
         };
-        this.props.dispatch(editCart(this.props.productID, updates));
+        this.props.dispatch(editCart(this.props.productId, updates));
     };
 
     onQuantityChange = (e) => {
@@ -61,7 +61,7 @@ class CustomListGroupItemCart extends React.Component{
 
     removeFromCart = (e) => {
         e.stopPropagation();
-        ProductInfo.removeItemFromCart(this.props.productID, this.props);
+        ProductInfo.removeItemFromCart(this.props.productId, this.props);
     };
 
     viewClickHandler = (routeName) => {
@@ -72,13 +72,13 @@ class CustomListGroupItemCart extends React.Component{
     render() {
         return (
             <li className="list-group-item">
-                <div className={"media-left cursor-pointer"} onClick={() => this.viewClickHandler(`/product/${this.props.productID}`)}>
+                <div className={"media-left cursor-pointer"} onClick={() => this.viewClickHandler(`/product/${this.props.productId}`)}>
                     <img className="media-object" src={this.props.productImage} alt="..." width={64} height={64} />
                 </div>
                 <div className={"media-body"}>
                     <Row>
                         <Col lg={6} md={6} sm={12} xs={12}>
-                            <h4 className={"media-heading"}>{this.props.productName}</h4>
+                            <h4 className={"media-heading"}>{this.props.name}</h4>
                             <div className={"seller-name-div"}>
                                 <span>{this.props.sellerName}</span>
                             </div>

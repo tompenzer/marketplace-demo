@@ -26,8 +26,16 @@ export const storeAuthApi = (storeId) => (
     `/api/stores/${storeId}/auth`
 );
 
-export const subcategoryProductAPI = (subcategory) => (
-    `api/category/${subcategory}`
+export const userCartApi = (cartUid) => (
+    `/api/cart/${cartUid}`
+);
+
+export const addToCartApi = (cartUid) => (
+    `/api/cart/${cartUid}`
+);
+
+export const removeFromCartApi = (cartUid, productID) => (
+    `api/cart/${cartUid}/item/${productID}`
 );
 
 export const loginAPI = "oauth/token";
@@ -37,14 +45,6 @@ export const getUserAPI = "/api/user";
 export const logoutAPI = "api/logout";
 
 export const registerAPI = "api/register";
-
-export const addToCartAPI = "api/addtocart";
-
-export const removeFromCartAPI = (productID) => (
-    `api/removefromcart/${productID}`
-);
-
-export const getUserCartAPI = "api/getusercart";
 
 export const addToWishlistAPI = "api/addtowishlist";
 

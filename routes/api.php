@@ -14,9 +14,10 @@ use Illuminate\Http\Request;
 */
 
 // shopping cart routes
-Route::get('getusercart', 'CartController@index');
-Route::post('addtocart', 'CartController@store');
-Route::delete('removefromcart/{product_id}', 'CartController@destroy');
+Route::get('cart/{cart_uid}', 'CartController@index');
+Route::post('cart/{cart_uid}', 'CartController@store');
+Route::put('cart/{cart_uid}/item/{product_id}', 'CartController@update');
+Route::delete('cart/{cart_uid}/item/{product_id}', 'CartController@destroy');
 
 Route::get('currencies', 'CurrencyController@index');
 Route::get('currencies/{currency}', 'CurrencyController@show');

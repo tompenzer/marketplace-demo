@@ -1,7 +1,10 @@
 import uuid from 'uuid';
 import axios from "../api/axiosInstance";
-import {ACCESS_TOKEN, ADD_TO_CART, EDIT_CART, EMPTY_CART, REMOVE_FROM_CART} from "../api/strings";
-import {addToCartAPI, removeFromCartAPI} from "../api/apiURLs";
+import { ACCESS_TOKEN, CART_UID, ADD_TO_CART, EDIT_CART, EMPTY_CART, REMOVE_FROM_CART } from "../api/strings";
+import { addToCartApi, removeFromCartApi, userCartApi } from "../api/apiURLs";
+
+let cartUid = window.localStorage.getItem(CART_UID);
+
 // ADD_TO_CART
 export const addToCartHelper = (
     {
@@ -40,49 +43,70 @@ export const emptyCart = () => ({
     type: EMPTY_CART
 });
 
+export const getCart = () => {
+    return (dispatch, getState) => {
+        if (! cartUid) {
+            cartUid = uuid();
+
+            window.localStorage.setItem(CART_UID, cartUid);
+        }
+
+        axios.get(userCartApi(cartUid))
+            .then((response) => {
+                response.data.map((item) => {
+                    dispatch(addToCartHelper({
+                        productId: item.product_id,
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: item.price,
+                        currency: item.currency
+                    }));
+                })
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+    }
+};
+
 export const removeFromCart = ({ productId } = {}) => {
     return (dispatch, getState) => {
-        const {authentication} = getState();
-        if(authentication.isAuthenticated){
-            // make an API call
-            const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-            const headers = {Accept: "application/json", Authorization: `Bearer ${access_token}`};
-
-            axios.delete(removeFromCartAPI(productId), {headers: {...headers}})
+        if (cartUid) {
+            axios.post(removeFromCartApi(cartUid, productId), { _method: 'delete' })
                 .then((response) => {
-                    console.log(response.data);
+                    dispatch(removeFromCartHelper(productId));
                 })
                 .catch((error) => {
                     console.log(error.response);
                 });
         }
-        dispatch(removeFromCartHelper(productId));
     }
 };
 
 export const addToCart = (product = {}) => {
     return (dispatch, getState) => {
-        const {authentication} = getState();
-        if(authentication.isAuthenticated){
-            // make an API call
-            const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-            const headers = {Accept: "application/json", Authorization: `Bearer ${access_token}`};
-            const {productId, name, quantity, price, currency} = product;
-            const data = {
-                product_id: productId,
-                name,
-                quantity: 1,
-                price,
-                currency
-            };
-            axios.post(addToCartAPI, data, {headers: {...headers}})
-                .then((response) => {
-                    console.log(response.data);
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
+        if (! cartUid) {
+            cartUid = uuid();
+
+            window.localStorage.setItem(CART_UID, cartUid);
         }
-        dispatch(addToCartHelper(product));
+
+        // make an API call
+        const { productId, name, quantity, price, currency } = product;
+        const data = {
+            product_id: productId,
+            name,
+            quantity,
+            price,
+            currency
+        };
+
+        axios.post(addToCartApi(cartUid), data)
+            .then((response) => {
+                dispatch(addToCartHelper(product));
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
     }
 };

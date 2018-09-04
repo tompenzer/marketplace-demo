@@ -6,7 +6,7 @@ import configureStore from './store/configureStore';
 import 'normalize.css/normalize.css';
 import '../sass/app.scss';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { addToCart, addToCartHelper } from "./actions/shoppingCart";
+import { getCart } from "./actions/shoppingCart";
 import { imageWatch } from "./components/image";
 import axios, { getAuthHeaders } from "./api/axiosInstance";
 import { getUserAPI, getUserCartAPI } from "./api/apiURLs";
@@ -33,18 +33,18 @@ const jsx = (
     </Provider>
 );
 
+store.dispatch(getCart());
+
 // initial load, check if user is logged in
 axios.get(getUserAPI, getAuthHeaders())
     .then(() => {
         store.dispatch(loginUser());
-        // response.data.map((item) => {
-        //     store.dispatch(addToCartHelper(item));
-        // })
     })
     .catch((error) => {
         window.localStorage.removeItem(ACCESS_TOKEN);
         store.dispatch(logoutUser());
     });
+
 
 const appRoot = document.getElementById('app');
 ReactDOM.render(jsx, appRoot);

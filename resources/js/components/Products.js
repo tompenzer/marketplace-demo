@@ -210,8 +210,8 @@ class Products extends React.Component {
                     message={this.state.snackbarMessage}
                     action="undo"
                     autoHideDuration={this.state.autoHideDuration}
-                    onActionClick={this.handleUndoAction}
-                    onRequestClose={this.handleSnackbarRequestClose}
+                    onClick={this.handleUndoAction}
+                    onClose={this.handleSnackbarRequestClose}
                 />
             </Grid>
         )

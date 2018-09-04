@@ -18,8 +18,6 @@ import OrderDetail from "../components/OrderDetail";
 import MyOrders from "../components/MyOrders";
 import NotFoundPage from "../components/NotFoundPage";
 import About from "../components/About";
-import People from "../components/People";
-import Contact from "../components/Contact";
 import Products from "../components/Products";
 import Stores from "../components/Stores";
 import StoreAdd from "../components/StoreAdd";

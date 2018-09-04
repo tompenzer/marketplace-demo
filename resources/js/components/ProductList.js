@@ -50,7 +50,7 @@ const ProductList = (props) => (
                                 <Button
                                     bsStyle={"primary"}
                                     className={"add-to-cart-product margin-b-s"}
-                                    onClick={() => props.handleAddToCart(Object.assign({}, item, { currency: props.currencies[item.currency_id] }))}
+                                    onClick={() => props.handleAddToCart({ productId: item.id, name: item.name, quantity: 1, price: item.price, currency: props.currencies[item.currency_id] })}
                                 >Add to Cart
                                 </Button>
                                 {props.userHasAuth &&

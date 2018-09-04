@@ -1,8 +1,9 @@
 import React from "react";
-import {Row, Col, Button, FormControl, Popover, ButtonToolbar, Overlay} from "react-bootstrap";
+import { Link } from 'react-router-dom';
+import { Row, Col, Button, FormControl, Popover, ButtonToolbar, Overlay } from "react-bootstrap";
 import ProductInfo from "./ProductInfo";
 import { connect } from 'react-redux';
-import {editCart} from "../actions/shoppingCart";
+import { editCart } from "../actions/shoppingCart";
 
 class CustomListGroupItemCheckout extends React.Component{
 
@@ -53,13 +54,10 @@ class CustomListGroupItemCheckout extends React.Component{
     render() {
         return (
             <li className="list-group-item">
-                <div className={"media-left"}>
-                    <img className="media-object" src={this.props.productImage} alt="..." width={64} height={64} />
-                </div>
                 <div className={"media-body"}>
                     <Row>
                         <Col lg={5} md={5} sm={12} xs={12}>
-                            <h4 className={"media-heading"}>{this.props.name}</h4>
+                            <h4 className={"media-heading"}><Link to={'/product/' + this.props.productId}>{this.props.name}</Link></h4>
                             <div>
                                 <ButtonToolbar>
                                     <Button onClick={this.handleRemoveClick} bsStyle={"link"} className={"btn-sm"}>Remove</Button>

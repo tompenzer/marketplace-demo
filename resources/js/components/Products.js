@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, withRouter } from 'react-router-dom';
 import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
-import { image } from "./image";
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
@@ -146,7 +145,6 @@ class Products extends React.Component {
     handleAddToWishlist = () => {
         const product = {
             productName: this.state.product.name,
-            productImage: this.state.product.image,
             sellerName: this.state.product.sellerName,
             quantity: this.state.quantity,
             price: this.state.product.price,

@@ -7,7 +7,6 @@ import 'normalize.css/normalize.css';
 import '../sass/app.scss';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { getCart } from "./actions/shoppingCart";
-import { imageWatch } from "./components/image";
 import axios, { getAuthHeaders } from "./api/axiosInstance";
 import { getUserAPI, getUserCartAPI } from "./api/apiURLs";
 import { loginUser, logoutUser } from "./actions/authentication";

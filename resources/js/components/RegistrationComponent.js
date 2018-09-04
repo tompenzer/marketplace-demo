@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Panel, HelpBlock } from 'react-bootstrap';
-import {Link} from 'react-router-dom';
-import axios from "../api/axiosInstance";
-import {getUserAPI, registerAPI} from "../api/apiURLs";
-import {loginUser, logoutUser} from "../actions/authentication";
+import { Link } from 'react-router-dom';
+import axios, { getAuthHeaders } from "../api/axiosInstance";
+import { getUserAPI, registerAPI } from "../api/apiURLs";
+import { loginUser, logoutUser } from "../actions/authentication";
 import {ACCESS_TOKEN} from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
 import { connect } from 'react-redux';
@@ -24,13 +24,11 @@ class RegistrationComponent extends React.Component{
         errors: []
     };
 
-    componentDidMount(){
-        if(window.localStorage.getItem(ACCESS_TOKEN) !== null){
+    componentDidMount() {
+        if (window.localStorage.getItem(ACCESS_TOKEN) !== null) {
             // means the user is already logged in, check if it is valid
-            this.setState(() => ({isLoading: true}));
-            const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-            const headers = {Accept: "application/json", Authorization: `Bearer ${access_token}`};
-            axios.get(getUserAPI, {headers})
+            this.setState(() => ({ isLoading: true }));
+            axios.get(getUserAPI, getAuthHeaders())
                 .then((response) => {
                     this.props.dispatch(loginUser());
                     this.props.history.push("/");
@@ -57,10 +55,9 @@ class RegistrationComponent extends React.Component{
     confirmPasswordChange = (e) => {
         const confirmPassword = e.target.value;
         const password = this.state.password;
-        if(password.length > 0 && password !== confirmPassword){
+        if (password.length > 0 && password !== confirmPassword) {
             this.setState(() => ({passwordValidation: true, confirmPassword}))
-        }
-        else{
+        } else {
             this.setState(() => ({passwordValidation: false, confirmPassword}))
         }
     };
@@ -68,11 +65,10 @@ class RegistrationComponent extends React.Component{
     handleFullNameChange = (e) => {
         const fullName = e.target.value;
         let fullNameValidation = null;
-        if(fullName.length > 0 && fullName.length < 45){
+        if (fullName.length > 0 && fullName.length < 45) {
             fullNameValidation = "success";
             this.setState(() => ({fullName, fullNameValidation}));
-        }
-        else{
+        } else {
             fullNameValidation = "error";
             this.setState(() => ({fullNameValidation}));
         }
@@ -86,11 +82,11 @@ class RegistrationComponent extends React.Component{
     onEmailChange = (e) => {
         const email = e.target.value;
         let emailValidation = "error";
-        if(RegistrationComponent.emailValidation(email.trim())){
+        if (RegistrationComponent.emailValidation(email.trim())) {
             emailValidation = "success";
         }
 
-        if(email.length <= 45){
+        if (email.length <= 45) {
             this.setState(() => ({email, emailValidation}));
         }
     };
@@ -115,9 +111,9 @@ class RegistrationComponent extends React.Component{
             });
     };
 
-    render(){
+    render() {
 
-        if(this.state.isLoading){
+        if (this.state.isLoading) {
             return <LoadingScreen/>
         }
 

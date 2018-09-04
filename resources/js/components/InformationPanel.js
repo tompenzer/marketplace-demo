@@ -1,6 +1,6 @@
 import React from 'react';
-import {Row, Col, Grid, Panel, Glyphicon} from 'react-bootstrap';
-import {Link} from "react-router-dom";
+import { Row, Col, Grid, Panel, Glyphicon } from 'react-bootstrap';
+import { Link } from "react-router-dom";
 
 const InformationPanel = (props) => (
     <Grid>

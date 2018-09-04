@@ -1,8 +1,7 @@
 import React from "react";
 import { Link, withRouter } from 'react-router-dom';
-import {Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon} from "react-bootstrap";
-import {image} from "./image";
-import {addToCart, removeFromCart} from "../actions/shoppingCart";
+import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
+import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -16,8 +15,8 @@ import axios from "../api/axiosInstance";
 import { storesApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import {addToWishlist, removeFromWishlist} from "../actions/wishlist";
-import {ADDED_TO_CART_SNACKBAR, ADDED_TO_WISHLIST_SNACKBAR} from "../api/strings";
+import { addToWishlist, removeFromWishlist } from "../actions/wishlist";
+import { ADDED_TO_CART_SNACKBAR, ADDED_TO_WISHLIST_SNACKBAR } from "../api/strings";
 
 class Stores extends React.Component {
 
@@ -96,7 +95,6 @@ class Stores extends React.Component {
     handleAddToWishlist = () => {
         const product = {
             productName: this.state.product.name,
-            productImage: this.state.product.image,
             sellerName: this.state.product.sellerName,
             quantity: this.state.quantity,
             price: this.state.product.price,

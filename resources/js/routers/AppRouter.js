@@ -1,10 +1,6 @@
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import HomePage from '../components/HomePage';
-import Category from '../components/CategoryBase';
-import SubCategory from '../components/SubCategory';
-import SearchResultsComponent from '../components/SearchResultsComponent';
 import ProductInfo from '../components/ProductInfo';
 import StoreInfo from '../components/StoreInfo';
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';

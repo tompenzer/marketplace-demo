@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, withRouter } from 'react-router-dom';
 import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
-import { image } from "./image";
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';

@@ -1,9 +1,9 @@
 import React from "react";
+import { Link, withRouter } from 'react-router-dom';
 import {Row, Col, Button, FormControl, Glyphicon, Tooltip, OverlayTrigger} from "react-bootstrap";
 import ProductInfo from "./ProductInfo";
 import { connect } from 'react-redux';
 import {editCart} from "../actions/shoppingCart";
-import { withRouter } from 'react-router-dom';
 
 const tooltip = (
     <Tooltip id="tooltip">
@@ -72,13 +72,10 @@ class CustomListGroupItemCart extends React.Component{
     render() {
         return (
             <li className="list-group-item">
-                <div className={"media-left cursor-pointer"} onClick={() => this.viewClickHandler(`/product/${this.props.productId}`)}>
-                    <img className="media-object" src={this.props.productImage} alt="..." width={64} height={64} />
-                </div>
                 <div className={"media-body"}>
                     <Row>
                         <Col lg={6} md={6} sm={12} xs={12}>
-                            <h4 className={"media-heading"}>{this.props.name}</h4>
+                            <h4 className={"media-heading"}><Link to={`/product/${this.props.productId}`}>{this.props.name}</Link></h4>
                             <div className={"seller-name-div"}>
                                 <span>{this.props.sellerName}</span>
                             </div>

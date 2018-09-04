@@ -1,5 +1,5 @@
 import React from "react";
-import {Grid, Col, Row, ListGroup, ListGroupItem} from "react-bootstrap";
+import { Grid, Col, Row, ListGroup, ListGroupItem } from "react-bootstrap";
 import LoadingOrderAnimation from 'react-loading-order-with-animation';
 
 const About = () => (

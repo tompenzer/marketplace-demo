@@ -1,9 +1,8 @@
 import React from "react";
-import {Button, Row, Col} from 'react-bootstrap';
+import { Button, Row, Col } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
-import {image} from "./image";
 import { connect } from 'react-redux';
-import {addToCart} from "../actions/shoppingCart";
+import { addToCart } from "../actions/shoppingCart";
 
 class CustomListGroupItemOrder extends React.Component{
 
@@ -12,7 +11,6 @@ class CustomListGroupItemOrder extends React.Component{
         // dispatching an action to redux store
         const product = {
             productName: this.props.children,
-            productImage: this.props.image,
             sellerName: this.props.sellerName,
             ratings: this.props.ratings ? this.props.ratings : undefined,
             quantity: 1,
@@ -29,9 +27,6 @@ class CustomListGroupItemOrder extends React.Component{
     render() {
         return (
             <li className="list-group-item" onClick={() => this.viewClickHandler(`/product/${this.props.productID}`)}>
-                <div className={"media-left"}>
-                    <img className="media-object" width={64} height={64} src={this.props.image ? this.props.image : image} alt="..." />
-                </div>
                 <div className={"media-body"}>
                     <Row>
                         <Col lg={7} md={7} sm={12} xs={12}>

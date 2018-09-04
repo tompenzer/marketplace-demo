@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navbar, Grid, Row, Table, Col } from 'react-bootstrap';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Footer = () => (
     <footer className={'footer'}>

@@ -1,7 +1,6 @@
 import React from "react";
-import {Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon} from "react-bootstrap";
-import {image} from "./image";
-import {addToCart, removeFromCart} from "../actions/shoppingCart";
+import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
+import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import axios, { getAuthHeaders } from "../api/axiosInstance";

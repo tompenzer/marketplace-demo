@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {withRouter} from "react-router-dom";
-import {logoutUser} from "../actions/authentication";
-import {ACCESS_TOKEN, REFRESH_TOKEN} from "../api/strings";
-import axios from "../api/axiosInstance";
-import {logoutAPI} from "../api/apiURLs";
+import { withRouter } from "react-router-dom";
+import { logoutUser } from "../actions/authentication";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../api/strings";
+import axios, { getAuthHeaders } from "../api/axiosInstance";
+import { logoutAPI } from "../api/apiURLs";
 
 class LogoutComponent extends React.Component{
 
@@ -14,12 +14,8 @@ class LogoutComponent extends React.Component{
 
     componentDidMount(){
         const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-        if(this.props.authentication.isAuthenticated && access_token !== null){
-            const headers = {
-                Accept: "application/json",
-                Authorization: `Bearer ${access_token}`
-            };
-            axios.post(logoutAPI, {}, {headers: {...headers}})
+        if (this.props.authentication.isAuthenticated && access_token !== null) {
+            axios.post(logoutAPI, {}, getAuthHeaders())
                 .then(() => {
                     window.localStorage.removeItem(ACCESS_TOKEN);
                     window.localStorage.removeItem(REFRESH_TOKEN);
@@ -31,8 +27,7 @@ class LogoutComponent extends React.Component{
                      this.setState(() => ({logoutMessage: "Something went wrong! Please try again."}))
                 });
 
-        }
-        else{
+        } else {
             this.props.history.push("/login");
         }
     }

@@ -35,38 +35,36 @@ export const addToCartApi = (cartUid) => (
 );
 
 export const removeFromCartApi = (cartUid, productID) => (
-    `api/cart/${cartUid}/item/${productID}`
+    `/api/cart/${cartUid}/item/${productID}`
 );
 
-export const loginAPI = "oauth/token";
+export const loginAPI = "/oauth/token";
 
 export const getUserAPI = "/api/user";
 
-export const logoutAPI = "api/logout";
+export const logoutAPI = "/api/logout";
 
-export const registerAPI = "api/register";
+export const registerAPI = "/api/register";
 
-export const addToWishlistAPI = "api/addtowishlist";
+export const addToWishlistAPI = "/api/addtowishlist";
 
 export const removeFromWishlistAPI = (productID) => (
-    `api/removefromwishlist/${productID}`
+    `/api/removefromwishlist/${productID}`
 );
 
-export const getUserWishlistAPI = "api/getuserwishlist";
+export const getUserWishlistAPI = "/api/getuserwishlist";
 
-export const wishlistToCartAPI = "api/wishlistcart";
+export const wishlistToCartAPI = "/api/wishlistcart";
 
-export const checkoutinformationAPI = "api/checkoutinformation";
+export const checkoutinformationAPI = "/api/checkoutinformation";
 
-export const placeOrderAPI = "api/placeorder";
+export const placeOrderAPI = "/api/placeorder";
 
-export const userordersAPI = "api/userorders";
+export const userordersAPI = "/api/userorders";
 
 export const orderDetailAPI = (order_id) => (
-    `api/order/${order_id}`
+    `/api/order/${order_id}`
 );
-
-export const validatePromoAPI = "api/validatepromo";
 
 export const contactAPI = "/api/contact";
 

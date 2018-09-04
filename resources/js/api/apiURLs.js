@@ -34,8 +34,24 @@ export const addToCartApi = (cartUid) => (
     `/api/cart/${cartUid}`
 );
 
-export const removeFromCartApi = (cartUid, productID) => (
-    `/api/cart/${cartUid}/item/${productID}`
+export const removeFromCartApi = (cartUid, productId) => (
+    `/api/cart/${cartUid}/item/${productId}`
+);
+
+export const userAddressApi = (userId) => (
+    `/api/user/${userId}/addresses`
+);
+
+export const userAddressInfoApi = (userId, addressId) => (
+    `/api/user/${userId}/address/${addressId}`
+);
+
+export const userAddressUpdateApi = (userId, addressId) => (
+    `/api/user/${userId}/address/${addressId}/update`
+);
+
+export const userAddressRemoveApi = (userId, addressId) => (
+    `/api/user/${userId}/address/${addressId}/delete`
 );
 
 export const loginAPI = "/oauth/token";

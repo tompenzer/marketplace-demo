@@ -596,7 +596,7 @@ class ProductAdd extends React.Component{
                             this.state.weightUnitValidation === s &&
                             this.state.priceValidation === s &&
                             this.state.currencyValidation === s &&
-                            <Button type={"submit"} bsStyle={"primary"}>{addOrEdit} product</Button>
+                            <Button type="submit" bsStyle="primary">{addOrEdit} product</Button>
                             }
                         </form>
                     </Col>

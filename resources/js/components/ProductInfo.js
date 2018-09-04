@@ -21,7 +21,7 @@ class ProductInfo extends React.Component {
       unitsDimension: {},
       unitsWeight: {},
       currencies: {},
-      quantity: '',
+      quantity: 1,
       productId: undefined,
       autoHideDuration: 3000,
       snackbarOpen:false,
@@ -112,14 +112,14 @@ class ProductInfo extends React.Component {
 
     onQuantityChange = (e) => {
         let quantity = e.target.value;
-        if(parseInt(quantity.length) < 3){
-            this.setState(() => ({quantity}));
+        if (quantity.length < 3){
+            this.setState(() => ({ quantity }));
         }
     };
 
     onQuantityBlur = () => {
         if(this.state.quantity.length === 0 || (this.state.quantity.length > 0 && parseInt(this.state.quantity) < 1)){
-            this.setState(() => ({quantity: 1}))
+            this.setState(() => ({ quantity: 1 }))
         }
     };
 
@@ -157,7 +157,7 @@ class ProductInfo extends React.Component {
         this.setState(() => ({ snackbarOpen: true, snackbarMessage: ADDED_TO_WISHLIST_SNACKBAR }));
     };
 
-    render(){
+    render() {
 
         if(this.state.isLoading){
             return <LoadingScreen/>

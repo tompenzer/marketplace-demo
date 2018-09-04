@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Address extends Model
+class Country extends Model
 {
     use SoftDeletes;
 
@@ -16,7 +16,7 @@ class Address extends Model
      *
      * @var array
      */
-    protected $table = 'addresses';
+    protected $table = 'countries';
 
     /**
      * The attributes that are mass assignable.
@@ -25,13 +25,19 @@ class Address extends Model
      */
     protected $fillable = [
         'name',
-        'recipient',
-        'street_1',
-        'street_2',
-        'city',
-        'state',
-        'postal_code',
-        'country_id',
-        'phone',
+        'abbreviation',
     ];
+
+    /**
+     * Scope a query to search.
+     */
+    public function scopeSearch(Builder $query, ?string $search)
+    {
+        if ($search) {
+            return $query->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('abbreviation', 'LIKE', "%{$search}%");
+        }
+
+        return $query;
+    }
 }

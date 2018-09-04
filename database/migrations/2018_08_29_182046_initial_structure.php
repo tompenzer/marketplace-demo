@@ -23,6 +23,7 @@ class InitialStructure extends Migration
             $table->string('state')->nullable();
             $table->string('postal_code');
             $table->integer('country_id')->unsigned();
+            $table->string('phone');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -8,7 +8,7 @@ class CustomListGroupItemCheckout extends React.Component{
 
     state = {
         quantity: this.props.quantity,
-        productID: this.props.productID,
+        productId: this.props.productId,
         showRemoveConfirmation: false
     };
 
@@ -24,7 +24,7 @@ class CustomListGroupItemCheckout extends React.Component{
         let updates = {
           quantity
         };
-        this.props.dispatch(editCart(this.state.productID, updates));
+        this.props.dispatch(editCart(this.state.productId, updates));
     };
 
     onQuantityChange = (e) => {
@@ -47,7 +47,7 @@ class CustomListGroupItemCheckout extends React.Component{
     };
 
     removeFromCart = () => {
-        ProductInfo.removeItemFromCart(this.state.productID, this.props);
+        ProductInfo.removeItemFromCart(this.state.productId, this.props);
     };
 
     render() {
@@ -59,10 +59,7 @@ class CustomListGroupItemCheckout extends React.Component{
                 <div className={"media-body"}>
                     <Row>
                         <Col lg={5} md={5} sm={12} xs={12}>
-                            <h4 className={"media-heading"}>{this.props.productName}</h4>
-                            <div className={"seller-name-div"}>
-                                <span>{this.props.sellerName}</span>
-                            </div>
+                            <h4 className={"media-heading"}>{this.props.name}</h4>
                             <div>
                                 <ButtonToolbar>
                                     <Button onClick={this.handleRemoveClick} bsStyle={"link"} className={"btn-sm"}>Remove</Button>

@@ -35,9 +35,7 @@ Route::post('placeorder', 'OrderController@place_order');
 Route::post('contact', 'ContactController@contact');
 
 Route::group(["middleware" => 'auth:api'], function () {
-    Route::get('user', ['as' => 'login', function (Request $request) {
-        return response()->json($request->user());
-    }]);
+    Route::get('user', 'UserController@showSelf')->name('login');
     // create/delete stores, get auth status
     Route::post('stores', 'StoreController@store');
     Route::put('stores/{store}/update', 'StoreController@update');
@@ -52,8 +50,12 @@ Route::group(["middleware" => 'auth:api'], function () {
     Route::post('addtowishlist', 'WishlistController@add_to_wishlist');
     Route::delete('removefromwishlist/{product_id}', 'WishlistController@remove_from_wishlist');
     Route::post('wishlistcart', 'WishlistController@wishlist_to_cart');
-    // checkout routes
-    Route::get('checkoutinformation', 'OrderController@get_checkout_user_information');
+    // address routes
+    Route::get('user/{user}/addresses', 'AddressController@indexUser');
+    Route::get('user/{user}/address/{address}', 'AddressController@showUser');
+    Route::post('user/{user}/addresses', 'AddressController@storeUser');
+    Route::put('user/{user}/address/{address}/update', 'AddressController@updateUser');
+    Route::put('user/{user}/address/{address}/delete', 'AddressController@destroyUser');
     // user order routes
     Route::get('userorders', 'OrderController@get_user_orders');
     Route::get('order/{order_id}', 'OrderController@order_detail');

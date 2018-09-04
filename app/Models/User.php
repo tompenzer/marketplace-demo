@@ -63,12 +63,11 @@ class User extends Authenticatable
     /**
      * Return the user's orders
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function orders(): BelongsToMany
+    public function orders(): HasMany
     {
-        return $this->belongsToMany(Order::class, 'user_orders', 'user_id', 'order_id')
-            ->withTimestamps();
+        return $this->hasMany(Order::class);
     }
 
     /**
@@ -130,5 +129,16 @@ class User extends Authenticatable
     public function isSiteAdmin(): bool
     {
         return $this->roles()->siteAdmin()->get()->isNotEmpty();
+    }
+
+    /**
+     * Whether the authenticated user has authorization to modify the user.
+     */
+    public function userHasAuth(): bool
+    {
+        return Auth::check() && (
+            Auth::user()->isSiteAdmin()
+            || $this->id === Auth::user()->id
+        );
     }
 }

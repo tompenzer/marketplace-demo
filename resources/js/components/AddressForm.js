@@ -7,11 +7,12 @@ const s = "success";
 export default class AddressForm extends React.Component {
 
     state = {
-        address1: '',
-        address2: '',
+        street1: '',
+        street2: '',
         city: '',
-        stateName: '',
+        state: '',
         zip: '',
+        country_id: '',
         phone: '',
         addressValidation: null,
         cityValidation: null,
@@ -21,40 +22,41 @@ export default class AddressForm extends React.Component {
     };
 
     componentDidMount(){
-        if(this.props.loadedAddress !== null){
-            const {address1, address2, city, state: stateName, zip, phone} = this.props.loadedAddress;
-            this.setState(() => ({
-                address1,
-                address2,
-                city,
-                stateName,
-                zip,
-                phone,
-                addressValidation: s,
-                cityValidation: s,
-                zipValidation: s,
-                phoneValidation: s,
-                editDisabled: true
-            }));
+        if (this.props.loadedAddresses !== null) {
+            this.props.loadedAddresses.map((address) => {
+                this.setState(() => ({
+                    street1: address.street_1,
+                    street2: address.street_2,
+                    city: address.city,
+                    state: address.state,
+                    zip: address.postal_code,
+                    phone: address.phone,
+                    addressValidation: s,
+                    cityValidation: s,
+                    zipValidation: s,
+                    phoneValidation: s,
+                    editDisabled: true
+                }));
+            });
         }
     }
 
     handleAddressOneChange = (e) => {
-        let address1 = e.target.value;
+        let street1 = e.target.value;
         let addressValidation = "success";
-        if(address1.trim().length === 0){
+        if(street1.trim().length === 0){
             addressValidation = "error";
         }
-        if(address1.length <= 45){
-            this.setState(() => ({address1, addressValidation}));
+        if(street1.length <= 45){
+            this.setState(() => ({street1, addressValidation}));
         }
 
     };
 
     handleAddressTwoChange = (e) => {
-        let address2 = e.target.value;
-        if(address2.length <= 45) {
-            this.setState(() => ({address2}));
+        let street2 = e.target.value;
+        if(street2.length <= 45) {
+            this.setState(() => ({street2}));
         }
     };
 
@@ -68,8 +70,8 @@ export default class AddressForm extends React.Component {
     };
 
     handleStateChange = (e) => {
-        let stateName = e.target.value;
-        this.setState(() => ({stateName}));
+        let state = e.target.value;
+        this.setState(() => ({state}));
     };
 
     handleZipChange = (e) => {
@@ -104,16 +106,15 @@ export default class AddressForm extends React.Component {
     };
 
     handleNextAddress = () => {
-        const {address1, address2, city, stateName : state, zip, phone} = this.state;
-        const address = {
-            address1,
-            address2,
+        const { street1, street2, city, state, zip, phone } = this.state;
+        this.props.handleNext({
+            street1,
+            street2,
             city,
             state,
             zip,
             phone
-        };
-        this.props.handleNext(address);
+        });
     };
 
 
@@ -128,7 +129,7 @@ export default class AddressForm extends React.Component {
                         <ControlLabel>Address</ControlLabel>
                         <FormControl
                             type="text"
-                            value={this.state.address1}
+                            value={this.state.street1}
                             placeholder="Address 1"
                             onChange={this.handleAddressOneChange}
                         />
@@ -140,7 +141,7 @@ export default class AddressForm extends React.Component {
                     >
                         <FormControl
                             type="text"
-                            value={this.state.address2}
+                            value={this.state.street2}
                             placeholder="Address 2"
                             onChange={this.handleAddressTwoChange}
                         />
@@ -168,7 +169,7 @@ export default class AddressForm extends React.Component {
                                 <ControlLabel>State</ControlLabel>
                                 <FormControl
                                     type="text"
-                                    value={this.state.stateName}
+                                    value={this.state.state}
                                     placeholder="State"
                                     onChange={this.handleStateChange}
                                 />
@@ -209,23 +210,25 @@ export default class AddressForm extends React.Component {
                 </fieldset>
                 <div style={{margin: '12px 0'}}>
                     <Button
-                        label="Back"
                         disableTouchRipple={true}
                         disableFocusRipple={true}
                         onClick={this.props.handlePrev}
-                    />
+                    >
+                        Back
+                    </Button>
                 {this.state.addressValidation === s &&
                 this.state.cityValidation === s &&
                 this.state.zipValidation === s &&
                 this.state.phoneValidation === s &&
                 <Button
-                    label={'Next'}
+                    className="margin-r-s"
                     disableTouchRipple={true}
                     disableFocusRipple={true}
-                    primary={true}
+                    primary="true"
                     onClick={this.handleNextAddress}
-                    style={{marginRight: 12}}
-                />
+                >
+                    Next
+                </Button>
                 }
                 </div>
             </form>

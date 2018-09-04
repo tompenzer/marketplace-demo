@@ -32,8 +32,6 @@ const jsx = (
     </Provider>
 );
 
-store.dispatch(getCart());
-
 // initial load, check if user is logged in
 axios.get(getUserAPI, getAuthHeaders())
     .then(() => {
@@ -44,6 +42,7 @@ axios.get(getUserAPI, getAuthHeaders())
         store.dispatch(logoutUser());
     });
 
+store.dispatch(getCart());
 
 const appRoot = document.getElementById('app');
 ReactDOM.render(jsx, appRoot);

@@ -14,7 +14,7 @@ class CheckoutItems extends React.Component{
                 <ListGroup className={"checkout-items-listgroup"}>
                     {
                         this.props.shoppingCart.map((item) => {
-                            return <CustomListGroupItem key={item.productID} {...item} />
+                            return <CustomListGroupItem key={item.productId} {...item} />
                         })
                     }
                 </ListGroup>

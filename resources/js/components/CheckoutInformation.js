@@ -1,20 +1,18 @@
 import React from "react";
-import {
-    Step,
-    Stepper,
-    StepLabel,
-    StepContent,
-} from '@material-ui/core/Stepper';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import StepContent from '@material-ui/core/StepContent';
 import MaterialButton from '@material-ui/core/Button';
-import {Row, Col, FormGroup, ControlLabel, FormControl, Radio, Form, Button} from "react-bootstrap";
+import { Row, Col, FormGroup, ControlLabel, FormControl, Radio, Form, Button } from "react-bootstrap";
 import AddressForm from "./AddressForm";
-import {withRouter} from "react-router-dom";
-import axios, {getHeaders} from "../api/axiosInstance";
-import {ACCESS_TOKEN, SUCCESSFUL_ORDER} from "../api/strings";
-import {checkoutinformationAPI, placeOrderAPI, validatePromoAPI} from "../api/apiURLs";
-import {connect} from "react-redux";
+import { withRouter } from "react-router-dom";
+import axios, { getAuthHeaders } from "../api/axiosInstance";
+import { ACCESS_TOKEN, SUCCESSFUL_ORDER } from "../api/strings";
+import { getUserAPI, placeOrderAPI, validatePromoAPI } from "../api/apiURLs";
+import { connect } from "react-redux";
 import LoadingScreen from "../components/LoadingScreen";
-import {totalReducer} from "./ShoppingCart";
+import { totalReducer } from "./ShoppingCart";
 
 const FieldGroup = ({ id, label, validationState=null, ...props }) => (
         <FormGroup controlId={id} validationState={validationState}>
@@ -40,7 +38,7 @@ class CheckoutInformation extends React.Component {
         debitCardChecked: false,
         nameDisabled: false,
         emailDisabled: false,
-        loadedAddress: null,
+        loadedAddresses: [],
         isLoading: false,
         promoCodeError: undefined,
         promoCodeMessage: undefined,
@@ -48,45 +46,40 @@ class CheckoutInformation extends React.Component {
         promoCodeResponse: {}
     };
 
-    componentDidMount(){
-        // load the logged in user data
-        if(this.props.authentication.isAuthenticated) {
-            const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-            const headers = getHeaders(access_token);
-            axios.get(checkoutinformationAPI, {headers})
-                .then((response) => {
-                    const data = response.data;
-                    this.setState(() => ({
-                        loadedAddress: data,
-                        nameDisabled: true,
-                        emailDisabled: true,
-                        nameValidation: s,
-                        emailValidation: s,
-                        name: data.full_name,
-                        email: data.email
-                    }));
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-        }
+    componentDidMount() {
+        axios.get(getUserAPI, getAuthHeaders())
+            .then((response) => {
+                this.setState(() => ({
+                    loadedAddresses: response.data.addresses,
+                    nameDisabled: true,
+                    emailDisabled: true,
+                    nameValidation: s,
+                    emailValidation: s,
+                    name: response.data.name,
+                    email: response.data.email,
+                    stepIndex: 1
+                }));
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
     }
 
     handleNext = (address) => {
-        const {stepIndex} = this.state;
+        const { stepIndex } = this.state;
         this.setState({
             stepIndex: stepIndex + 1,
             finished: stepIndex >= 2,
         });
         if(stepIndex === 1){
-            this.setState(() => ({loadedAddress: address}));
+            this.setState(() => ({ loadedAddresses: address }));
         }
         else if(stepIndex >= 2){
             // process the order
-            this.setState(() => ({isLoading: true}));
+            this.setState(() => ({ isLoading: true }));
             const totalAmount = this.props.shoppingCart.reduce(totalReducer, 0);
             let headers = {};
-            if(this.props.authentication.isAuthenticated){
+            if (this.props.authentication.isAuthenticated) {
                 const access_token = window.localStorage.getItem(ACCESS_TOKEN);
                 headers = getHeaders(access_token);
             }
@@ -101,17 +94,17 @@ class CheckoutInformation extends React.Component {
             ));
             const paymentMethod = this.state.creditCardChecked ? 'Credit Card' : 'Debit Card';
 
-            const {name, email, promoCodeResponse} = this.state;
+            const { name, email, promoCodeResponse } = this.state;
             let promoCodeId = null;
             let amountDue = totalAmount;
-            if(typeof promoCodeResponse.promoCodeId !== 'undefined'){
+            if (typeof promoCodeResponse.promoCodeId !== 'undefined') {
                 promoCodeId = promoCodeResponse.promoCodeId;
                 const discount = parseFloat(promoCodeResponse.discount);
                 amountDue = parseFloat(totalAmount) - discount;
             }
 
             const data = {
-                ...this.state.loadedAddress,
+                ...this.state.loadedAddresses,
                 name,
                 email,
                 totalAmount,
@@ -143,10 +136,10 @@ class CheckoutInformation extends React.Component {
     onNameChange = (e) => {
         let name = e.target.value;
         let nameValidation = "success";
-        if(name.trim().length === 0){
+        if (name.trim().length === 0) {
             nameValidation = "error";
         }
-        if(name.length <= 45){
+        if (name.length <= 45) {
             this.setState(() => ({name, nameValidation}));
         }
     };
@@ -159,11 +152,11 @@ class CheckoutInformation extends React.Component {
     onEmailChange = (e) => {
         let email = e.target.value;
         let emailValidation = "error";
-        if(CheckoutInformation.emailValidation(email.trim())){
+        if (CheckoutInformation.emailValidation(email.trim())) {
             emailValidation = "success";
         }
 
-        if(email.length <= 45){
+        if (email.length <= 45) {
             this.setState(() => ({email, emailValidation}));
         }
     };
@@ -174,7 +167,7 @@ class CheckoutInformation extends React.Component {
     };
 
     handlePaymentChange = () => {
-      this.setState((prevState) => ({creditCardChecked: !prevState.creditCardChecked, debitCardChecked: !prevState.debitCardChecked}));
+      this.setState((prevState) => ({creditCardChecked: ! prevState.creditCardChecked, debitCardChecked: ! prevState.debitCardChecked}));
     };
 
     onPromoCodeFormSubmit = (e) => {
@@ -185,12 +178,10 @@ class CheckoutInformation extends React.Component {
         }
         else{
             // validate promo code
-            const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-            const headers = getHeaders(access_token);
             const data = {
                 promoCode
             };
-            axios.post(validatePromoAPI, data, {headers})
+            axios.post(validatePromoAPI, data, getAuthHeaders())
                 .then((response) => {
                     const response_data = response.data;
                     if(response_data.used_by.length > 0){
@@ -236,21 +227,23 @@ class CheckoutInformation extends React.Component {
         return (
             <div style={{margin: '12px 0'}}>
                 <MaterialButton
-                    label={stepIndex === 2 ? 'Finish' : 'Next'}
                     disableTouchRipple={true}
                     disableFocusRipple={true}
-                    primary={true}
+                    primary="true"
                     onClick={this.handleNext}
                     style={{marginRight: 12}}
-                />
+                >
+                    {stepIndex === 2 ? 'Finish' : 'Next'}
+                </MaterialButton>
                 {step > 0 && (
                     <MaterialButton
-                        label="Back"
                         disabled={stepIndex === 0}
                         disableTouchRipple={true}
                         disableFocusRipple={true}
                         onClick={this.handlePrev}
-                    />
+                    >
+                        Back
+                    </MaterialButton>
                 )}
             </div>
         );
@@ -314,7 +307,7 @@ class CheckoutInformation extends React.Component {
                             <Row>
                                 <Col lg={12} md={12}>
                                     <AddressForm
-                                        loadedAddress={this.state.loadedAddress}
+                                        loadedAddresses={this.state.loadedAddresses}
                                         handleNext={this.handleNext}
                                         handlePrev={this.handlePrev}
                                     />
@@ -335,23 +328,23 @@ class CheckoutInformation extends React.Component {
                                                     type="text"
                                                     placeholder="Promo Code"
                                                     max={45}
-                                                    name={"promo_code"}
-                                                    className={"fifty-width"}
+                                                    name="promo_code"
+                                                    className="fifty-width"
                                                     value={this.state.promoCode}
                                                     onChange={this.promoCodeChange}
                                                 />
                                                 {this.state.promoCodeError ?
-                                                    <p className={"error-message"}>
+                                                    <p className="error-message">
                                                         {this.state.promoCodeMessage}
                                                     </p> :
-                                                    <p className={"promo-successfully-applied"}>
+                                                    <p className="promo-successfully-applied">
                                                         {this.state.promoCodeMessage}
                                                     </p>
                                                 }
                                                 <Button
-                                                    bsStyle={"primary"}
-                                                    type={"submit"}
-                                                    className={"star-rating-div btn-sm"}
+                                                    type="submit"
+                                                    bsStyle="primary"
+                                                    className="star-rating-div btn-sm"
                                                 >
                                                     Apply
                                                 </Button>

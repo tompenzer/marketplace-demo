@@ -56,7 +56,7 @@ Route::group(["middleware" => 'auth:api'], function () {
     Route::put('user/{user}/address/{address}/delete', 'AddressController@destroyUser');
     // user order routes
     Route::get('orders', 'OrderController@index');
-    Route::get('order/{order_id}', 'OrderController@show');
+    Route::get('order/{order}', 'OrderController@show');
     Route::post('order/{cart_uid}', 'CartController@storeOrder');
     // validate promo code
     Route::post('validatepromo', 'OrderController@validate_promo_api');

@@ -52,6 +52,10 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
+        if (! $order->userHasAuth()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         // Add related data
         $order->setRelation('address', $order->address()->first());
         $order->setRelation('items', $order->items()->get());

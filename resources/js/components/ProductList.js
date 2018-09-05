@@ -38,10 +38,10 @@ const ProductList = (props) => (
                     return (
                         <TableRow key={item.id}>
                             <TableCell component="th" scope="row">
-                                <Link to={'product/' + item.id}>{item.name}</Link>
+                                <Link to={'/product/' + item.id}>{item.name}</Link>
                             </TableCell>
                             <TableCell>
-                                <Link to={'store/' + (props.store ? props.store.id : item.store.id)}>{(props.store ? props.store.name : item.store.name)}</Link>
+                                <Link to={'/store/' + (props.store ? props.store.id : item.store.id)}>{(props.store ? props.store.name : item.store.name)}</Link>
                             </TableCell>
                             <TableCell numeric>{item.price + ' ' + item.currency.abbreviation}</TableCell>
                             <TableCell numeric>{`${item.width} ${item.width_unit.abbreviation}, ${item.height} ${item.height_unit.abbreviation}, ${item.length} ${item.length_unit.abbreviation}`}</TableCell>
@@ -50,7 +50,7 @@ const ProductList = (props) => (
                                 <Button
                                     bsStyle={"primary"}
                                     className={"add-to-cart-product margin-b-s"}
-                                    onClick={() => props.handleAddToCart({ productId: item.id, name: item.name, quantity: 1, price: item.price, currency: props.currencies[item.currency_id] })}
+                                    onClick={() => props.handleAddToCart({ productId: item.id, name: item.name, quantity: 1, price: item.price, currency: item.currency.abbreviation })}
                                 >Add to Cart
                                 </Button>
                                 {props.userHasAuth &&

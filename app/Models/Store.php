@@ -37,7 +37,14 @@ class Store extends Model
      */
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class)
+            ->with(
+                'currency',
+                'widthUnit',
+                'heightUnit',
+                'lengthUnit',
+                'weightUnit'
+            );// Always send these relations with the product.
     }
 
     /**

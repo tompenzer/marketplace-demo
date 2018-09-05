@@ -45,9 +45,16 @@ class ProductController extends Controller
                 $products = $products->store($store_id);
             }
 
-            $products = $products->with('store')
-                 ->orderBy('name')
-                 ->paginate(20);
+            $products = $products->with(
+                'store',
+                'currency',
+                'widthUnit',
+                'heightUnit',
+                'lengthUnit',
+                'weightUnit'
+            )
+                ->orderBy('name')
+                ->paginate(20);
 
             Cache::tags(self::CACHE_TAG)->put($cache_name, $products, self::CACHE_DURATION_MINUTES);
         }

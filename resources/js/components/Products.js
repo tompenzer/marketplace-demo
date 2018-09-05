@@ -68,49 +68,12 @@ class Products extends React.Component {
         }
 
         this.loadProducts(query);
-
-        this.fillUnits();
-        this.fillCurrencies();
     }
 
     componentWillReceiveProps(nextProps){
         if(this.props.match.params.q !== nextProps.match.params.q){
             this.loadProducts(nextProps.match.params.q);
         }
-    }
-
-    fillUnits() {
-        // Make an object of unit abbreviations keyed to their IDs.
-        axios.get(unitsApi).then((response) => {
-            let unitsDimension = {},
-                unitsWeight = {};
-
-            for (let unit of response.data) {
-                switch (unit.type.name) {
-                    case 'dimension':
-                        unitsDimension[unit.id] = unit.abbreviation;
-                        break;
-                    case 'weight':
-                        unitsWeight[unit.id] = unit.abbreviation;
-                        break;
-                }
-            }
-
-            this.setState({ unitsDimension, unitsWeight });
-        });
-    }
-
-    fillCurrencies() {
-        // Make an object of currency abbreviations keyed to their IDs.
-        axios.get(currenciesApi).then((response) => {
-            let currencies = {};
-
-            for (let currency of response.data) {
-                currencies[currency.id] = currency.abbreviation;
-            }
-
-            this.setState({ currencies: currencies });
-        });
     }
 
     handleAddToCart = (product) => {
@@ -195,9 +158,6 @@ class Products extends React.Component {
                     <Col md={12} sm={12}>
                         <ProductList
                             products={this.state.products}
-                            currencies={this.state.currencies}
-                            unitsDimension={this.state.unitsDimension}
-                            unitsWeight={this.state.unitsWeight}
                             handleAddToCart={this.handleAddToCart}
                         />
                     </Col>

@@ -60,6 +60,46 @@ class Product extends Model
     }
 
     /**
+     * Return the user's orders
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function widthUnit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class, 'width_unit_id');
+    }
+
+    /**
+     * Return the user's orders
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function heightUnit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class, 'height_unit_id');
+    }
+
+    /**
+     * Return the user's orders
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function lengthUnit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class, 'length_unit_id');
+    }
+
+    /**
+     * Return the user's orders
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function weightUnit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class, 'weight_unit_id');
+    }
+
+    /**
      * Scope a query by store.
      *
      * @param string $store_id The store to which you would like to scope.

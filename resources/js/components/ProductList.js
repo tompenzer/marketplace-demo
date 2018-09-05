@@ -43,9 +43,9 @@ const ProductList = (props) => (
                             <TableCell>
                                 <Link to={'store/' + (props.store ? props.store.id : item.store.id)}>{(props.store ? props.store.name : item.store.name)}</Link>
                             </TableCell>
-                            <TableCell numeric>{item.price + ' ' + props.currencies[item.currency_id]}</TableCell>
-                            <TableCell numeric>{`${item.width} ${props.unitsDimension[item.width_unit_id]}, ${item.height} ${props.unitsDimension[item.height_unit_id]}, ${item.length} ${props.unitsDimension[item.length_unit_id]}`}</TableCell>
-                            <TableCell numeric>{item.weight + ' ' + props.unitsWeight[item.weight_unit_id]}</TableCell>
+                            <TableCell numeric>{item.price + ' ' + item.currency.abbreviation}</TableCell>
+                            <TableCell numeric>{`${item.width} ${item.width_unit.abbreviation}, ${item.height} ${item.height_unit.abbreviation}, ${item.length} ${item.length_unit.abbreviation}`}</TableCell>
+                            <TableCell numeric>{item.weight + ' ' + item.weight_unit.abbreviation}</TableCell>
                             <TableCell numeric>
                                 <Button
                                     bsStyle={"primary"}

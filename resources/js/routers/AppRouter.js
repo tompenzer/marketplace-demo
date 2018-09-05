@@ -40,9 +40,9 @@ const appRouter = () => (
                 <Route path="/login" exact={true} component={LoginComponent}/>
                 <Route path="/register" exact={true} component={RegistrationComponent}/>
                 <Route path="/logout" exact={true} component={LogoutComponent}/>
-                <Route path="/myaccount" exact={true} component={MyAccount}/>
-                <Route path="/myorders" exact={true} component={MyOrders}/>
-                <Route path="/order/:id" exact={true} component={OrderDetail} />
+                <Route path="/account" exact={true} component={MyAccount}/>
+                <Route path="/orders" exact={true} component={MyOrders}/>
+                <Route path="/order/:orderId" exact={true} component={OrderDetail} />
                 <Route path="/about" exact={true} component={About}/>
                 <Route component={NotFoundPage} />
             </Switch>

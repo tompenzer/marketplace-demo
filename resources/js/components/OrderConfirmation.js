@@ -11,8 +11,10 @@ const OrderConfirmation = (props) => (
             <Panel.Body>
                 <h4>Thank you for shopping with us.</h4>
                 {!props.isAuthenticated &&
-                <p>You will shortly receive an email with order details. Sign up with us for better experience.</p>}
-                <p>Browse more items to shop in your future</p>
+                <p>You will shortly receive an email with order details.</p>}
+                <p>We look forward to providing you with the best-in-class
+                    products you've come to expect here at Marketplace.
+                </p>
                 <div>
                     <Glyphicon glyph={"shopping-cart"} className={"empty-checkout-size"}/>
                 </div>

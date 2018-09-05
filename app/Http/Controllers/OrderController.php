@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\User;
 use Auth;
 use Cache;
@@ -39,6 +40,7 @@ class OrderController extends Controller
         } else {
             $orders = Order::userIs($user->id)
                 ->search($search)
+                ->with('items')
                 ->orderBy('id', 'desc')
                 ->paginate(20);
 

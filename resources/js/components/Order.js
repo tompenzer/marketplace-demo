@@ -9,25 +9,24 @@ import { withRouter } from "react-router-dom";
 
 class Order extends React.Component {
 
-    componentDidMount(){
-        if(this.props.location.state && this.props.location.state.order.toString() === SUCCESSFUL_ORDER){
-            this.props.dispatch(emptyCart());
-        }
-        else{
-            this.props.history.push("/checkout");
-        }
-    }
-
-    componentDidUpdate(){
-        if(this.props.location.state && this.props.shoppingCart.length > 0 && this.props.location.state.order === SUCCESSFUL_ORDER){
-            this.props.dispatch(emptyCart());
-        }
-        else if(!this.props.location.state){
-            this.props.history.push("/checkout");
+    componentDidMount() {
+        if (! this.props.location.state &&
+            this.props.location.state.order.toString() === SUCCESSFUL_ORDER
+        ) {
+            this.props.history.push("/orders");
         }
     }
 
-    render(){
+    componentDidUpdate() {
+        if (! this.props.location.state &&
+            this.props.shoppingCart.length > 0 &&
+            this.props.location.state.order === SUCCESSFUL_ORDER
+        ) {
+            this.props.history.push("/orders");
+        }
+    }
+
+    render() {
         return (
             <Grid className={"minimum-height"}>
                 <Row>

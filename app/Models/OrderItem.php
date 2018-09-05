@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class OrderItem extends Model
@@ -34,10 +35,21 @@ class OrderItem extends Model
     /**
      * Return the user's orders
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function product(): HasOne
+    public function order(): BelongsTo
     {
-        return $this->hasOne(Product::class);
+        return $this->belongsTo(Order::class, 'order_id');
+    }
+
+    /**
+     * Return the user's orders
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'product_id')
+            ->with('currency');// Fetch currency with an order item's product.
     }
 }

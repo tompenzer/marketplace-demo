@@ -72,7 +72,7 @@ export const getUserWishlistAPI = "/api/getuserwishlist";
 
 export const wishlistToCartAPI = "/api/wishlistcart";
 
-export const userordersAPI = "/api/userorders";
+export const userOrdersApi = "/api/orders";
 
 export const orderDetailAPI = (order_id) => (
     `/api/order/${order_id}`

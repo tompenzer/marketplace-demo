@@ -2,40 +2,31 @@ import React from "react";
 import { Button, Row, Col } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addToCart } from "../actions/shoppingCart";
 
 class CustomListGroupItemOrder extends React.Component{
-
-    addToCartOnClick = (e) => {
-        e.stopPropagation();
-        // dispatching an action to redux store
-        const product = {
-            productName: this.props.children,
-            sellerName: this.props.sellerName,
-            ratings: this.props.ratings ? this.props.ratings : undefined,
-            quantity: 1,
-            price: this.props.actualPrice,
-            productID: this.props.productID
-        };
-        this.props.dispatch(addToCart(product));
-    };
 
     viewClickHandler = (routeName) => {
         this.props.history.push(routeName);
     };
 
+    handleAddToCart = (e) => {
+        e.stopPropagation();
+
+        this.props.handleAddToCart();
+    }
+
     render() {
         return (
-            <li className="list-group-item" onClick={() => this.viewClickHandler(`/product/${this.props.productID}`)}>
+            <li className="list-group-item" onClick={() => this.viewClickHandler(`/product/${this.props.productId}`)}>
                 <div className={"media-body"}>
                     <Row>
                         <Col lg={7} md={7} sm={12} xs={12}>
                             <h4 className={"media-heading"}>{this.props.children}</h4>
                             <div className={"seller-name-div"}>
-                                <span>{this.props.sellerName}</span>
+                                <span>{this.props.productName}</span>
                             </div>
                             <div>
-                                <span className={"subcategory-deal-price"}>${this.props.currentPrice}</span>
+                                <span className={"subcategory-deal-price"}>${this.props.pricePaid}</span>
                             </div>
                         </Col>
 
@@ -49,7 +40,7 @@ class CustomListGroupItemOrder extends React.Component{
                             <div>
                               <span>
                                   <Button bsStyle={"default"} className={"btn-sm view-atc-button"} onClick={this.removeFromWishlistHandler}>View</Button>
-                                  <Button bsStyle={"primary"} className={"btn-sm view-atc-button"} onClick={this.addToCartOnClick}>Buy Again</Button>
+                                  <Button bsStyle={"primary"} className={"btn-sm view-atc-button"} onClick={this.handleAddToCart}>Buy Again</Button>
                               </span>
                             </div>
                         </Col>

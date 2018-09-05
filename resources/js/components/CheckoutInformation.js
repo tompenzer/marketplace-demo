@@ -13,7 +13,7 @@ import { getUserAPI, userCartTotalsApi, userOrderApi, countriesApi} from "../api
 import { connect } from "react-redux";
 import LoadingScreen from "../components/LoadingScreen";
 import { totalReducer } from "./ShoppingCart";
-import { cartUid } from "../actions/shoppingCart";
+import { cartUid, emptyCart } from "../actions/shoppingCart";
 
 const FieldGroup = ({ id, label, validationState=null, ...props }) => (
         <FormGroup controlId={id} validationState={validationState}>
@@ -67,7 +67,14 @@ class CheckoutInformation extends React.Component {
 
         axios.post(userOrderApi(cartUid), address, getAuthHeaders())
             .then((response) => {
-                this.props.history.push('/');
+                this.props.dispatch(emptyCart());
+                this.props.history.push({
+                    pathname: '/order',
+                    state: {
+                        order: SUCCESSFUL_ORDER,
+                        orderId: response.data.id
+                    }
+                });
             })
             .catch((error) => {
                 console.log(error.response);

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Order extends Model
 {
@@ -38,9 +39,10 @@ class Order extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function items(): HasMany
+    public function items()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class)
+            ->with('product');// Always fetch the product with the item info
     }
 
     /**
@@ -87,7 +89,7 @@ class Order extends Model
     *
     * @param integer $user_id The user to which you would like to scope.
     */
-    public function scopeUserIs(int $user_id): Builder
+    public function scopeUserIs(Builder $query, int $user_id): Builder
     {
         return $query->where('user_id', $user_id);
     }

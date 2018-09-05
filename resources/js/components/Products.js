@@ -116,7 +116,7 @@ class Products extends React.Component {
     handleAddToCart = (product) => {
         // dispatching an action to redux store
         this.props.dispatch(addToCart(product));
-        this.setState(() => ({snackbarOpen: true, snackbarMessage: ADDED_TO_CART_SNACKBAR}))
+        this.setState(() => ({snackbarOpen: true, snackbarMessage: ADDED_TO_CART_SNACKBAR}));
     };
 
     handleSnackbarRequestClose = () => {

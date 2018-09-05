@@ -12,7 +12,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
 import axios from "../api/axiosInstance";
-import { productsApi, unitsApi, currenciesApi } from "../api/apiURLs";
+import { productsApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
 import { addToWishlist, removeFromWishlist } from "../actions/wishlist";

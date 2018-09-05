@@ -5,7 +5,7 @@ import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import axios from "../api/axiosInstance";
-import { productInfoAPI, unitsApi, currenciesApi } from "../api/apiURLs";
+import { productInfoAPI } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
 import { addToWishlist, removeFromWishlist } from "../actions/wishlist";

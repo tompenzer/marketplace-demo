@@ -12,8 +12,8 @@ const Footer = () => (
                     <Table responsive className={'table-footer'}>
                         <tbody>
                             <tr>
-                                <td><Link to={"/myaccount"}>My Account</Link></td>
-                                <td><Link to={"/myorders"}>My Orders</Link></td>
+                                <td><Link to={"/account"}>My Account</Link></td>
+                                <td><Link to={"/orders"}>My Orders</Link></td>
                                 <td><Link to={"/about"}>About Project</Link></td>
                             </tr>
                         </tbody>

@@ -3,10 +3,9 @@ import {Grid, Col, Row, Panel, Glyphicon} from "react-bootstrap";
 import {connect} from "react-redux";
 import LoadingScreen from "../components/LoadingScreen";
 import {withRouter} from 'react-router-dom';
-import axios from '../api/axiosInstance';
+import axios, { getAuthHeaders } from '../api/axiosInstance';
 import {getUserAPI} from "../api/apiURLs";
 import {ACCESS_TOKEN} from "../api/strings";
-import WishList from "./WishList";
 import ScrollToTop from "react-scroll-up";
 
 class MyAccount extends React.Component{
@@ -17,21 +16,19 @@ class MyAccount extends React.Component{
 
     componentDidMount(){
         // load the data here
-        if(this.props.authentication.isAuthenticated){
+        if (this.props.authentication.isAuthenticated) {
             this.setState(() => ({isAuthenticated: true}));
-            const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-            const headers = {Accept: "application/json", Authorization: `Bearer ${access_token}`};
-            axios.get(getUserAPI, {headers})
+
+            axios.get(getUserAPI, getAuthHeaders())
                 .then((response) => {
                     const user = response.data;
-                    this.setState(() => ({user, isLoading: false}));
+                    this.setState(() => ({ user, isLoading: false }));
                 })
                 .catch((error) => {
                     console.log(error.response);
                     this.props.history.push("/");
                 })
-        }
-        else{
+        } else {
             this.props.history.push("/login");
         }
     }
@@ -77,12 +74,6 @@ class MyAccount extends React.Component{
                           </Panel>
                       </Col>
                   </Row>
-
-                  <Row>
-                      <Col lg={12} md={12}>
-                            <WishList/>
-                      </Col>
-                  </Row>
               </Grid>
           )
     }
@@ -95,4 +86,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(withRouter(MyAccount));
-

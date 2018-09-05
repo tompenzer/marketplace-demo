@@ -133,6 +133,9 @@ class CartController extends Controller
             'currency_id' => 1,// Currently only support USD orders.
         ]);
 
+        // Empty the cart cache upon order.
+        self::setCart($cart_uid, []);
+
         foreach ($cart_totals['cart'] as $item) {
             OrderItem::create([
                 'order_id' => $order->id,

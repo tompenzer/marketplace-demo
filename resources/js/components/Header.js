@@ -20,7 +20,13 @@ class Header extends React.Component{
         dropDownSelected: 'Products',
         searchBoxText: '',
         shoppingCartOpen: false,
-        menuItemMUI: [ 'Log In', 'Register' ],
+        menuItemMUI: [{
+            label: 'Log In',
+            path: '/login'
+        }, {
+            label: 'Register',
+            path: '/register'
+        }],
         open: false
     };
 
@@ -33,11 +39,29 @@ class Header extends React.Component{
     };
 
     changeMenuMUIOptionsAuthenticated = () => {
-        this.setState(() => ({ menuItemMUI: [ 'My account', 'My Orders', 'Divider', 'Log out' ] }));
+        this.setState({ menuItemMUI: [{
+                label: 'My account',
+                path: '/account'
+            }, {
+                label: 'My Orders',
+                path: '/orders'
+            },
+            'Divider', {
+                label: 'Log out',
+                path: '/logout'
+            }]
+        });
     };
 
     changeMenuMUIOptionsUnauthenticated = () => {
-        this.setState(() => ({menuItemMUI: ['Log In', 'Register']}));
+        this.setState({ menuItemMUI: [{
+                label: 'Log In',
+                path: '/login'
+            }, {
+                label: 'Register',
+                path: '/register'
+            }]
+        });
     };
 
     componentWillReceiveProps(nextProps){
@@ -76,9 +100,8 @@ class Header extends React.Component{
         this.props.history.push('/' + this.state.dropDownSelected.toLowerCase() + searchQuery);
     };
 
-    menuOptionsClick = (menuItemName) => {
+    menuOptionsClick = (url) => {
         this.setState(() => ({open: false}));
-        const url = "/".concat(menuItemName.split(" ").join("").toLowerCase());
         this.props.history.push(url);
     };
 
@@ -190,10 +213,10 @@ class Header extends React.Component{
                                     >
                                         <MenuList open={this.state.open}>
                                             {this.state.menuItemMUI.map((item, key) => {
-                                                if(item === "Divider"){
+                                                if (item === "Divider") {
                                                     return <Divider className={"menuDivider"} key={key}/>
                                                 }
-                                                return <MenuItemMUI key={key} onClick={() => this.menuOptionsClick(item)}>{item}</MenuItemMUI>
+                                                return <MenuItemMUI key={key} onClick={() => this.menuOptionsClick(item.path)}>{item.label}</MenuItemMUI>
                                             })}
                                         </MenuList>
                                     </Popover>

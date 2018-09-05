@@ -7,16 +7,22 @@ const s = "success";
 export default class AddressForm extends React.Component {
 
     state = {
-        street1: '',
-        street2: '',
+        id: null,
+        countries: {},
+        recipient: '',
+        street_1: '',
+        street_2: '',
         city: '',
         state: '',
-        zip: '',
-        country_id: '',
+        postal_code: '',
+        country_id: 1,
         phone: '',
+        recipientValidation: null,
         addressValidation: null,
         cityValidation: null,
-        zipValidation: null,
+        stateValidation: null,
+        postalCodeValidation: null,
+        countryValidation: s,
         phoneValidation: null,
         editDisabled: false
     };
@@ -24,95 +30,119 @@ export default class AddressForm extends React.Component {
     componentDidMount(){
         if (this.props.loadedAddresses !== null) {
             this.props.loadedAddresses.map((address) => {
-                this.setState(() => ({
-                    street1: address.street_1,
-                    street2: address.street_2,
-                    city: address.city,
-                    state: address.state,
-                    zip: address.postal_code,
-                    phone: address.phone,
+                // FormControl inputs don't like `null` values; scrub them.
+                Object.keys(address).forEach((key) => (address[key] === null) && delete address[key]);
+
+                this.setState({
+                    ...address,
+                    recipientValidation: s,
                     addressValidation: s,
                     cityValidation: s,
-                    zipValidation: s,
+                    stateValidation: s,
+                    postalCodeValidation: s,
+                    countryValidation: s,
                     phoneValidation: s,
-                    editDisabled: true
-                }));
+                    editDisabled: false
+                });
             });
+        }
+
+        if (this.props.countries !== null) {
+            this.setState({ countries: this.props.countries });
         }
     }
 
-    handleAddressOneChange = (e) => {
-        let street1 = e.target.value;
-        let addressValidation = "success";
-        if(street1.trim().length === 0){
-            addressValidation = "error";
+    // Setting id to null if we make any edits, so we add it to the user.
+    handleRecipientChange = (e) => {
+        let recipient = e.target.value.trim();
+
+        if (recipient.length > 0 && recipient.length <= 255) {
+            this.setState(() => ({ recipient, recipientValidation: s, id: null }));
+        } else {
+            this.setState(() => ({ recipientValidation: "error" }));
         }
-        if(street1.length <= 45){
-            this.setState(() => ({street1, addressValidation}));
+
+    };
+
+    handleAddressOneChange = (e) => {
+        let street_1 = e.target.value.trim();
+
+        if (street_1.length > 0 && street_1.length <= 255) {
+            this.setState(() => ({ street_1, addressValidation: s, id: null }));
+        } else {
+            this.setState(() => ({ addressValidation: "error" }));
         }
 
     };
 
     handleAddressTwoChange = (e) => {
-        let street2 = e.target.value;
-        if(street2.length <= 45) {
-            this.setState(() => ({street2}));
+        let street_2 = e.target.value.trim();
+        if (street_2.length <= 255) {
+            this.setState(() => ({ street_2, id: null }));
         }
     };
 
     handleCityChange = (e) => {
-        let city = e.target.value;
-        let cityValidation = "success";
-        if(city.trim().length === 0){
-            cityValidation = "error";
+        let city = e.target.value.trim();
+
+        if (city.length > 0 && city.length <= 255) {
+            this.setState(() => ({ city, cityValidation: s, id: null }));
+        } else {
+            this.setState(() => ({ cityValidation: "error" }));
         }
-        this.setState(() => ({city, cityValidation}));
     };
 
     handleStateChange = (e) => {
-        let state = e.target.value;
-        this.setState(() => ({state}));
+        let state = e.target.value.trim();
+
+        if (state.length > 0 && state.length <= 255) {
+            this.setState(() => ({ state, stateValidation: s, id: null }));
+        } else {
+            this.setState(() => ({ stateValidation: "error" }));
+        }
     };
 
-    handleZipChange = (e) => {
-        let zip = e.target.value;
-        let zipValidation = null;
-        if(zip.length < 5){
-            zipValidation = "error";
-        }
-        else{
-            zipValidation = "success"
-        }
+    handlePostalCodeChange = (e) => {
+        let postal_code = e.target.value.trim();
 
-        if(zip.length <= 5){
-            this.setState(() => ({zip, zipValidation}));
+        if (postal_code.length > 0 && postal_code.length <= 255) {
+            this.setState(() => ({ postal_code, postalCodeValidation: s, id: null }));
+        } else {
+            this.setState(() => ({ postalCodeValidation: "error" }));
         }
+    };
 
+    handleCountryChange = (e) => {
+        let country_id = e.target.value.trim();
+
+        if (this.state.countries[country_id]) {
+            this.setState(() => ({ country_id, countryValidation: s, id: null }));
+        } else {
+            this.setState(() => ({ countryValidation: "error" }));
+        }
     };
 
     handlePhoneChange = (e) => {
         let phone = e.target.value.trim();
-        let phoneValidation = null;
-        if(phone.length < 10){
-            phoneValidation = "error"
-        }
-        else{
-            phoneValidation = "success"
-        }
 
-        if(phone.length <= 10){
-            this.setState(() => ({phone, phoneValidation}));
+        if (phone.length > 0 && phone.length <= 255) {
+            this.setState(() => ({ phone, phoneValidation: s, id: null }));
+        } else {
+            this.setState(() => ({ phoneValidation: "error" }));
         }
     };
 
-    handleNextAddress = () => {
-        const { street1, street2, city, state, zip, phone } = this.state;
-        this.props.handleNext({
-            street1,
-            street2,
+    handleAddress = () => {
+        const { id, recipient, street_1, street_2, city, state, postal_code, country_id, phone } = this.state;
+        this.props.handleSubmit({
+            id,
+            recipient,
+            street_1,
+            street_2,
             city,
             state,
-            zip,
+            postal_code,
+            country_id,
             phone
         });
     };
@@ -120,16 +150,30 @@ export default class AddressForm extends React.Component {
 
     render(){
         return (
-            <form>
+            <form onSubmit={this.handleAddress}>
                 <fieldset disabled={this.state.editDisabled}>
+                    <FormGroup
+                        controlId="formBasicRecipient"
+                        validationState={this.state.recipientValidation}
+                    >
+                        <ControlLabel>Recipient</ControlLabel>
+                        <FormControl
+                            type="text"
+                            value={this.state.recipient}
+                            placeholder="Recipient"
+                            onChange={this.handleRecipientChange}
+                        />
+                        <FormControl.Feedback />
+                    </FormGroup>
+
                     <FormGroup
                         controlId="formBasicAddress"
                         validationState={this.state.addressValidation}
                     >
-                        <ControlLabel>Address</ControlLabel>
+                        <ControlLabel>Street Address</ControlLabel>
                         <FormControl
                             type="text"
-                            value={this.state.street1}
+                            value={this.state.street_1}
                             placeholder="Address 1"
                             onChange={this.handleAddressOneChange}
                         />
@@ -141,7 +185,7 @@ export default class AddressForm extends React.Component {
                     >
                         <FormControl
                             type="text"
-                            value={this.state.street2}
+                            value={this.state.street_2}
                             placeholder="Address 2"
                             onChange={this.handleAddressTwoChange}
                         />
@@ -162,9 +206,10 @@ export default class AddressForm extends React.Component {
                     </FormGroup>
 
                     <Row>
-                        <Col lg={6} md={6}>
+                        <Col lg={4} md={4} sm={12}>
                             <FormGroup
                                 controlId="formBasicState"
+                                validationState={this.state.stateValidation}
                             >
                                 <ControlLabel>State</ControlLabel>
                                 <FormControl
@@ -177,25 +222,41 @@ export default class AddressForm extends React.Component {
                             </FormGroup>
                         </Col>
 
-                        <Col lg={6} md={6}>
+                        <Col lg={4} md={4} sm={12}>
                             <FormGroup
-                                controlId="formBasicZip"
-                                validationState={this.state.zipValidation}
+                                controlId="formBasicPostalCode"
+                                validationState={this.state.postalCodeValidation}
                             >
-                                <ControlLabel>Zip</ControlLabel>
+                                <ControlLabel>Postal Code</ControlLabel>
                                 <FormControl
-                                    type="number"
-                                    value={this.state.zip}
-                                    placeholder="Zip"
-                                    onChange={this.handleZipChange}
+                                    type="text"
+                                    value={this.state.postal_code}
+                                    placeholder="Postal code"
+                                    onChange={this.handlePostalCodeChange}
                                 />
                                 <FormControl.Feedback />
                             </FormGroup>
                         </Col>
+
+                        <Col lg={4} md={4} sm={12}>
+                            <FormGroup
+                                controlId="formCountryId"
+                                validationState={this.state.countryValidation}
+                            >
+                                <ControlLabel>Country</ControlLabel>
+                                <FormControl
+                                    componentClass="select"
+                                    onChange={this.handleCountryChange}
+                                >
+                                    {Object.keys(this.state.countries).map((key) => (<option key={'country-' + key} value={key}>{this.state.countries[key]}</option>))}
+                                </FormControl>
+                            </FormGroup>
+                        </Col>
+
                     </Row>
 
                     <FormGroup
-                        controlId="formBasicZip"
+                        controlId="formBasicPhone"
                         validationState={this.state.phoneValidation}
                     >
                         <ControlLabel>Phone</ControlLabel>
@@ -208,29 +269,23 @@ export default class AddressForm extends React.Component {
                         <FormControl.Feedback />
                     </FormGroup>
                 </fieldset>
-                <div style={{margin: '12px 0'}}>
-                    <Button
-                        disableTouchRipple={true}
-                        disableFocusRipple={true}
-                        onClick={this.props.handlePrev}
-                    >
-                        Back
-                    </Button>
-                {this.state.addressValidation === s &&
+                {this.state.recipientValidation === s &&
+                this.state.addressValidation === s &&
                 this.state.cityValidation === s &&
-                this.state.zipValidation === s &&
+                this.state.stateValidation === s &&
+                this.state.postalCodeValidation === s &&
+                this.state.countryValidation === s &&
                 this.state.phoneValidation === s &&
                 <Button
+                    type="submit"
                     className="margin-r-s"
                     disableTouchRipple={true}
                     disableFocusRipple={true}
                     primary="true"
-                    onClick={this.handleNextAddress}
                 >
-                    Next
+                    Place Order
                 </Button>
                 }
-                </div>
             </form>
         )
     }

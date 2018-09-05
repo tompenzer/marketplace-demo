@@ -1,11 +1,11 @@
 import React from "react";
-import {Grid, Row, Col} from "react-bootstrap";
+import { Grid, Row, Col } from "react-bootstrap";
 import OrderList from "../components/OrderList";
 import OrderConfirmation from "./OrderConfirmation";
-import {connect} from "react-redux";
-import {emptyCart} from "../actions/shoppingCart";
-import {SUCCESSFUL_ORDER} from "../api/strings";
-import {withRouter} from "react-router-dom";
+import { connect } from "react-redux";
+import { emptyCart } from "../actions/shoppingCart";
+import { SUCCESSFUL_ORDER } from "../api/strings";
+import { withRouter } from "react-router-dom";
 
 class Order extends React.Component {
 

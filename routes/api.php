@@ -18,7 +18,9 @@ Route::get('cart/{cart_uid}', 'CartController@index');
 Route::post('cart/{cart_uid}', 'CartController@store');
 Route::put('cart/{cart_uid}/item/{product_id}', 'CartController@update');
 Route::delete('cart/{cart_uid}/item/{product_id}', 'CartController@destroy');
-
+Route::get('cart/{cart_uid}/totals', 'CartController@showCartTotals');
+Route::get('countries', 'CountryController@index');
+Route::get('countries/{country}', 'CountryController@show');
 Route::get('currencies', 'CurrencyController@index');
 Route::get('currencies/{currency}', 'CurrencyController@show');
 Route::get('products', 'ProductController@index');
@@ -27,12 +29,8 @@ Route::get('stores', 'StoreController@index');
 Route::get('stores/{store}', 'StoreController@show');
 Route::get('units', 'UnitController@index');
 Route::get('units/{unit}', 'UnitController@show');
-Route::get('/category/{subcategory}', 'CategoryController@subcategory_products');
 Route::post('register', 'Auth\RegisterController@register');
 Route::post('logout', 'AuthenticationController@logoutAPI');
-Route::post('placeorder', 'OrderController@place_order');
-//Route::get('testemail', 'OrderController@test_email');
-Route::post('contact', 'ContactController@contact');
 
 Route::group(["middleware" => 'auth:api'], function () {
     Route::get('user', 'UserController@showSelf')->name('login');
@@ -57,8 +55,9 @@ Route::group(["middleware" => 'auth:api'], function () {
     Route::put('user/{user}/address/{address}/update', 'AddressController@updateUser');
     Route::put('user/{user}/address/{address}/delete', 'AddressController@destroyUser');
     // user order routes
-    Route::get('userorders', 'OrderController@get_user_orders');
-    Route::get('order/{order_id}', 'OrderController@order_detail');
+    Route::get('orders', 'OrderController@index');
+    Route::get('order/{order_id}', 'OrderController@show');
+    Route::post('order/{cart_uid}', 'CartController@storeOrder');
     // validate promo code
     Route::post('validatepromo', 'OrderController@validate_promo_api');
 });

@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import CheckoutItems from "../components/CheckoutItems";
 import NoCheckoutItems from "../components/NoCheckoutItems";
 import CheckoutInformation from "../components/CheckoutInformation";
+import LoadingScreen from "../components/LoadingScreen";
 
 const Checkout = (props) => (
     <Grid className={"minimum-height"}>

@@ -22,14 +22,12 @@ class OrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'integer', 'exists:users,id'],
-            'address_id' => ['required', 'integer', 'exists:addresses,id'],
+            'address' => ['required', 'array'],
             'subtotal' => ['required', 'numeric'],
             'shipping' => ['required', 'numeric'],
             'taxes' => ['required', 'numeric'],
             'total' => ['required', 'numeric'],
             'currency_id' => ['required', 'integer', 'exists:currencies,id'],
-            'items' => ['required', 'array'],
         ];
     }
 }

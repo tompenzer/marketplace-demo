@@ -3,7 +3,13 @@ import axios from "../api/axiosInstance";
 import { ACCESS_TOKEN, CART_UID, ADD_TO_CART, EDIT_CART, EMPTY_CART, REMOVE_FROM_CART } from "../api/strings";
 import { addToCartApi, removeFromCartApi, userCartApi } from "../api/apiURLs";
 
-let cartUid = window.localStorage.getItem(CART_UID);
+export let cartUid = window.localStorage.getItem(CART_UID);
+
+if (! cartUid) {
+    cartUid = uuid();
+
+    window.localStorage.setItem(CART_UID, cartUid);
+}
 
 // ADD_TO_CART
 export const addToCartHelper = (
@@ -45,12 +51,6 @@ export const emptyCart = () => ({
 
 export const getCart = () => {
     return (dispatch, getState) => {
-        if (! cartUid) {
-            cartUid = uuid();
-
-            window.localStorage.setItem(CART_UID, cartUid);
-        }
-
         axios.get(userCartApi(cartUid))
             .then((response) => {
                 response.data.map((item) => {
@@ -71,26 +71,18 @@ export const getCart = () => {
 
 export const removeFromCart = ({ productId } = {}) => {
     return (dispatch, getState) => {
-        if (cartUid) {
-            axios.post(removeFromCartApi(cartUid, productId), { _method: 'delete' })
-                .then((response) => {
-                    dispatch(removeFromCartHelper(productId));
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                });
-        }
+        axios.post(removeFromCartApi(cartUid, productId), { _method: 'delete' })
+            .then((response) => {
+                dispatch(removeFromCartHelper(productId));
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
     }
 };
 
 export const addToCart = (product = {}) => {
     return (dispatch, getState) => {
-        if (! cartUid) {
-            cartUid = uuid();
-
-            window.localStorage.setItem(CART_UID, cartUid);
-        }
-
         // make an API call
         const { productId, name, quantity, price, currency } = product;
         const data = {

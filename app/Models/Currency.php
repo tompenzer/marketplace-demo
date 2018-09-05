@@ -40,4 +40,16 @@ class Currency extends Model
 
         return $query;
     }
+
+    /**
+     * Scope a query to a currency ISO code (i.e. 'USD' for US Dollar).
+     */
+    public function scopeCode(Builder $query, ?string $abbreviation)
+    {
+        if ($abbreviation) {
+            return $query->where('abbreviation', $abbreviation);
+        }
+
+        return $query;
+    }
 }

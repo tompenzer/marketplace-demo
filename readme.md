@@ -30,7 +30,8 @@ $ ./startup.sh
 ```
 
 Once the entire startup.sh process is complete, you will need to generate an
-OAuth client for password-based authentication by running the following command:
+OAuth client for password-based authentication by running the following command,
+hitting the 'enter' key when prompted for a client name:
 ```
 $ docker-compose run --rm marketplace-server php artisan passport:client --password
 ```

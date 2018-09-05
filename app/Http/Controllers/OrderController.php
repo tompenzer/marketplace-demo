@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreRequest;
 use App\Models\User;
 use Auth;
 use Cache;
@@ -15,16 +14,13 @@ class StoreController extends Controller
 
     const CACHE_DURATION_MINUTES = 30;
 
-    public function index(Request $request, User $user)
+    public function index(Request $request)
     {
-        if (! Auth::check() &&
-            (Auth::user()->isSiteAdmin()
-                || $user->id === Auth::user()->id
-            )
-        ) {
+        if (! Auth::check()) {
             abort(403, 'Unauthorized action.');
         }
 
+        $user = Auth::user();
         $page = 1;
         $search = null;
 
@@ -54,51 +50,6 @@ class StoreController extends Controller
 
     public function show(Order $order)
     {
-        // Add related data
-        $order->setRelation('address', $order->address()->first());
-        $order->setRelation('items', $order->items()->get());
-        $order->setRelation('user', $order->user()->first());
-
-        return response()->json($order);
-    }
-
-    public function store(OrderRequest $request)
-    {
-        if (! Auth::check()) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        // Now validate the order items
-        $items = $request->input('items');
-        $this->validate($items, [
-            'product_id' => ['required', 'integer', 'exists:products,id'],
-            'quantity'   => ['required', 'integer', 'min:1'],
-        ]);
-
-        $order = Order::create($request->only(
-            'user_id',
-            'address_id',
-            'subtotal',
-            'shipping',
-            'taxes',
-            'total',
-            'currency_id'
-        ));
-
-        foreach ($items as $item) {
-            $product = Product::find($item['product_id'])->first();
-
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $product->id,
-                'price' => $product->price,
-                'currency_id' => $product->currency_id,
-                'quantity' => $item['quantity'],
-            ]);
-        }
-
-        Cache::tags(self::CACHE_TAG)->flush();
-
         // Add related data
         $order->setRelation('address', $order->address()->first());
         $order->setRelation('items', $order->items()->get());

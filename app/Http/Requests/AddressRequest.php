@@ -22,10 +22,11 @@ class AddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'id' => ['nullable', 'exists:addresses,id'],
+            'name' => ['nullable', 'string', 'max:255'],
             'recipient' => ['required', 'string', 'max:255'],
             'street_1' => ['required', 'string', 'max:255'],
-            'street_2' => ['required', 'string', 'max:255'],
+            'street_2' => ['max:255'],
             'city' => ['required', 'string', 'max:255'],
             'state' => ['required', 'string', 'max:255'],
             'postal_code' => ['required', 'string', 'max:255'],

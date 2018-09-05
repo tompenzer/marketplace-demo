@@ -1,11 +1,3 @@
-export const modelAPI = (model) => (
-    `/api/${model}`
-);
-
-export const searchProductsAPI = (category, query) => (
-    `/api/search/${category}/${query}`
-);
-
 export const productInfoAPI = (productId) => (
     `/api/products/${productId}`
 );
@@ -38,6 +30,14 @@ export const removeFromCartApi = (cartUid, productId) => (
     `/api/cart/${cartUid}/item/${productId}`
 );
 
+export const userCartTotalsApi = (cartUid) => (
+    `/api/cart/${cartUid}/totals`
+);
+
+export const userOrderApi = (cartUid) => (
+    `/api/order/${cartUid}`
+);
+
 export const userAddressApi = (userId) => (
     `/api/user/${userId}/addresses`
 );
@@ -64,17 +64,13 @@ export const registerAPI = "/api/register";
 
 export const addToWishlistAPI = "/api/addtowishlist";
 
-export const removeFromWishlistAPI = (productID) => (
-    `/api/removefromwishlist/${productID}`
+export const removeFromWishlistAPI = (productId) => (
+    `/api/removefromwishlist/${productId}`
 );
 
 export const getUserWishlistAPI = "/api/getuserwishlist";
 
 export const wishlistToCartAPI = "/api/wishlistcart";
-
-export const checkoutinformationAPI = "/api/checkoutinformation";
-
-export const placeOrderAPI = "/api/placeorder";
 
 export const userordersAPI = "/api/userorders";
 
@@ -91,3 +87,5 @@ export const storesApi = '/api/stores';
 export const unitsApi = '/api/units';
 
 export const currenciesApi = '/api/currencies';
+
+export const countriesApi = '/api/countries';

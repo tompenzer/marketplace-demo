@@ -8,7 +8,7 @@ use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class StoreController extends Controller
+class OrderController extends Controller
 {
     const CACHE_TAG = 'orders';
 

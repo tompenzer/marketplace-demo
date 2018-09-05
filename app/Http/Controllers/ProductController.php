@@ -67,6 +67,10 @@ class ProductController extends Controller
         // Add store and currency related data.
         $product->setRelation('store', $product->store()->first());
         $product->setRelation('currency', $product->currency()->first());
+        $product->setRelation('width_unit', $product->widthUnit()->first());
+        $product->setRelation('height_unit', $product->heightUnit()->first());
+        $product->setRelation('length_unit', $product->lengthUnit()->first());
+        $product->setRelation('weight_unit', $product->weightUnit()->first());
 
         return response()->json($product);
     }

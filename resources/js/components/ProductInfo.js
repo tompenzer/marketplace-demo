@@ -16,11 +16,12 @@ class ProductInfo extends React.Component {
     state = {
       product: {
           store: {},
-          currency: {}
+          currency: {},
+          width_unit: {},
+          height_unit: {},
+          length_unit: {},
+          weight_unit: {}
       },
-      unitsDimension: {},
-      unitsWeight: {},
-      currencies: {},
       quantity: 1,
       productId: undefined,
       autoHideDuration: 3000,
@@ -56,43 +57,6 @@ class ProductInfo extends React.Component {
     componentDidMount() {
         // load the product details here
         this.loadProductDetails(this.props.match.params.id);
-
-        this.fillUnits();
-        this.fillCurrencies();
-    }
-
-    fillUnits() {
-        // Make an object of unit abbreviations keyed to their IDs.
-        axios.get(unitsApi).then((response) => {
-            let unitsDimension = {},
-                unitsWeight = {};
-
-            for (let unit of response.data) {
-                switch (unit.type.name) {
-                    case 'dimension':
-                        unitsDimension[unit.id] = unit.abbreviation;
-                        break;
-                    case 'weight':
-                        unitsWeight[unit.id] = unit.abbreviation;
-                        break;
-                }
-            }
-
-            this.setState({ unitsDimension, unitsWeight });
-        });
-    }
-
-    fillCurrencies() {
-        // Make an object of currency abbreviations keyed to their IDs.
-        axios.get(currenciesApi).then((response) => {
-            let currencies = {};
-
-            for (let currency of response.data) {
-                currencies[currency.id] = currency.abbreviation;
-            }
-
-            this.setState({ currencies: currencies });
-        });
     }
 
     addToCartOnClick = () => {
@@ -144,16 +108,13 @@ class ProductInfo extends React.Component {
     };
 
     handleAddToWishlist = () => {
-        const product = {
-            productName: this.state.product.name,
-            productImage: this.state.product.image,
-            sellerName: this.state.product.sellerName,
+        this.props.dispatch(addToWishlist({
+            productId: this.state.product.id,
+            name: this.state.product.name,
             quantity: this.state.quantity,
             price: this.state.product.price,
-            productId: this.state.productId,
-            prevPrice: this.state.product.originalPrice
-        };
-        this.props.dispatch(addToWishlist(product));
+            currency: this.state.product.currency.abbreviation
+        }));
         this.setState(() => ({ snackbarOpen: true, snackbarMessage: ADDED_TO_WISHLIST_SNACKBAR }));
     };
 
@@ -201,10 +162,10 @@ class ProductInfo extends React.Component {
                             <h4>Product specifications</h4>
 
                             <p>
-                                Width: {this.state.product.width} {this.state.unitsDimension[this.state.product.width_unit_id]}<br/>
-                                Height: {this.state.product.height} {this.state.unitsDimension[this.state.product.height_unit_id]}<br/>
-                                Length: {this.state.product.length} {this.state.unitsDimension[this.state.product.length_unit_id]}<br/>
-                                Weight: {this.state.product.weight} {this.state.unitsWeight[this.state.product.weight_unit_id]}
+                                Width: {this.state.product.width} {this.state.product.width_unit.abbreviation}<br/>
+                                Height: {this.state.product.height} {this.state.product.height_unit.abbreviation}<br/>
+                                Length: {this.state.product.length} {this.state.product.length_unit.abbreviation}<br/>
+                                Weight: {this.state.product.weight} {this.state.product.weight_unit.abbreviation}
                             </p>
                         </div>
                     </Col>

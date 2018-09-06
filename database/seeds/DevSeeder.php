@@ -3,10 +3,9 @@
 use App\Models\Role;
 use App\Models\RoleScope;
 use App\Models\User;
-use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 
-class UserSeeder extends Seeder
+class DevSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -42,8 +41,22 @@ class UserSeeder extends Seeder
                         ->first()->id
                 ]);
 
-                // Generate 10 products for each store.
-                factory(App\Models\Product::class, 10)->create(['store_id' => $store->id]);
+                // Generate 10 products for each store, with an order for each.
+                factory(App\Models\Product::class, 10)
+                    ->create(['store_id' => $store->id])
+                    ->each(function ($product) {
+                        factory(App\Models\Order::class, 1)
+                            ->create()
+                            ->each(function ($order) use ($product) {
+                                App\Models\OrderItem::create([
+                                    'order_id' => $order->id,
+                                    'product_id' => $product->id,
+                                    'quantity' => 1,
+                                    'price' => $product->price,
+                                    'currency_id' => $product->currency_id,
+                                ]);
+                            });
+                    });
             });
         });
     }

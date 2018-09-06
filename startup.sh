@@ -19,4 +19,6 @@ else
   docker-compose run --rm marketplace-server php artisan migrate --seed
 
   docker-compose run --rm marketplace-server php artisan passport:install
+
+  docker-compose run --rm marketplace-server ./vendor/bin/phpunit
 fi

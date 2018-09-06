@@ -87,6 +87,15 @@ Password: admin
 ```
 
 
+## Testing
+
+To run the testing suite, run the following command:
+```
+$ docker-compose run --rm marketplace-server ./vendor/bin/phpunit
+```
+These tests are run automatically at the end of the `startup.sh` script.
+
+
 ## Stopping the dev environment
 
 To have docker take down the server container, wipe the built docker images, and

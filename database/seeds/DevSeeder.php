@@ -33,31 +33,29 @@ class DevSeeder extends Seeder
         // and products.
         factory(User::class, 10)->create()->each(function ($user) {
             // We'll make one store per merchant user.
-            factory(App\Models\Store::class, 1)->create()->each(function ($store) use ($user) {
-                // Create pivot table relationship and assign store admin role.
-                $user->stores()->attach($store->id, [
-                    'role_id' => Role::name(Role::ROLE_ADMIN)
-                        ->roleScope(RoleScope::ROLE_SCOPE_STORE)
-                        ->first()->id
-                ]);
+            $store = factory(App\Models\Store::class)->create();
 
-                // Generate 10 products for each store, with an order for each.
-                factory(App\Models\Product::class, 10)
-                    ->create(['store_id' => $store->id])
-                    ->each(function ($product) {
-                        factory(App\Models\Order::class, 1)
-                            ->create()
-                            ->each(function ($order) use ($product) {
-                                App\Models\OrderItem::create([
-                                    'order_id' => $order->id,
-                                    'product_id' => $product->id,
-                                    'quantity' => 1,
-                                    'price' => $product->price,
-                                    'currency_id' => $product->currency_id,
-                                ]);
-                            });
-                    });
-            });
+            // Create pivot table relationship and assign store admin role.
+            $user->stores()->attach($store->id, [
+                'role_id' => Role::name(Role::ROLE_ADMIN)
+                    ->roleScope(RoleScope::ROLE_SCOPE_STORE)
+                    ->first()->id
+            ]);
+
+            // Generate 10 products for each store, with an order for each.
+            factory(App\Models\Product::class, 10)
+                ->create(['store_id' => $store->id])
+                ->each(function ($product) {
+                    $order = factory(App\Models\Order::class)->create();
+
+                    App\Models\OrderItem::create([
+                        'order_id' => $order->id,
+                        'product_id' => $product->id,
+                        'quantity' => 1,
+                        'price' => $product->price,
+                        'currency_id' => $product->currency_id,
+                    ]);
+                });
         });
     }
 }

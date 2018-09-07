@@ -29,8 +29,9 @@ class DevSeeder extends Seeder
             );
         }
 
-        // Use the generators to create 10 merchant users and associated stores
-        // and products.
+        // Generate 10 merchant users and associated stores with 10 products per
+        // store. Then generate an order for each of those products, each from a
+        // newly created consumer user.
         factory(User::class, 10)->create()->each(function ($user) {
             // We'll make one store per merchant user.
             $store = factory(App\Models\Store::class)->create();

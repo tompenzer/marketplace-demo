@@ -116,19 +116,19 @@ class InitialStructure extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('stores', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
-
         Schema::create('store_users', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('store_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->integer('role_id')->unsigned()->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('stores', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -184,15 +184,22 @@ class InitialStructure extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('addresses');
+        Schema::dropIfExists('countries');
         Schema::dropIfExists('currencies');
+        Schema::dropIfExists('order_items');
+        Schema::dropIfExists('orders');
         Schema::dropIfExists('password_resets');
         Schema::dropIfExists('products');
         Schema::dropIfExists('role_scopes');
         Schema::dropIfExists('roles');
-        Schema::dropIfExists('stores');
+        Schema::dropIfExists('store_addresses');
         Schema::dropIfExists('store_users');
+        Schema::dropIfExists('stores');
         Schema::dropIfExists('unit_types');
         Schema::dropIfExists('units');
+        Schema::dropIfExists('user_addresses');
+        Schema::dropIfExists('user_roles');
         Schema::dropIfExists('users');
     }
 }

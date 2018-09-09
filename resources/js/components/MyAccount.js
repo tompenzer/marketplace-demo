@@ -1,12 +1,11 @@
 import React from "react";
-import {Grid, Col, Row, Panel, Glyphicon} from "react-bootstrap";
-import {connect} from "react-redux";
-import LoadingScreen from "../components/LoadingScreen";
-import {withRouter} from 'react-router-dom';
+import { connect } from "react-redux";
+import { withRouter } from 'react-router-dom';
+import { Grid, Col, Row, Panel, Glyphicon } from "react-bootstrap";
 import axios, { getAuthHeaders } from '../api/axiosInstance';
-import {getUserAPI} from "../api/apiURLs";
-import {ACCESS_TOKEN} from "../api/strings";
+import { getUserAPI } from "../api/apiURLs";
 import ScrollToTop from "react-scroll-up";
+import LoadingScreen from "../components/LoadingScreen";
 
 class MyAccount extends React.Component{
     state = {
@@ -14,7 +13,7 @@ class MyAccount extends React.Component{
         user: {}
     };
 
-    componentDidMount(){
+    componentDidMount() {
         // load the data here
         if (this.props.authentication.isAuthenticated) {
             this.setState(() => ({isAuthenticated: true}));
@@ -33,13 +32,13 @@ class MyAccount extends React.Component{
         }
     }
 
-    render(){
-          if(this.state.isLoading){
+    render() {
+          if (this.state.isLoading) {
               return <LoadingScreen/>
           }
 
           return (
-              <Grid className={"minimum-height"}>
+              <Grid className={"page-min-height"}>
                   <ScrollToTop showUnder={110}>
                       <div className={"text-center"}>
                           <Glyphicon glyph={"arrow-up"}/>

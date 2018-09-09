@@ -214,7 +214,7 @@ class Header extends React.Component{
                                         <MenuList open={this.state.open}>
                                             {this.state.menuItemMUI.map((item, key) => {
                                                 if (item === "Divider") {
-                                                    return <Divider className={"menuDivider"} key={key}/>
+                                                    return <Divider key={key}/>
                                                 }
                                                 return <MenuItemMUI key={key} onClick={() => this.menuOptionsClick(item.path)}>{item.label}</MenuItemMUI>
                                             })}

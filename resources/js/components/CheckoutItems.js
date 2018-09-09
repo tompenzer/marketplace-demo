@@ -75,11 +75,11 @@ class CheckoutItems extends React.Component{
                 </div>
                 <Row className="text-right">
                     <Col lg={9} md={9}>
-                        <span className={"total-cart-label"}>Total:</span>
+                        <span className={"total-cart-label bold text-xl"}>Total:</span>
                     </Col>
 
                     <Col lg={3} md={3}>
-                        <span className={"total-cart-amount"}>${parseFloat(this.state.total).toFixed(2)}</span>
+                        <span className={"total-cart-amount bold text-xl"}>${parseFloat(this.state.total).toFixed(2)}</span>
                     </Col>
                 </Row>
             </div>

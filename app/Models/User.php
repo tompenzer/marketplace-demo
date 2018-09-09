@@ -93,13 +93,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Return the user's addresses
+     * Return the user's orders
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function authAcessToken(): HasMany
+    public function accessToken()
     {
-        return $this->hasMany('\App\OauthAccessToken');
+        return $this->hasMany(AccessToken::class);
     }
 
     /**

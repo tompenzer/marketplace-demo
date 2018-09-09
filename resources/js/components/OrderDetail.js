@@ -102,7 +102,7 @@ class OrderDetail extends React.Component{
                             </Col>
 
                             <Col lg={6} md={6}>
-                                <p><span className={"order-panel-headings bold-text one-em-font"}>Order Identification: </span><span className={"order-panel-attributes one-em-font"}>EKDJFQYU{this.props.match.params.id}</span></p>
+                                <p><span className={"order-panel-headings bold"}>Order Identification: </span><span className={"order-panel-attributes"}>EKDJFQYU{this.props.match.params.id}</span></p>
                             </Col>
                         </Row>
                     </Col>
@@ -116,37 +116,37 @@ class OrderDetail extends React.Component{
                             <Panel.Body>
                                 <Row>
                                     <Col lg={2} md={2}>
-                                        <span className={"order-panel-headings one-em-font bold-text"}>Order Date: </span>
+                                        <span className={"order-panel-headings bold"}>Order Date: </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span className={"order-panel-attributes one-em-font"}>{orderDetail.created_at.split(" ")[0]}</span>
+                                        <span className={"order-panel-attributes"}>{orderDetail.created_at.split(" ")[0]}</span>
                                     </Col>
 
                                     <Col lg={2} md={2}>
-                                        <span className={"order-panel-headings one-em-font bold-text"}>Order Time: </span>
+                                        <span className={"order-panel-headings bold"}>Order Time: </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span className={"order-panel-attributes one-em-font"}>{orderDetail.created_at.split(" ")[1]} EST</span>
+                                        <span className={"order-panel-attributes"}>{orderDetail.created_at.split(" ")[1]} EST</span>
                                     </Col>
                                 </Row>
 
                                 <Row>
                                     <Col lg={2} md={2}>
-                                        <span className={"order-panel-headings one-em-font bold-text"}>Total Amount: </span>
+                                        <span className={"order-panel-headings bold"}>Total Amount: </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span className={"order-panel-attributes one-em-font"}>${parseFloat(orderDetail.total).toFixed(2)}</span>
+                                        <span className={"order-panel-attributes"}>${parseFloat(orderDetail.total).toFixed(2)}</span>
                                     </Col>
 
                                     <Col lg={2} md={2}>
-                                        <span className={"order-panel-headings one-em-font bold-text"}>Total items: </span>
+                                        <span className={"order-panel-headings bold"}>Total items: </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span className={"order-panel-attributes one-em-font"}>{orderDetail.items.length}</span>
+                                        <span className={"order-panel-attributes"}>{orderDetail.items.length}</span>
                                     </Col>
                                 </Row>
                             </Panel.Body>

@@ -34,10 +34,8 @@ class CustomListGroupItemProduct extends React.Component{
                 <div className={"media-body"}>
                     <Row>
                         <Col lg={9} md={9} sm={12} xs={12}>
-                            <h4 className={"media-heading"}>{this.props.children}</h4>
-                            <div className={"seller-name-div"}>
-                                <span>{this.props.sellerName}</span>
-                            </div>
+                            <h4 className="media-heading">{this.props.children}</h4>
+                            <div className="margin-b-s">{this.props.sellerName}</div>
                             <div>
                                 {this.props.prevPrice && <span className={"subcategory-deal-price-st"}>${this.props.prevPrice} </span>}
                                 <span className={"subcategory-deal-price"}>${this.props.currentPrice}</span>
@@ -47,8 +45,8 @@ class CustomListGroupItemProduct extends React.Component{
                         <Col md={3} lg={3} sm={12} xs={12}>
                             <div>
                               <span>
-                                  <Button bsStyle={"default"} className={"btn-sm view-atc-button"} onClick={() => this.viewClickHandler(`/product/${this.props.productID}`)}>View</Button>
-                                  <Button bsStyle={"primary"} className={"btn-sm view-atc-button"} onClick={this.addToCartOnClick}>Add to Cart</Button>
+                                  <Button bsStyle={"default"} className={"btn-sm btn-block margin-b-s"} onClick={() => this.viewClickHandler(`/product/${this.props.productID}`)}>View</Button>
+                                  <Button bsStyle={"primary"} className={"btn-sm btn-block"} onClick={this.addToCartOnClick}>Add to Cart</Button>
                               </span>
                             </div>
                         </Col>

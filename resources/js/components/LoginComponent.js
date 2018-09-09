@@ -78,7 +78,7 @@ class LoginComponent extends React.Component{
         }
 
         return (
-            <Grid className={"minimum-height"}>
+            <Grid className={"page-min-height"}>
                 <Row>
                     <Col mdOffset={2} lgOffset={2} lg={7} md={7}>
                         <h3 className={"text-center"}>Login</h3>

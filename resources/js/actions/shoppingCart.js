@@ -1,7 +1,7 @@
 import uuid from 'uuid';
 import axios from "../api/axiosInstance";
 import { ACCESS_TOKEN, CART_UID, ADD_TO_CART, EDIT_CART, EMPTY_CART, REMOVE_FROM_CART } from "../api/strings";
-import { addToCartApi, removeFromCartApi, userCartApi } from "../api/apiURLs";
+import { addToCartApi, editCartApi, removeFromCartApi, userCartApi } from "../api/apiURLs";
 
 export let cartUid = window.localStorage.getItem(CART_UID);
 
@@ -38,7 +38,7 @@ const removeFromCartHelper = (productId) => ({
 });
 
 // EDIT_CART
-export const editCart = (productId, updates) => ({
+export const editCartHelper = (productId, updates) => ({
     type: EDIT_CART,
     productId,
     updates
@@ -96,6 +96,23 @@ export const addToCart = (product = {}) => {
         axios.post(addToCartApi(cartUid), data)
             .then((response) => {
                 dispatch(addToCartHelper(product));
+            })
+            .catch((error) => {
+                console.log(error.response);
+            });
+    }
+};
+
+export const editCart = (productId, update = {}) => {
+    return (dispatch, getState) => {
+        const data = {
+            ...update,
+            _method: 'put'
+        }
+
+        axios.post(editCartApi(cartUid, productId), data)
+            .then((response) => {
+                dispatch(editCartHelper(productId, update));
             })
             .catch((error) => {
                 console.log(error.response);

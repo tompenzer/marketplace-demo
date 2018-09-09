@@ -5,6 +5,14 @@ import ProductInfo from "./ProductInfo";
 import { connect } from 'react-redux';
 import { editCart } from "../actions/shoppingCart";
 
+const listItemStyle = {
+    borderColor: 'rgba(0, 0, 0, 0.1)'
+}
+
+const quantityFieldStyle = {
+    width: '45px'
+}
+
 class CustomListGroupItemCheckout extends React.Component{
 
     state = {
@@ -53,7 +61,7 @@ class CustomListGroupItemCheckout extends React.Component{
 
     render() {
         return (
-            <li className="list-group-item">
+            <li style={listItemStyle} className="list-group-item">
                 <div className={"media-body"}>
                     <Row>
                         <Col lg={5} md={5} sm={12} xs={12}>
@@ -71,7 +79,12 @@ class CustomListGroupItemCheckout extends React.Component{
                                     >
                                         <Popover id="popover-contained" title="Are you sure?">
                                             <span>
-                                                <Button className={"btn-sm"} bsStyle={"danger"} onClick={this.removeFromCart}>Yes</Button>
+                                                Remove item from your cart?
+
+                                                <br />
+                                                <br />
+
+                                                <Button className={"btn-sm"} bsStyle={"danger"} onClick={this.removeFromCart}>Remove</Button>
                                                 <Button className={"btn-sm"} bsStyle={"link"} onClick={this.handleConfirmationCancel}>Cancel</Button>
                                             </span>
                                         </Popover>
@@ -81,15 +94,16 @@ class CustomListGroupItemCheckout extends React.Component{
                         </Col>
 
                         <Col lg={4} md={4} sm={12} xs={12} className="text-right">
-                            <div className={"star-rating-div"}>
+                            <div className={"checkout-quantity-div"}>
                                 <span>Quantity: </span>
                                 <span>
                                     <FormControl
                                         type="number"
-                                        className={"checkout-quantity"}
+                                        className="d-inline"
                                         value={this.state.quantity}
                                         onChange={this.onQuantityChange}
                                         onBlur={this.onQuantityBlur}
+                                        style={quantityFieldStyle}
                                     />
                                 </span>
                             </div>

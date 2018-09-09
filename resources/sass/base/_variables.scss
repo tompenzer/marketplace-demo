@@ -1,8 +1,13 @@
 // -----------------------------------------------------------------------------
 // Colors
 // -----------------------------------------------------------------------------
-$white:         #fff;
-$black:         #000;
+$white:      #fff;
+$black:      #000;
+$off-white:  #e0e0e0;
+$off-black:  #333;
+$blue:       #3c4251;
+$blue-light: #464b5e;
+$blue-dark:  #333745;
 
 $darken5:       rgba(0, 0, 0, 0.05);
 $darken8:       rgba(0, 0, 0, 0.08);
@@ -49,6 +54,23 @@ $spacings: (
     '3xl': $spacing-3xl,
 );
 
+$text-size-2xs: 0.4em;
+$text-size-xs: 0.6em;
+$text-size-s: 0.8em;
+$text-size-l: 1.15em;
+$text-size-xl: 1.3em;
+$text-size-2xl: 1.6em;
+
+$text-sizes: (
+	'2xs': $text-size-2xs,
+	'xs': $text-size-xs,
+	's': $text-size-s,
+	'l': $text-size-l,
+	'xl': $text-size-xl,
+	'2xl': $text-size-2xl,
+);
+
+
 // -----------------------------------------------------------------------------
 // Sides
 // -----------------------------------------------------------------------------
@@ -58,3 +80,40 @@ $sides: (
 	'r': 'right',
 	't': 'top'
 );
+
+
+// -----------------------------------------------------------------------------
+// Export variables to JS
+// -----------------------------------------------------------------------------
+:export {
+    white: $white;
+    black: $black;
+    offWhite: $off-white;
+    offBlack: $off-black;
+    blue: $blue;
+    lightBlue: $blue-light;
+    darkBlue: $blue-dark;
+    darken5: $darken5;
+    darken8: $darken8;
+    darken10: $darken10;
+    darken15: $darken15;
+    darken20: $darken20;
+    darken30: $darken30;
+    darken50: $darken50;
+    fontFamilyBase: $font-family-base;
+    remPixels: $rem-pixels;
+    spacing2xs: $spacing-2xs;
+    spacingXs: $spacing-xs;
+    spacingS: $spacing-s;
+    spacingM: $spacing-m;
+    spacingL: $spacing-l;
+    spacingXl: $spacing-xl;
+    spacing2xl: $spacing-2xl;
+    spacing3xl: $spacing-3xl;
+    textSize2xs: $text-size-2xs;
+    textSizeXs: $text-size-xs;
+    textSizeS: $text-size-s;
+    textSizeL: $text-size-l;
+    textSizeXl: $text-size-xl;
+    textSize2xl: $text-size-2xl;
+}

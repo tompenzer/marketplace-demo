@@ -28,7 +28,7 @@ class Order extends React.Component {
 
     render() {
         return (
-            <Grid className={"minimum-height"}>
+            <Grid className="page-min-height">
                 <Row>
                     <Col lg={12} md={12}>
                         <OrderConfirmation isAuthenticated={this.props.authentication.isAuthenticated}/>

@@ -7,11 +7,11 @@ use Auth;
 
 class AuthenticationController extends Controller
 {
-    //
-    public function logoutAPI()
+    // Wipe access token(s) for the authenticated user.
+    public function logoutApi()
     {
         if (Auth::check()) {
-            Auth::user()->AauthAcessToken()->delete();
+            Auth::user()->accessToken()->delete();
         }
 
         return response("logged out", 200);

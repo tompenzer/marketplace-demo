@@ -4,22 +4,69 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Cache;
-use App\Http\Requests\CartRequest;
 use App\Http\Requests\AddressRequest;
+use App\Http\Requests\CartRequest;
+use App\Http\Requests\CartUpdateRequest;
 use App\Models\Address;
 use App\Models\Country;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\User;
+use App\Rules\AddressRule;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+/**
+ * The cart entity is stored purely in the Redis cache, and has no model or DB
+ * representation. Each user's cart is keyed to a UID generated on the client,
+ * stored in the client's local storage. The server-side cart has a 60-minute
+ * cache duration, refreshed each time the cart is requested from the back-end,
+ * or posted to. Upon checkout, the cart is emptied.
+ */
 class CartController extends Controller
 {
     const CACHE_TAG = 'carts';
 
     const CACHE_DURATION_MINUTES = 60;
+
+    /**
+     * Primary get interface for the user's shopping cart. Note that the cache
+     * expiration is refreshed upon each get.
+     *
+     * @param  string $cart_uid A client-side generated UUID identifying the
+     * device.
+     * @return array            An array of cart items.
+     */
+    private function getCart($cart_uid)
+    {
+        $cart = [];
+
+        if (Cache::tags(self::CACHE_TAG)->has($cart_uid)) {
+            $cart = Cache::tags(self::CACHE_TAG)->get($cart_uid);
+        }
+
+        // Refresh the expiration upon fetch.
+        return self::setCart($cart_uid, $cart);// Ensure it converts to a JSON array, not object.
+    }
+
+    /**
+     * Primary set interface for the user's shopping cart.
+     *
+     * @param  string $cart_uid A client-side generated UUID identifying the
+     * device.
+     * @return array            An array of cart items.
+     */
+    private function setCart($cart_uid, $cart)
+    {
+        // Ensure it converts to a JSON array, not object.
+        $cart = array_values($cart);
+
+        Cache::tags(self::CACHE_TAG)->put($cart_uid, $cart, self::CACHE_DURATION_MINUTES);
+
+        return $cart;
+    }
 
     public function index($cart_uid)
     {
@@ -29,37 +76,56 @@ class CartController extends Controller
     public function store(CartRequest $request, $cart_uid)
     {
         $cart = self::getCart($cart_uid);
-
         $new_item = $request->validated();
+        $item_present = false;
 
-        // If item is already in cart, remove it.
+        // If item is already in cart, update it.
         foreach ($cart as $i => $item) {
             if ($item['product_id'] === $new_item['product_id']) {
-                unset($cart[$i]);
+                $cart[$i] = $new_item;
+                $item_present = true;
             }
         }
 
-        $cart[] = $new_item;
+        // Else append it.
+        if (! $item_present) {
+            $cart[] = $new_item;
+        }
 
-        self::setCart($cart_uid, $cart);
+        return response()->json(self::setCart($cart_uid, $cart));
+    }
 
-        return response()->json($cart);
+    public function update(CartUpdateRequest $request, $cart_uid, $product_id)
+    {
+        $cart = self::getCart($cart_uid);
+        $update = $request->validated();
+
+        // If item is already in cart, update it.
+        foreach ($cart as $i => $item) {
+            if ($item['product_id'] == $product_id) {
+                $cart[$i] = array_merge($item, $update);
+            }
+        }
+
+        return response()->json(self::setCart($cart_uid, $cart));
     }
 
     public function destroy($cart_uid, $product_id)
     {
+        if ((integer) $product_id != $product_id) {
+            abort(401, 'A product ID must be provided.');
+        }
+
         $cart = self::getCart($cart_uid);
 
         // If item is already in cart, remove it.
         foreach ($cart as $i => $item) {
-            if ($product_id && $item['product_id'] == $product_id) {
+            if ($item['product_id'] == $product_id) {
                 unset($cart[$i]);
             }
         }
 
-        self::setCart($cart_uid, $cart);
-
-        return response()->json($cart);
+        return response()->json(self::setCart($cart_uid, $cart));
     }
 
     /**
@@ -89,37 +155,7 @@ class CartController extends Controller
 
         $user = Auth::user();
 
-        // Now validate the address
-        $address_input = $request->validated();
-        $address_string = self::addressArrayToString($address_input);
-        $address_lookup = '';
-        $address_id = null;
-
-        // If we were given an address ID, look it up and convert it to an
-        // address string.
-        if (isset($address_input['id'])) {
-            $address_lookup = self::addressArrayToString(Address::find($address_input['id'])->first()->toArray());
-        }
-
-        // If we already have the specified address unmodified, use it for the
-        // order; else, create a new Address entry for the user.
-        if (isset($address_input['id']) &&
-            $address_string === $address_lookup
-        ) {
-            $address_id = $address_input['id'];
-        } else {
-            if (! self::checkAddress($address_string)) {
-                abort(401, 'We were unable to verify the provided address.');
-            }
-
-            if (! isset($address_input['name'])) {
-                $address_input['name'] = 'Latest order address';
-            }
-
-            $address_id = Address::create($address_input)->id;
-
-            $user->addresses()->attach($address_id);
-        }
+        $address_id = self::addressIdFirstOrCreate($request, $user);
 
         $cart_totals = self::getCartTotals($cart_uid);
 
@@ -147,6 +183,57 @@ class CartController extends Controller
         }
 
         return response()->json($order);
+    }
+
+    // Check if address exists, else make one, and return its ID.
+    private function addressIdFirstOrCreate(AddressRequest $request, User $user)
+    {
+        // Validate the address as separate fields, then as an imploded string.
+        $address_input = $request->validated();
+        $address_string = self::addressArrayToString($address_input);
+        $address_lookup = '';
+        $address_id = null;
+
+
+        // If we were given an address ID, look it up and convert it to an
+        // address string.
+        if (isset($address_input['id'])) {
+            $address_lookup = self::addressArrayToString(
+                Address::find($address_input['id'])->first()->toArray()
+            );
+        }
+
+        // If we already have the specified address unmodified, use it; else,
+        // create a new Address entry for the user.
+        if ($address_lookup && $address_string === $address_lookup) {
+            $address_id = $address_input['id'];
+        } else {
+            // Run a second validation with a map service API lookup.
+            $request->validate([ $address_string ], [ new AddressRule ]);
+
+            // Generate a name for the address entry if none provided.
+            if (! isset($address_input['name'])) {
+                $address_input['name'] = 'Latest order address';
+            }
+
+            $address_id = Address::create($address_input)->id;
+
+            $user->addresses()->attach($address_id);
+        }
+
+        return $address_id;
+    }
+
+    private function addressArrayToString(array $address_array): string
+    {
+        return implode(' ', [
+            $address_array['street_1'],
+            $address_array['street_2'],
+            $address_array['city'],
+            $address_array['state'],
+            $address_array['postal_code'],
+            Country::find($address_array['country_id'])->first()->abbreviation,
+        ]);
     }
 
     private function getCartTotals($cart_uid)
@@ -206,34 +293,13 @@ class CartController extends Controller
         $total = $subtotal + $taxes + $shipping;
 
         // Store updated cart product info.
-        self::setCart($cart_uid, $cart);
-
         return [
             'subtotal' => $subtotal,
             'shipping' => $shipping,
             'taxes' => $taxes,
             'total' => $total,
-            'cart' => $cart
+            'cart' => self::setCart($cart_uid, $cart)
         ];
-    }
-
-    private function getCart($cart_uid)
-    {
-        if (Cache::tags(self::CACHE_TAG)->has($cart_uid)) {
-            $cart = Cache::tags(self::CACHE_TAG)->get($cart_uid);
-            // Refresh the expiration upon fetch.
-            self::setCart($cart_uid, $cart);
-        } else {
-            $cart = [];
-        }
-
-        return array_values($cart);// Ensure it converts to a JSON array, not object.
-    }
-
-    private function setCart($cart_uid, $cart)
-    {
-        // 'array_values()' ensures it converts to a JSON array, not object.
-        return Cache::tags(self::CACHE_TAG)->put($cart_uid, array_values($cart), self::CACHE_DURATION_MINUTES);
     }
 
     private function getCurrencyExchangeRates()
@@ -410,37 +476,5 @@ class CartController extends Controller
             "ZMW" => 10.354977,
             "ZWL" => 322.355011,
         ];
-    }
-
-    private function addressArrayToString(array $address_array): string
-    {
-        return implode(' ', [
-            $address_array['street_1'],
-            $address_array['street_2'],
-            $address_array['city'],
-            $address_array['state'],
-            $address_array['postal_code'],
-            Country::find($address_array['country_id'])->first()->abbreviation,
-        ]);
-    }
-
-    private function checkAddress(string $address)
-    {
-        $remove_special_char = preg_replace("/[^ \w]+/", "", $address);
-        $remove_spaces = str_replace(' ', '+', $remove_special_char);
-
-        $client = new Client(['verify' => false]);
-
-        $result = $client->request('GET', 'https://maps.googleapis.com/maps/api/geocode/json', [
-            'query' => ['address' => $remove_spaces]
-        ]);
-
-        $response = json_decode($result->getBody());
-
-        if ($response->status=='OK') {
-            return true;
-        }
-
-        return false;
     }
 }

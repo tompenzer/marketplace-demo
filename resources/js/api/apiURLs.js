@@ -26,6 +26,10 @@ export const addToCartApi = (cartUid) => (
     `/api/cart/${cartUid}`
 );
 
+export const editCartApi = (cartUid, productId) => (
+    `/api/cart/${cartUid}/item/${productId}`
+);
+
 export const removeFromCartApi = (cartUid, productId) => (
     `/api/cart/${cartUid}/item/${productId}`
 );

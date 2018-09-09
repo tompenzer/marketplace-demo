@@ -1,6 +1,10 @@
 import React from "react";
-import {Link} from "react-router-dom";
-import {Panel, Glyphicon} from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { Panel, Glyphicon } from "react-bootstrap";
+
+const iconStyle = {
+    fontSize: '30px'
+}
 
 const NoCheckoutItems = () => (
     <div>
@@ -9,10 +13,10 @@ const NoCheckoutItems = () => (
                 <Panel.Title componentClass="h3">Your cart is empty</Panel.Title>
             </Panel.Heading>
             <Panel.Body>
-                <h4>There are no items to checkout</h4>
-                <p>Browse our wide range of collections or search for your product to get started</p>
+                <h4>There are no items to checkout.</h4>
+                <p>Select from our wide range of productd and add them to your cart to purchase.</p>
                 <div>
-                    <Glyphicon glyph={"shopping-cart"} className={"empty-checkout-size"}/>
+                    <Glyphicon glyph={"shopping-cart"} style={iconStyle}/>
                 </div>
                 <Link to={"/"}>Continue Shopping</Link>
             </Panel.Body>

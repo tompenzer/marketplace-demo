@@ -2,50 +2,54 @@ import React from "react";
 import { Grid, Col, Row, ListGroup, ListGroupItem } from "react-bootstrap";
 import LoadingOrderAnimation from 'react-loading-order-with-animation';
 
+const aboutPageStyle = {
+  minHeight: '360px'
+};
+
 const About = () => (
-    <Grid className={"minimum-height about-div"}>
+    <Grid className="page-min-height">
         <Row>
-            <h4>Marketplace demo project with React, Redux and PHP Laravel</h4>
+            <h2 className="page-title">Marketplace demo project with React, Redux and PHP Laravel</h2>
+
             <hr/>
+
             <Col lg={12} md={12}>
                 <a
                     href={"https://github.com/tompenzer/marketplace-demo"}
                     target="_blank">
                     Project Github link
                 </a>
+
                 <br/>
                 <br/>
+
                 <LoadingOrderAnimation animation="fade-in"
                                        move="from-top-to-bottom"
                                        distance={30}
                                        speed={1000}
                                        wait={300}>
-                    <div>
-                        <p className={"sixzero-weight"}>Libraries and Technologies used :</p>
-                        <Row>
-                            <Col lg={6} md={6}>
-                                <ListGroup>
-                                    <ListGroupItem>Redux</ListGroupItem>
-                                    <ListGroupItem>React-router</ListGroupItem>
-                                    <ListGroupItem>React-Bootstrap</ListGroupItem>
-                                    <ListGroupItem>Material UI</ListGroupItem>
-                                    <ListGroupItem>Axios</ListGroupItem>
-                                    <ListGroupItem>Redux Thunk</ListGroupItem>
-                                </ListGroup>
-                            </Col>
+                    <p className={"bold"}>Libraries and Technologies used :</p>
+                    <Row>
+                        <Col lg={6} md={6}>
+                            <ListGroup>
+                                <ListGroupItem>React</ListGroupItem>
+                                <ListGroupItem>Redux with Redux Thunk</ListGroupItem>
+                                <ListGroupItem>React-Bootstrap</ListGroupItem>
+                                <ListGroupItem>Material UI</ListGroupItem>
+                                <ListGroupItem>Babel</ListGroupItem>
+                            </ListGroup>
+                        </Col>
 
-                            <Col lg={6} md={6}>
-                                <ListGroup>
-                                    <ListGroupItem>PHP Laravel 5.7</ListGroupItem>
-                                    <ListGroupItem>Laravel Passport</ListGroupItem>
-                                    <ListGroupItem>SASS with SASS loader</ListGroupItem>
-                                    <ListGroupItem>Webpack</ListGroupItem>
-                                    <ListGroupItem>Babel</ListGroupItem>
-                                    <ListGroupItem>Faker</ListGroupItem>
-                                </ListGroup>
-                            </Col>
-                        </Row>
-                    </div>
+                        <Col lg={6} md={6}>
+                            <ListGroup>
+                                <ListGroupItem>Modern PHP 7.2</ListGroupItem>
+                                <ListGroupItem>Laravel 5.7</ListGroupItem>
+                                <ListGroupItem>Passport OAuth2</ListGroupItem>
+                                <ListGroupItem>Webpack, Yarn and NPM</ListGroupItem>
+                                <ListGroupItem>SASS with SASS loader</ListGroupItem>
+                            </ListGroup>
+                        </Col>
+                    </Row>
                 </LoadingOrderAnimation>
 
                 <LoadingOrderAnimation animation="fade-in"
@@ -53,24 +57,22 @@ const About = () => (
                                        distance={30}
                                        speed={1000}
                                        wait={1000}>
-                    <div>
-                        <p className={"sixzero-weight"}>Data storage & environment management:</p>
-                        <Row>
-                            <Col lg={6} md={6}>
-                                <ListGroup>
-                                    <ListGroupItem>MySQL</ListGroupItem>
-                                    <ListGroupItem>Redis</ListGroupItem>
-                                </ListGroup>
-                            </Col>
+                    <p className={"bold"}>Data storage & environment management:</p>
+                    <Row>
+                        <Col lg={6} md={6}>
+                            <ListGroup>
+                                <ListGroupItem>MySQL</ListGroupItem>
+                                <ListGroupItem>Redis</ListGroupItem>
+                            </ListGroup>
+                        </Col>
 
-                            <Col lg={6} md={6}>
-                                <ListGroup>
-                                    <ListGroupItem>Docker</ListGroupItem>
-                                    <ListGroupItem>Composer & NPM</ListGroupItem>
-                                </ListGroup>
-                            </Col>
-                        </Row>
-                    </div>
+                        <Col lg={6} md={6}>
+                            <ListGroup>
+                                <ListGroupItem>Docker</ListGroupItem>
+                                <ListGroupItem>Composer & NPM</ListGroupItem>
+                            </ListGroup>
+                        </Col>
+                    </Row>
                 </LoadingOrderAnimation>
             </Col>
         </Row>

@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
-import { logoutUser } from "../actions/authentication";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../api/strings";
-import axios, { getAuthHeaders } from "../api/axiosInstance";
-import { logoutAPI } from "../api/apiURLs";
+import { logOut } from "../actions/authentication";
+
+const logoutMessageStyle = {
+    minHeight: '360px'
+}
 
 class LogoutComponent extends React.Component{
 
@@ -12,30 +13,18 @@ class LogoutComponent extends React.Component{
         logoutMessage: "Please wait while we safely log you out..."
     };
 
-    componentDidMount(){
-        const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-        if (this.props.authentication.isAuthenticated && access_token !== null) {
-            axios.post(logoutAPI, {}, getAuthHeaders())
-                .then(() => {
-                    window.localStorage.removeItem(ACCESS_TOKEN);
-                    window.localStorage.removeItem(REFRESH_TOKEN);
-                    this.props.dispatch(logoutUser());
-                    this.props.history.push("/login");
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                     this.setState(() => ({logoutMessage: "Something went wrong! Please try again."}))
-                });
-
-        } else {
-            this.props.history.push("/login");
+    componentDidMount() {
+        if (this.props.authentication.isAuthenticated) {
+            this.props.dispatch(logOut());
         }
+
+        this.props.history.push("/login");
     }
 
-    render(){
+    render() {
         return (
-            <div className={"minimum-height"} ref={"logout-div"}>
-                <h3 className={"margin-five"}>{this.state.logoutMessage}</h3>
+            <div style={logoutMessageStyle} className={"padding-2xl"} ref={"logout-div"}>
+                <h3>{this.state.logoutMessage}</h3>
             </div>
         )
     }

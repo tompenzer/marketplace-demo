@@ -9,6 +9,14 @@
 
 @each $size, $spacing in $spacings {
 	@include margin-sides($size, $spacing);
+
+    // Also add all-sides margin utility for each size.
+    .margin-#{$size} {
+        margin-bottom: $spacing;
+        margin-left: $spacing;
+        margin-right: $spacing;
+        margin-top: $spacing;
+    }
 }
 
 // Add margin-auto to all sides for flexbox

@@ -6,11 +6,8 @@ import configureStore from './store/configureStore';
 import 'normalize.css/normalize.css';
 import '../sass/app.scss';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { checkLogin } from "./actions/authentication";
 import { getCart } from "./actions/shoppingCart";
-import axios, { getAuthHeaders } from "./api/axiosInstance";
-import { getUserAPI, getUserCartAPI } from "./api/apiURLs";
-import { loginUser, logoutUser } from "./actions/authentication";
-import { ACCESS_TOKEN } from "./api/strings";
 
 const store = configureStore();
 // Tell Material-UI the font-size on the html element.
@@ -32,16 +29,8 @@ const jsx = (
     </Provider>
 );
 
-// initial load, check if user is logged in
-axios.get(getUserAPI, getAuthHeaders())
-    .then(() => {
-        store.dispatch(loginUser());
-    })
-    .catch((error) => {
-        window.localStorage.removeItem(ACCESS_TOKEN);
-        store.dispatch(logoutUser());
-    });
-
+// Set auth and cart states upon load.
+store.dispatch(checkLogin());
 store.dispatch(getCart());
 
 const appRoot = document.getElementById('app');

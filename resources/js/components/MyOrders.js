@@ -1,13 +1,13 @@
 import React from "react";
-import {Grid, Row, Col, Glyphicon} from "react-bootstrap";
+import { Grid, Row, Col, Glyphicon } from "react-bootstrap";
 import OrderList from "../components/OrderList";
 import ScrollToTop from "react-scroll-up";
 
 const MyOrders = () => (
-    <Grid className={"minimum-height"}>
+    <Grid className="page-min-height">
         <ScrollToTop showUnder={110}>
-            <div className={"text-center"}>
-                <Glyphicon glyph={"arrow-up"}/>
+            <div className="text-center">
+                <Glyphicon glyph="arrow-up"/>
                 <p>Back to Top</p>
             </div>
         </ScrollToTop>

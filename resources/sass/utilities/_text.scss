@@ -1,14 +1,9 @@
-$text-sizes: (
-	'xxsmall': 0.4em,
-	'xsmall': 0.6em,
-	'small': 0.8em,
-	'large': 1.15em,
-	'xlarge': 1.3em,
-	'xxlarge': 1.6em,
-);
-
 @each $key, $size in $text-sizes {
 	.text-#{$key} {
 		font-size: #{$size};
 	}
+}
+
+.bold {
+    font-weight: 700;
 }

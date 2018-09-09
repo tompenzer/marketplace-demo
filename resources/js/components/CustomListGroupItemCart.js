@@ -1,9 +1,26 @@
 import React from "react";
 import { Link, withRouter } from 'react-router-dom';
-import {Row, Col, Button, FormControl, Glyphicon, Tooltip, OverlayTrigger} from "react-bootstrap";
+import { Row, Col, Button, Form, FormGroup, FormControl, Glyphicon, Tooltip, OverlayTrigger } from "react-bootstrap";
 import ProductInfo from "./ProductInfo";
 import { connect } from 'react-redux';
-import {editCart} from "../actions/shoppingCart";
+import { editCart } from "../actions/shoppingCart";
+import styleVariables from '../../sass/base/_variables.scss';
+
+const cartListItemStyle = {
+    borderColor: 'rgba(0, 0, 0, 0.1)'
+};
+
+const cartListGroupRowStyle = {
+    display: 'table-cell',
+    float: 'none',
+    verticalAlign: 'middle'
+}
+
+const quantityInputStyle = {
+    marginLeft: styleVariables.spacingS,
+    marginRight: styleVariables.spacingS,
+    width: '70px'
+}
 
 const tooltip = (
     <Tooltip id="tooltip">
@@ -15,105 +32,95 @@ class CustomListGroupItemCart extends React.Component{
 
     state = {
         quantity: this.props.quantity
-    };
+    }
 
-    editCart = (quantity) => {
-        let updates = {
-          quantity
-        };
-        this.props.dispatch(editCart(this.props.productId, updates));
-    };
-
-    onQuantityChange = (e) => {
-        e.stopPropagation();
-        let quantity = e.target.value;
-        this.setState(() => ({quantity}));
-    };
-
-    onQuantityIncrease = (e) => {
-        e.stopPropagation();
-        if(parseInt(this.state.quantity) < 99){
-            this.setState((prevState) => ({quantity: prevState.quantity + 1}));
-            this.editCart(parseInt(this.state.quantity) + 1);
+    setNewQuantity = (quantity) => {
+        // Allow users to temporarily blank out the quantity, but don't update
+        // the cart while it's in that state.
+        if (quantity === '') {
+            this.setState({ quantity });
+            return;
         }
-    };
 
-    onQuantityDecrease = (e) => {
-        e.stopPropagation();
-        if(parseInt(this.state.quantity) > 1) {
-            this.setState((prevState) => ({quantity: prevState.quantity - 1}));
-            this.editCart(parseInt(this.state.quantity) - 1);
-        }
-    };
+        quantity = parseInt(quantity);
 
-    onQuantityBlur = (e) => {
-        e.stopPropagation();
-        let quantity = e.target.value;
-        if(quantity.length > 0 && parseInt(quantity) > 0 && parseInt(quantity) < 100){
-            this.setState(() => ({quantity}));
-            this.editCart(parseInt(quantity));
+        // If the user sets an invalid quantity, restore previous state.
+        if (quantity < 1 || quantity > 999) {
+            this.setState((prevState) => prevState);
+            return;
         }
-        else{
-            this.setState(() => ({quantity: 1}));
-            this.editCart(1);
+
+        this.props.dispatch(editCart(this.props.productId, { quantity }));
+        this.setState({ quantity });
+    }
+
+    handleQuantityIncrease = () => {
+        // Don't do anything when quantity is blank or non-integer.
+        if (parseInt(this.state.quantity) == this.state.quantity) {
+            this.setNewQuantity(parseInt(this.state.quantity) + 1);
         }
-    };
+    }
+
+    handleQuantityDecrease = () => {
+        // Don't do anything when quantity is blank or non-integer.
+        if (parseInt(this.state.quantity) == this.state.quantity) {
+            this.setNewQuantity(parseInt(this.state.quantity) - 1);
+        }
+    }
 
     removeFromCart = (e) => {
         e.stopPropagation();
         ProductInfo.removeItemFromCart(this.props.productId, this.props);
-    };
-
-    viewClickHandler = (routeName) => {
-        this.props.handleClose();
-        this.props.history.push(routeName);
-    };
+    }
 
     render() {
         return (
-            <li className="list-group-item">
-                <div className={"media-body"}>
-                    <Row>
-                        <Col lg={6} md={6} sm={12} xs={12}>
-                            <h4 className={"media-heading"}><Link to={`/product/${this.props.productId}`}>{this.props.name}</Link></h4>
-                            <div className={"seller-name-div"}>
-                                <span>{this.props.sellerName}</span>
-                            </div>
-                        </Col>
+            <li className="list-group-item" style={cartListItemStyle}>
+                <Row>
+                    <Col lg={6} md={6} sm={12} xs={12}>
+                        <h4><Link to={`/product/${this.props.productId}`}>{this.props.name}</Link></h4>
+                    </Col>
 
-                        <Col lg={3} md={3} sm={12} xs={12}>
-                            <div className={"cart-quantity-div"}>
-                                <span>
-                                    <Button onClick={this.onQuantityDecrease}>-</Button>
+                    <Col lg={3} md={3} sm={12} xs={12}>
+                        <div className="cart-quantity-div">
+                            <Form inline onSubmit={(e) => { e.stopPropagation(); }}>
+                                <FormGroup controlId="cartQuantityDecrease">
+                                    <Button onClick={this.handleQuantityDecrease}>-</Button>
+                                </FormGroup>{' '}
+                                <FormGroup controlId="cartQuantity">
                                     <FormControl
                                         type="number"
-                                        className={"cart-quantity"}
+                                        style={quantityInputStyle}
                                         value={this.state.quantity}
-                                        onChange={this.onQuantityChange}
-                                        onBlur={this.onQuantityBlur}
+                                        onChange={(e) => this.setNewQuantity(e.target.value)}
+                                        onBlur={(e) => this.setNewQuantity(e.target.value)}
+                                        min={1}
+                                        max={999}
                                     />
-                                    <Button onClick={this.onQuantityIncrease}>+</Button>
-                                </span>
-                            </div>
-                        </Col>
+                                </FormGroup>{' '}
+                                <FormGroup controlId="cartQuantityIncrease">
+                                    <Button onClick={this.handleQuantityIncrease}>+</Button>
+                                </FormGroup>
+                            </Form>
+                        </div>
+                    </Col>
 
-                        <Col md={2} lg={2} sm={12} xs={12}>
-                            <div className={"cart-price-div"}>
-                              <span className={"cart-price"}>
-                                  ${parseFloat(parseFloat(this.props.price) * parseInt(this.state.quantity)).toFixed(2)}
-                              </span>
-                            </div>
-                        </Col>
+                    <Col md={2} lg={2} sm={12} xs={12}>
+                        <div className={"cart-price-div"}>
+                          <span className={"cart-price"}>
+                              ${this.state.quantity && parseFloat(parseFloat(this.props.price) * parseInt(this.state.quantity)).toFixed(2)}
+                          </span>
+                        </div>
+                    </Col>
 
-                        <Col md={1} lg={1} sm={12} xs={12}>
-                            <div className={"cart-remove-div"}>
-                                <OverlayTrigger placement="top" overlay={tooltip}>
-                                    <span onClick={this.removeFromCart}><Glyphicon glyph={"remove"}/></span>
-                                </OverlayTrigger>
-                            </div>
-                        </Col>
-                    </Row>
-                </div>
+                    <Col md={1} lg={1} sm={12} xs={12}>
+                        <div className={"cart-remove-div"}>
+                            <OverlayTrigger placement="top" overlay={tooltip}>
+                                <span onClick={this.removeFromCart}><Glyphicon glyph={"remove"}/></span>
+                            </OverlayTrigger>
+                        </div>
+                    </Col>
+                </Row>
             </li>
         )
     }

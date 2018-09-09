@@ -1,12 +1,25 @@
 import React from "react";
-import {Modal, Button, ListGroup, Row, Col} from "react-bootstrap";
+import { Modal, Button, ListGroup, Row, Col } from "react-bootstrap";
 import CustomListGroupItem from "../components/CustomListGroupItemCart";
 import { connect } from 'react-redux';
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
+import styleVariables from '../../sass/base/_variables.scss';
 
 export const totalReducer = (accumulator, item) => {
     return accumulator + (item.quantity * item.price);
 };
+
+const cartTotalLabelStyle = {
+    fontSize: styleVariables.textSizeL,
+    fontWeight: 700,
+    marginRight: styleVariables.spacingL
+}
+
+const cartTotalAmountStyle = {
+    fontSize: styleVariables.textSizeL,
+    fontWeight: 700,
+    marginRight: styleVariables.spacingL
+}
 
 class ShoppingCart extends React.Component{
 
@@ -15,38 +28,41 @@ class ShoppingCart extends React.Component{
       this.props.history.push("/checkout");
     };
 
-    render(){
-        let itemCount = this.props.shoppingCart.length;
+    render() {
         let cartContent;
-        if (itemCount > 0) {
+
+        if (this.props.shoppingCart.length > 0) {
             let total = this.props.shoppingCart.reduce(totalReducer, 0);
             cartContent = (
                 <div>
-                    <ListGroup className={"shopping-cart-listgroup"}>
+                    <ListGroup>
                         {this.props.shoppingCart.map((item) => {
                             return <CustomListGroupItem key={item.productId} {...item} {...this.props} />;
                         })}
                     </ListGroup>
-                    <hr/>
-                    <div className={"total-cart-label-div"}>
-                        <Row>
-                            <Col lg={9} md={9}>
-                                <span className={"total-cart-label"}>Total:</span>
-                            </Col>
 
-                            <Col lg={3} md={3}>
-                                <span className={"total-cart-amount"}>
-                                    ${parseFloat(total).toFixed(2)}
-                                </span>
-                            </Col>
-                        </Row>
-                    </div>
+                    <hr/>
+
+                    <Row className="text-right">
+                        <Col lg={9} md={9}>
+                            <span style={cartTotalLabelStyle}>Total:</span>
+                        </Col>
+
+                        <Col lg={3} md={3}>
+                            <span style={cartTotalAmountStyle}>
+                                ${parseFloat(total).toFixed(2)}
+                            </span>
+                        </Col>
+                    </Row>
                 </div>);
-        }
-        else{
+        } else {
             cartContent = (
                 <div>
-                    <span>You have no items in your cart. Please choose products from our wide range of selection and add to cart.</span>
+                    <span>
+                        You have no items in your cart. Please select from our
+                        wide range of products and add them to your cart to
+                        purchase.
+                    </span>
                 </div>
             )
         }

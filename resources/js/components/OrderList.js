@@ -16,13 +16,13 @@ const OrderPanels = (props) => (
             <Panel.Title>
                 <Row>
                     <Col lg={3} md={3}>
-                        <span className={"bold-text order-panel-headings"}>Order Placed:</span>
+                        <span className={"bold order-panel-headings"}>Order Placed:</span>
                     </Col>
                     <Col lg={3} md={3}>
-                        <span className={"bold-text order-panel-headings"}>Total:</span>
+                        <span className={"bold order-panel-headings"}>Total:</span>
                     </Col>
                     <Col lg={4} md={4}>
-                        <span className={"bold-text order-panel-headings"}>Items:</span>
+                        <span className={"bold order-panel-headings"}>Items:</span>
                     </Col>
                     <Col lg={2} md={2}>
                         <Link to={{

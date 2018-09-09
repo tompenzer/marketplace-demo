@@ -27,7 +27,7 @@ class HomePage extends React.Component{
 
     render(){
         return (
-        <Grid className={"minimum-height home-page-div"}>
+        <Grid className={"page-min-height home-page-div"}>
             <Row>
                 <Col lg={12} md={12}>
                     <Carousel interval={2500}>
@@ -43,7 +43,7 @@ class HomePage extends React.Component{
                     </Carousel>
                 </Col>
 
-                <Col lg={12} md={12} className={'temp'}>
+                <Col lg={12} md={12}>
                     <p></p>
                 </Col>
             </Row>

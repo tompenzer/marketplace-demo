@@ -6,7 +6,7 @@ use App\Http\Requests\AddressRequest;
 use App\Models\Address;
 use App\Models\Country;
 use App\Models\User;
-use App\Rules\Address as AddressRule;
+use App\Rules\AddressRule;
 use Auth;
 use Cache;
 use Illuminate\Http\Request;
@@ -42,18 +42,20 @@ class AddressController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        // Validate first as separate fields, then as an imploded string.
         $arguments = $request->validated();
 
-        $this->validate([
-            'address' => implode(' ', [
-                    $arguments['street_1'],
-                    $arguments['street_2'],
-                    $arguments['city'],
-                    $arguments['state'],
-                    $arguments['postal_code'],
-                    Country::find($arguments['country_id'])->first()->abbreviation,
-                ])
-        ], new AddressRule);
+        $address_string = implode(' ', [
+                $arguments['street_1'],
+                $arguments['street_2'],
+                $arguments['city'],
+                $arguments['state'],
+                $arguments['postal_code'],
+                Country::find($arguments['country_id'])->first()->abbreviation,
+            ]);
+
+        // Run a second validation with a map service API lookup.
+        $request->validate([ $address_string ], [ new AddressRule ]);
 
         $address = Address::create($request->validated());
 

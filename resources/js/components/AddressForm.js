@@ -1,6 +1,5 @@
 import React from "react";
-import { FormGroup, ControlLabel, FormControl, Row, Col } from "react-bootstrap";
-import Button from '@material-ui/core/Button';
+import { FormGroup, ControlLabel, FormControl, Row, Col, Button } from "react-bootstrap";
 
 const s = "success";
 
@@ -268,24 +267,22 @@ export default class AddressForm extends React.Component {
                         />
                         <FormControl.Feedback />
                     </FormGroup>
+
+                    {this.state.recipientValidation === s &&
+                    this.state.addressValidation === s &&
+                    this.state.cityValidation === s &&
+                    this.state.stateValidation === s &&
+                    this.state.postalCodeValidation === s &&
+                    this.state.countryValidation === s &&
+                    this.state.phoneValidation === s &&
+                    <Button
+                        type="submit"
+                        bsStyle="success"
+                        className="margin-t-s"
+                    >
+                        Place Order
+                    </Button>}
                 </fieldset>
-                {this.state.recipientValidation === s &&
-                this.state.addressValidation === s &&
-                this.state.cityValidation === s &&
-                this.state.stateValidation === s &&
-                this.state.postalCodeValidation === s &&
-                this.state.countryValidation === s &&
-                this.state.phoneValidation === s &&
-                <Button
-                    type="submit"
-                    className="margin-r-s"
-                    disableTouchRipple={true}
-                    disableFocusRipple={true}
-                    primary="true"
-                >
-                    Place Order
-                </Button>
-                }
             </form>
         )
     }

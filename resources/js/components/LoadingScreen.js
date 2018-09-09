@@ -4,10 +4,15 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme();
 
+const loadingDivStyle = {
+    minHeight: '360px',
+    textAlign: 'center'
+}
+
 const LoadingScreen = () => (
-    <div className={"loading-div"}>
+    <div style={loadingDivStyle}>
         <MuiThemeProvider theme={theme}>
-            <CircularProgress size={80} thickness={5} className={"loading-circular-progress"} />
+            <CircularProgress size={80} thickness={5} className="margin-t-3xl" />
         </MuiThemeProvider>
     </div>
 );

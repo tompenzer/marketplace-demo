@@ -37,7 +37,7 @@ class CustomListGroupItemWishlist extends React.Component{
                     <Row>
                         <Col lg={9} md={9} sm={12} xs={12}>
                             <h4 className={"media-heading"}>{this.props.children}</h4>
-                            <div className={"seller-name-div"}>
+                            <div className={"margin-b-s"}>
                                 <span>{this.props.sellerName}</span>
                             </div>
                             <div>
@@ -49,8 +49,8 @@ class CustomListGroupItemWishlist extends React.Component{
                         <Col md={3} lg={3} sm={12} xs={12}>
                             <div>
                               <span>
-                                  <Button bsStyle={"default"} className={"btn-sm view-atc-button"} onClick={this.removeFromWishlistHandler}>Remove</Button>
-                                  <Button bsStyle={"success"} className={"btn-sm view-atc-button"} onClick={this.addToCartOnClick}>Add to Cart</Button>
+                                  <Button bsStyle={"default"} className={"btn-sm btn-block margin-b-s"} onClick={this.removeFromWishlistHandler}>Remove</Button>
+                                  <Button bsStyle={"success"} className={"btn-sm btn-block"} onClick={this.addToCartOnClick}>Add to Cart</Button>
                               </span>
                             </div>
                         </Col>

@@ -52,6 +52,7 @@ $ docker-compose run --rm node-server yarn install
 $ docker-compose run --rm node-server yarn run dev
 $ docker-compose run --rm marketplace-server php artisan migrate --seed
 $ docker-compose run --rm marketplace-server php artisan passport:install
+$ docker-compose run --rm marketplace-server ./vendor/bin/phpunit
 ```
 
 ## Note - potential sql error
@@ -107,12 +108,20 @@ $ rm -rf storage/tmp/db
 ```
 
 
-## Starting the docker environment in production Mode
+## Production build
 
 If you pass the word `production` as an argument to `startup.sh`, it'll build
-the front-end in production mode and skip DB migrations:
+the front-end in production mode and skip DB migrations when initializing the
+environment:
 ```
 $ ./startup.sh production
+```
+
+If you've already got the development environment running, you can skip the
+environment startup and directly run the production front-end build with the
+following command:
+```
+$ docker-compose run --rm node-server yarn run prod
 ```
 
 

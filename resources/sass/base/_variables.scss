@@ -11,6 +11,7 @@ $blue:       #3c4251;
 $blue-light: #464b5e;
 $blue-dark:  #333745;
 $green-dark: #108c46;
+$red:        #ec3e2c;
 
 $darken5:       rgba(0, 0, 0, 0.05);
 $darken8:       rgba(0, 0, 0, 0.08);
@@ -99,6 +100,7 @@ $sides: (
     lightBlue: $blue-light;
     darkBlue: $blue-dark;
     greenDark: $green-dark;
+    red: $red;
     darken5: $darken5;
     darken8: $darken8;
     darken10: $darken10;

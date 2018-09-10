@@ -66,16 +66,6 @@ export const logoutAPI = "/api/logout";
 
 export const registerAPI = "/api/register";
 
-export const addToWishlistAPI = "/api/addtowishlist";
-
-export const removeFromWishlistAPI = (productId) => (
-    `/api/removefromwishlist/${productId}`
-);
-
-export const getUserWishlistAPI = "/api/getuserwishlist";
-
-export const wishlistToCartAPI = "/api/wishlistcart";
-
 export const userOrdersApi = "/api/orders";
 
 export const orderDetailAPI = (order_id) => (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, FormControl, FormGroup, Nav, NavItem, MenuItem, Button, Glyphicon, DropdownButton, InputGroup } from 'react-bootstrap';
+import { Navbar, FormControl, FormGroup, Nav, NavItem, MenuItem, Button, Glyphicon, Badge, DropdownButton, InputGroup } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
 import ShoppingCart from '../components/ShoppingCart';
 import { connect } from 'react-redux';
@@ -7,6 +7,19 @@ import Popover, {PopoverAnimationVertical} from '@material-ui/core/Popover';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItemMUI from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
+import styleVariables from '../../sass/base/_variables.scss';
+
+const glyphIconStyle = {
+    fontSize: styleVariables.textSizeXl
+};
+
+const cartBadgeStyle = {
+    backgroundColor: styleVariables.black,
+    fontSize: '10px',
+    left: '1px',
+    padding: '3px 5px',
+    top: '-10px'
+};
 
 class Header extends React.Component{
 
@@ -192,18 +205,15 @@ class Header extends React.Component{
                                 </InputGroup>
                                 <Button className="margin-l-xs" type="submit"><Glyphicon glyph={"search"}/></Button>
                                 <Button className="margin-l-s" onClick={this.shoppingCartModalShow} bsStyle={"link"}>
-                                    <Glyphicon glyph={"shopping-cart"} className={"cart-symbol-size"}/>
+                                    <Glyphicon glyph="shopping-cart" style={glyphIconStyle}/>
                                     {shoppingCartTotal > 0 &&
-                                        <span className="badge custom-cart-badge">
-                                            {shoppingCartTotal}
-                                        </span>
+                                    <Badge style={cartBadgeStyle}>{shoppingCartTotal}</Badge>
                                     }
                                 </Button>
-                                <div className={"inline-div-display"}>
                                     <Button
                                         onClick={this.handleUserAccountClick}
-                                        bsStyle={"link"}
-                                    ><Glyphicon glyph={"user"} className={"cart-symbol-size"}/></Button>
+                                        bsStyle="link"
+                                    ><Glyphicon glyph="user" style={glyphIconStyle}/></Button>
                                     <Popover
                                         open={this.state.open}
                                         anchorEl={this.state.anchorEl}
@@ -220,7 +230,6 @@ class Header extends React.Component{
                                             })}
                                         </MenuList>
                                     </Popover>
-                                </div>
                             </FormGroup>
                         </form>
                     </Navbar.Form>

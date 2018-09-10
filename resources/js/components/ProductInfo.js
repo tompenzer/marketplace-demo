@@ -8,8 +8,7 @@ import axios from "../api/axiosInstance";
 import { productInfoAPI } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import { addToWishlist, removeFromWishlist } from "../actions/wishlist";
-import { ADDED_TO_CART_SNACKBAR, ADDED_TO_WISHLIST_SNACKBAR } from "../api/strings";
+import { ADDED_TO_CART_SNACKBAR } from "../api/strings";
 
 class ProductInfo extends React.Component {
 
@@ -98,24 +97,11 @@ class ProductInfo extends React.Component {
     };
 
     handleUndoAction = () => {
-        if(this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR){
+        if (this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR) {
             ProductInfo.removeItemFromCart(this.state.productId, this.props);
         }
-        else{
-            this.props.dispatch(removeFromWishlist(this.state.productId));
-        }
-        this.handleSnackbarRequestClose();
-    };
 
-    handleAddToWishlist = () => {
-        this.props.dispatch(addToWishlist({
-            productId: this.state.product.id,
-            name: this.state.product.name,
-            quantity: this.state.quantity,
-            price: this.state.product.price,
-            currency: this.state.product.currency.abbreviation
-        }));
-        this.setState(() => ({ snackbarOpen: true, snackbarMessage: ADDED_TO_WISHLIST_SNACKBAR }));
+        this.handleSnackbarRequestClose();
     };
 
     render() {
@@ -137,7 +123,7 @@ class ProductInfo extends React.Component {
                     <Col lg={12} md={12}>
                         <div className={"margin-div-five"}>
                             <h2>{this.state.product.name}</h2>
-                            <div className={"product-info-seller-name"}>
+                            <div className="text-gray">
                                 <span>Sold by: </span>
                                 <Link to={'/store/' + this.state.product.store.id}>{this.state.product.store.name}</Link>
                             </div>
@@ -151,11 +137,11 @@ class ProductInfo extends React.Component {
                 <Row>
                     <Col md={8} sm={12}>
                         <div className={"product-info-left-margin"}>
-                            <h2 className={"product-description-heading"}>Product Description:</h2>
+                            <h2 className="text-2xl">Product Description:</h2>
 
                             <hr/>
 
-                            <p className={"product-description"}>{this.state.product.description}</p>
+                            <p className="text-xl">{this.state.product.description}</p>
 
                             <br/>
 
@@ -171,8 +157,8 @@ class ProductInfo extends React.Component {
                     </Col>
 
                     <Col md={4} sm={12}>
-                        <div className={"product-info-price margin-t-m text-right"}>
-                            <span className={"product-deal-price"}>{this.state.product.currency.abbreviation} {this.state.product.price}</span>
+                        <div className="product-info-price margin-t-m text-right">
+                            <span className="text-green text-2xl">{this.state.product.currency.abbreviation} {this.state.product.price}</span>
                         </div>
 
                         {this.props.authentication.isAuthenticated &&

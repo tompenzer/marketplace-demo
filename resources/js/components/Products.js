@@ -15,8 +15,7 @@ import axios from "../api/axiosInstance";
 import { productsApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import { addToWishlist, removeFromWishlist } from "../actions/wishlist";
-import { ADDED_TO_CART_SNACKBAR, ADDED_TO_WISHLIST_SNACKBAR } from "../api/strings";
+import { ADDED_TO_CART_SNACKBAR } from "../api/strings";
 import ProductList from './ProductList';
 
 class Products extends React.Component {
@@ -89,33 +88,15 @@ class Products extends React.Component {
     };
 
     static removeItemFromCart = (productID, props) => {
-        let productToRemove = {
-            productID
-        };
-        props.dispatch(removeFromCart(productToRemove));
+        props.dispatch(removeFromCart({ productID }));
     };
 
     handleUndoAction = () => {
-        if(this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR){
+        if (this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR) {
             ProductInfo.removeItemFromCart(this.state.productID, this.props);
         }
-        else{
-            this.props.dispatch(removeFromWishlist(this.state.productID));
-        }
-        this.handleSnackbarRequestClose();
-    };
 
-    handleAddToWishlist = () => {
-        const product = {
-            productName: this.state.product.name,
-            sellerName: this.state.product.sellerName,
-            quantity: this.state.quantity,
-            price: this.state.product.price,
-            productID: this.state.productID,
-            prevPrice: this.state.product.originalPrice
-        };
-        this.props.dispatch(addToWishlist(product));
-        this.setState(() => ({snackbarOpen: true, snackbarMessage: ADDED_TO_WISHLIST_SNACKBAR}));
+        this.handleSnackbarRequestClose();
     };
 
     render(){

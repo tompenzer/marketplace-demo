@@ -37,8 +37,8 @@ class CustomListGroupItemProduct extends React.Component{
                             <h4 className="media-heading">{this.props.children}</h4>
                             <div className="margin-b-s">{this.props.sellerName}</div>
                             <div>
-                                {this.props.prevPrice && <span className={"subcategory-deal-price-st"}>${this.props.prevPrice} </span>}
-                                <span className={"subcategory-deal-price"}>${this.props.currentPrice}</span>
+                                {this.props.prevPrice && <span>${this.props.prevPrice} </span>}
+                                <span className="text-green">${this.props.currentPrice}</span>
                             </div>
                         </Col>
 

@@ -97,7 +97,7 @@ class LoginComponent extends React.Component{
                                 placeholder="Enter password"
                                 help={this.state.passwordHelp}
                             />
-                            {this.state.invalidCredentials && <p className={"error-message"}>Username or password not valid.</p>}
+                            {this.state.invalidCredentials && <p className="error-message margin-t-s">Username or password not valid.</p>}
                             <Button type={"submit"} className={'btn btn-primary'}>Login</Button>
                         </form>
                         <div>

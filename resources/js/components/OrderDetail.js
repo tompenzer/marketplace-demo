@@ -13,6 +13,18 @@ import StepLabel from '@material-ui/core/StepLabel';
 import CustomListGroupItem from '../components/CustomListGroupItemOrder';
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import Snackbar from '@material-ui/core/Snackbar';
+import styleVariables from '../../sass/base/_variables.scss';
+
+const headingLabelStyle = {
+    color: styleVariables.grayDark,
+    fontSize: styleVariables.textSizeS,
+    fontWeight: 700
+};
+
+const headingTextStyle = {
+    color: styleVariables.gray,
+    fontSize: styleVariables.textSizeS
+};
 
 class OrderDetail extends React.Component{
 
@@ -96,13 +108,25 @@ class OrderDetail extends React.Component{
             <Grid>
                 <Row>
                     <Col lgOffset={1} mdOffset={1} md={10} lg={10}>
-                        <Row className={"order-detail-heading"}>
+                        <Row>
                             <Col lg={4} md={4}>
-                                <Link to={"/myorders"}><Glyphicon glyph={"chevron-left"}/>My Orders</Link>
+                                <h2 className="page-heading">
+                                    <Link to={"/orders"}>
+                                        <Glyphicon glyph={"chevron-left"}/>
+                                        My Orders
+                                    </Link>
+                                </h2>
                             </Col>
 
                             <Col lg={6} md={6}>
-                                <p><span className={"order-panel-headings bold"}>Order Identification: </span><span className={"order-panel-attributes"}>EKDJFQYU{this.props.match.params.id}</span></p>
+                                <p>
+                                    <span style={headingLabelStyle}>
+                                        Order Identification:
+                                    </span>{' '}
+                                    <span className={"order-panel-attributes"}>
+                                        {this.props.match.params.id}
+                                    </span>
+                                </p>
                             </Col>
                         </Row>
                     </Col>
@@ -116,37 +140,37 @@ class OrderDetail extends React.Component{
                             <Panel.Body>
                                 <Row>
                                     <Col lg={2} md={2}>
-                                        <span className={"order-panel-headings bold"}>Order Date: </span>
+                                        <span style={headingLabelStyle}>Order Date: </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span className={"order-panel-attributes"}>{orderDetail.created_at.split(" ")[0]}</span>
+                                        <span style={headingTextStyle}>{orderDetail.created_at.split(" ")[0]}</span>
                                     </Col>
 
                                     <Col lg={2} md={2}>
-                                        <span className={"order-panel-headings bold"}>Order Time: </span>
+                                        <span style={headingLabelStyle}>Order Time: </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span className={"order-panel-attributes"}>{orderDetail.created_at.split(" ")[1]} EST</span>
+                                        <span style={headingTextStyle}>{orderDetail.created_at.split(" ")[1]} EST</span>
                                     </Col>
                                 </Row>
 
                                 <Row>
                                     <Col lg={2} md={2}>
-                                        <span className={"order-panel-headings bold"}>Total Amount: </span>
+                                        <span style={headingLabelStyle}>Total Amount: </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span className={"order-panel-attributes"}>${parseFloat(orderDetail.total).toFixed(2)}</span>
+                                        <span style={headingTextStyle}>${parseFloat(orderDetail.total).toFixed(2)}</span>
                                     </Col>
 
                                     <Col lg={2} md={2}>
-                                        <span className={"order-panel-headings bold"}>Total items: </span>
+                                        <span style={headingLabelStyle}>Total items: </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span className={"order-panel-attributes"}>{orderDetail.items.length}</span>
+                                        <span style={headingTextStyle}>{orderDetail.items.length}</span>
                                     </Col>
                                 </Row>
                             </Panel.Body>
@@ -186,7 +210,7 @@ class OrderDetail extends React.Component{
                             <Panel.Heading>
                                 <Panel.Title componentClass="h4">Products purchased</Panel.Title>
                             </Panel.Heading>
-                            <Panel.Body className={"order-list-panel-body"}>
+                            <Panel.Body>
                                 <ListGroup>
                                     {orderDetail.items.map((item) => (
                                         <CustomListGroupItem

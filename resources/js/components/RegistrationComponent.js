@@ -181,7 +181,7 @@ class RegistrationComponent extends React.Component{
                                     onChange={this.passwordChange}
                                 />
                                 <HelpBlock>Password must of at least 6 characters.</HelpBlock>
-                                {this.state.passwordValidation ? <span className={"error-message"}>Password doesn't match.</span> : ''}
+                                {this.state.passwordValidation ? <span className="error-message margin-t-s">Password doesn't match.</span> : ''}
                             </FormGroup>
 
                             <FormGroup
@@ -194,7 +194,7 @@ class RegistrationComponent extends React.Component{
                                     placeholder="Confirm Password"
                                     onChange={this.confirmPasswordChange}
                                 />
-                                {this.state.passwordValidation && <span className={"error-message"}>Password doesn't match.</span>}
+                                {this.state.passwordValidation && <span className={"error-message margin-t-s"}>Password doesn't match.</span>}
                             </FormGroup>
 
                             {this.state.fullNameValidation === s &&

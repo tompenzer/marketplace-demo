@@ -7,8 +7,7 @@ import axios, { getAuthHeaders } from "../api/axiosInstance";
 import { storeInfoApi, storeAuthApi, unitsApi, currenciesApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import { addToWishlist, removeFromWishlist } from "../actions/wishlist";
-import { ADDED_TO_CART_SNACKBAR, ADDED_TO_WISHLIST_SNACKBAR, ACCESS_TOKEN } from "../api/strings";
+import { ADDED_TO_CART_SNACKBAR, ACCESS_TOKEN } from "../api/strings";
 import ProductList from './ProductList';
 
 class StoreInfo extends React.Component {

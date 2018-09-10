@@ -3,10 +3,6 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
 import { logOut } from "../actions/authentication";
 
-const logoutMessageStyle = {
-    minHeight: '360px'
-}
-
 class LogoutComponent extends React.Component{
 
     state = {
@@ -23,7 +19,7 @@ class LogoutComponent extends React.Component{
 
     render() {
         return (
-            <div style={logoutMessageStyle} className={"padding-2xl"} ref={"logout-div"}>
+            <div className={"page-min-height padding-2xl"} ref={"logout-div"}>
                 <h3>{this.state.logoutMessage}</h3>
             </div>
         )

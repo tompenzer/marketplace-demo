@@ -6,6 +6,11 @@ import axios, { getAuthHeaders } from '../api/axiosInstance';
 import { getUserAPI } from "../api/apiURLs";
 import ScrollToTop from "react-scroll-up";
 import LoadingScreen from "../components/LoadingScreen";
+import styleVariables from '../../sass/base/_variables.scss';
+
+const fieldLabelStyle = {
+    color: styleVariables.gray
+};
 
 class MyAccount extends React.Component{
     state = {
@@ -38,10 +43,10 @@ class MyAccount extends React.Component{
           }
 
           return (
-              <Grid className={"page-min-height"}>
+              <Grid className="page-min-height">
                   <ScrollToTop showUnder={110}>
-                      <div className={"text-center"}>
-                          <Glyphicon glyph={"arrow-up"}/>
+                      <div className="text-center">
+                          <Glyphicon glyph="arrow-up"/>
                           <p>Back to Top</p>
                       </div>
                   </ScrollToTop>
@@ -49,24 +54,24 @@ class MyAccount extends React.Component{
                       <Col lg={12} md={12}>
                           <Panel>
                               <Panel.Heading>
-                                  <Panel.Title componentClass="h3" className={"text-center"}>My Account</Panel.Title>
+                                  <Panel.Title componentClass="h3" className="text-center">My Account</Panel.Title>
                               </Panel.Heading>
                               <Panel.Body>
                                   <Row>
                                       <Col lg={2} md={2}>
-                                          <p className={"user-info-label"}>Full Name: </p>
+                                          <p style={fieldLabelStyle}>Full Name: </p>
                                       </Col>
                                       <Col lg={10} md={10}>
-                                          <p className={"user-info"}>{this.state.user.name}</p>
+                                          <p className="text-l">{this.state.user.name}</p>
                                       </Col>
                                   </Row>
 
                                   <Row>
                                       <Col lg={2} md={2}>
-                                          <p className={"user-info-label"}>Email: </p>
+                                          <p style={fieldLabelStyle}>Email: </p>
                                       </Col>
                                       <Col lg={10} md={10}>
-                                          <p className={"user-info"}>{this.state.user.email}</p>
+                                          <p className="text-l">{this.state.user.email}</p>
                                       </Col>
                                   </Row>
                               </Panel.Body>

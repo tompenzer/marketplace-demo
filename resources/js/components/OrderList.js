@@ -1,5 +1,5 @@
 import React from "react";
-import {Grid, Row, Col, Panel, ListGroup} from "react-bootstrap";
+import { Grid, Row, Col, Panel, ListGroup } from "react-bootstrap";
 import axios, { getAuthHeaders } from "../api/axiosInstance";
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
@@ -9,6 +9,18 @@ import { userOrdersApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import Snackbar from '@material-ui/core/Snackbar';
+import styleVariables from '../../sass/base/_variables.scss';
+
+const headingLabelStyle = {
+    color: styleVariables.grayDark,
+    fontSize: styleVariables.textSizeS,
+    fontWeight: 700
+};
+
+const headingTextStyle = {
+    color: styleVariables.gray,
+    fontSize: styleVariables.textSizeS
+};
 
 const OrderPanels = (props) => (
     <Panel>
@@ -16,13 +28,13 @@ const OrderPanels = (props) => (
             <Panel.Title>
                 <Row>
                     <Col lg={3} md={3}>
-                        <span className={"bold order-panel-headings"}>Order Placed:</span>
+                        <span style={headingLabelStyle}>Order Placed:</span>
                     </Col>
                     <Col lg={3} md={3}>
-                        <span className={"bold order-panel-headings"}>Total:</span>
+                        <span style={headingLabelStyle}>Total:</span>
                     </Col>
                     <Col lg={4} md={4}>
-                        <span className={"bold order-panel-headings"}>Items:</span>
+                        <span style={headingLabelStyle}>Items:</span>
                     </Col>
                     <Col lg={2} md={2}>
                         <Link to={{
@@ -36,13 +48,13 @@ const OrderPanels = (props) => (
 
                 <Row>
                     <Col lg={3} md={3}>
-                        <span className={"order-panel-attributes"}>{props.orderDate.split(" ")[0]}</span>
+                        <span style={headingTextStyle}>{props.orderDate.split(" ")[0]}</span>
                     </Col>
                     <Col lg={3} md={3}>
-                        <span className={"order-panel-attributes"}>${props.orderTotal}</span>
+                        <span style={headingTextStyle}>${props.orderTotal}</span>
                     </Col>
                     <Col lg={3} md={3}>
-                        <span className={"order-panel-attributes"}>{props.itemCount}</span>
+                        <span style={headingTextStyle}>{props.itemCount}</span>
                     </Col>
                     <Col lg={3} md={3}>
 
@@ -50,7 +62,7 @@ const OrderPanels = (props) => (
                 </Row>
             </Panel.Title>
         </Panel.Heading>
-        <Panel.Body className={"order-list-panel-body"}>
+        <Panel.Body>
             {props.children}
         </Panel.Body>
     </Panel>
@@ -67,21 +79,17 @@ class OrderList extends React.Component {
     };
 
     componentDidMount() {
-        if (this.props.authentication.isAuthenticated) {
-            this.setState(() => ({ isLoading: true }));
+        this.setState(() => ({ isLoading: true }));
 
-            axios.get(userOrdersApi, getAuthHeaders())
-                .then((response) => {
-                    const orders = response.data;
-                    this.setState(() => ({ orders, isLoading: false }));
-                })
-                .catch((error) => {
-                    console.log(error.response);
-                    this.setState(() => ({ isLoading: false }));
-                })
-        } else {
-            this.props.history.push("/login");
-        }
+        axios.get(userOrdersApi, getAuthHeaders())
+            .then((response) => {
+                const orders = response.data;
+                this.setState(() => ({ orders, isLoading: false }));
+            })
+            .catch((error) => {
+                console.log(error.response);
+                this.props.history.push("/login");
+            });
     }
 
     handleAddToCart = (product = {}) => {
@@ -112,11 +120,11 @@ class OrderList extends React.Component {
 
         return (
             <div>
-                <h4>My Orders</h4>
+                <h2 className="page-heading">My orders</h2>
                 <hr/>
                 <br/>
                 {this.state.orders.length === 0 ?
-                <p>You have no order history. Let's not think too deeply about that. *whistles innocently*</p> :
+                <p>You haven't placed any orders.</p> :
                 this.state.orders.data.map((order) => {
                 return <OrderPanels
                         key={'order' + order.id}

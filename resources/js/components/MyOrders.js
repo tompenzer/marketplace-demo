@@ -4,8 +4,8 @@ import OrderList from "../components/OrderList";
 import ScrollToTop from "react-scroll-up";
 
 const MyOrders = () => (
-    <Grid className="page-min-height">
-        <ScrollToTop showUnder={110}>
+    <Grid className="page-min-height margin-b-2xl">
+        <ScrollToTop showUnder={110} style={{ bottom: 80 }}>
             <div className="text-center">
                 <Glyphicon glyph="arrow-up"/>
                 <p>Back to Top</p>

@@ -2,10 +2,6 @@ import React from "react";
 import { Grid, Col, Row, ListGroup, ListGroupItem } from "react-bootstrap";
 import LoadingOrderAnimation from 'react-loading-order-with-animation';
 
-const aboutPageStyle = {
-  minHeight: '360px'
-};
-
 const About = () => (
     <Grid className="page-min-height">
         <Row>

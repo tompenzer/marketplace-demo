@@ -34,8 +34,8 @@ class StoreAdd extends React.Component{
             this.props.match.params.storeId &&
             parseInt(this.props.match.params.storeId) == this.props.match.params.storeId
         ) {
-            this.props.dispatch(checkStoreAuth(this.props.match.params.storeId));
-            this.props.dispatch(loadStoreDetails(this.props.match.params.storeId));
+            this.setState({ storeId: this.props.match.params.storeId });
+            this.getStore(this.props.match.params.storeId);
         }
 
         if (this.props.stores.storeAuth && this.props.stores.storeDetails) {
@@ -49,22 +49,24 @@ class StoreAdd extends React.Component{
         if (this.props.match.params.storeId !== nextProps.match.params.storeId &&
             parseInt(nextProps.match.params.storeId) == nextProps.match.params.storeId
         ) {
-            this.props.dispatch(checkStoreAuth(nextProps.match.params.storeId));
-            this.props.dispatch(loadStoreDetails(nextProps.match.params.storeId));
+            this.setState({ storeId: nextProps.match.params.storeId });
+            this.getStore(nextProps.match.params.storeId);
         }
 
         // Handle situations where storeAuth is returned before and after the
         // storeDetails.
-        if (this.props.stores.storeDetails !== nextProps.stores.storeDetails) {
-            if (this.props.stores.storeAuth) {
-                this.updateStoreInfo(nextProps.stores.storeDetails);
-            }
+        if (nextProps.stores.storeDetails.id &&
+            this.props.stores.storeDetails !== nextProps.stores.storeDetails &&
+            this.props.stores.storeAuth
+        ) {
+            this.updateStoreInfo(nextProps.stores.storeDetails);
         }
 
-        if (this.props.stores.storeAuth !== nextProps.stores.storeAuth) {
-            if (nextProps.stores.storeAuth && this.props.stores.storeDetails) {
-                this.updateStoreInfo(this.props.stores.storeDetails);
-            }
+        if (nextProps.stores.storeAuth &&
+            this.props.stores.storeAuth !== nextProps.stores.storeAuth &&
+            this.props.stores.storeDetails.id
+        ) {
+            this.updateStoreInfo(this.props.stores.storeDetails);
         }
 
         // If a store has been created/updated, redirect to it.
@@ -82,6 +84,11 @@ class StoreAdd extends React.Component{
         }
     }
 
+    getStore = (storeId) => {
+        this.props.dispatch(checkStoreAuth(storeId));
+        this.props.dispatch(loadStoreDetails(storeId));
+    }
+
     updateStoreInfo = (storeDetails) => {
         this.setState({
             storeName: storeDetails.name,
@@ -92,28 +99,23 @@ class StoreAdd extends React.Component{
     }
 
     handleNameChange = (e) => {
-        const storeName = e.target.value;
-        let storeNameValidation = null;
+        const storeName = e.target.value.toString();
+        let status = "error";
 
         if (storeName.length > 0 && storeName.length < 255) {
-            storeNameValidation = "success";
-            this.setState(() => ({ storeName, storeNameValidation }));
-        } else {
-            storeNameValidation = "error";
-            this.setState(() => ({ storeNameValidation }));
+            status = s;
         }
+
+        this.setState({ storeName, storeNameValidation: status });
     };
 
     handleDescriptionChange = (e) => {
-        const description = e.target.value;
-        let descriptionValidation;
+        const description = e.target.value.toString();
 
         if (description.length > 0) {
-            descriptionValidation = "success";
-            this.setState(() => ({ description, descriptionValidation }));
+            this.setState({ description, descriptionValidation: s });
         } else {
-            descriptionValidation = "error";
-            this.setState(() => ({ descriptionValidation }));
+            this.setState({ descriptionValidation: "error" });
         }
     };
 
@@ -126,11 +128,8 @@ class StoreAdd extends React.Component{
                 description: this.state.description
             };
 
-            if (this.props.match &&
-                this.props.match.params.storeId &&
-                parseInt(this.props.match.params.storeId) == this.props.match.params.storeId
-            ) {
-                store.id = this.props.match.params.storeId;
+            if (this.state.storeId) {
+                store.id = this.state.storeId;
             }
 
             this.props.dispatch(saveStore(store));
@@ -141,7 +140,7 @@ class StoreAdd extends React.Component{
         let addOrEdit = 'Add',
             errors = '';
 
-        if (this.props.match && this.props.match.params.storeId) {
+        if (this.state.storeId) {
             addOrEdit = 'Edit';
         }
 
@@ -172,7 +171,7 @@ class StoreAdd extends React.Component{
             <Grid>
                 <Row>
                     <Col mdOffset={2} lgOffset={2} lg={7} md={7}>
-                        <h3 className={"text-center"}>{addOrEdit + (this.props.match && this.props.match.params.storeId ? '' : ' a')} store</h3>
+                        <h3 className={"text-center"}>{addOrEdit + (this.state.storeId ? '' : ' a')} store</h3>
                         {errors}
                         <form onSubmit={this.handleSubmit}>
 

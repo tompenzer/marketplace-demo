@@ -12,6 +12,24 @@ export const LOG_IN_ERROR = 'LOG_IN_ERROR';
 
 export const LOG_OUT = 'LOG_OUT';
 
+export const STORES = 'STORES';
+
+export const STORES_REQUESTED = 'STORES_REQUESTED';
+
+export const STORES_ERROR = 'STORES_ERROR';
+
+export const STORES_INVALIDATE = 'STORES_INVALIDATE';
+
+export const STORE_AUTH = 'STORE_AUTH';
+
+export const STORE_DETAILS = 'STORE_DETAILS';
+
+export const STORE_DETAILS_INVALIDATE = 'STORE_DETAILS_INVALIDATE';
+
+export const STORE_CREATED = 'STORE_CREATED';
+
+export const STORE_CREATE_ERRORS = 'STORE_CREATE_ERRORS';
+
 export const ADD_TO_CART = 'ADD_TO_CART';
 
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';

@@ -1,6 +1,6 @@
 import axios, { getAuthHeaders } from "../api/axiosInstance";
 import { getUserAPI, loginAPI, logoutAPI } from "../api/apiURLs";
-import { ACCESS_TOKEN, LOG_IN, LOG_IN_REQUESTED, LOG_IN_ERROR, LOG_OUT, REFRESH_TOKEN, ROUTES } from "../api/strings";
+import { ACCESS_TOKEN, LOG_IN, LOG_IN_REQUESTED, LOG_IN_ERROR, LOG_OUT, REFRESH_TOKEN } from "../api/strings";
 
 export const loginUser = () => ({
     type: LOG_IN

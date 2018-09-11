@@ -2,7 +2,7 @@
 import { LOG_IN, LOG_IN_REQUESTED, LOG_IN_ERROR, LOG_OUT } from "../api/strings";
 
 const authenticationReducerDefaultState = {
-    isAuthenticated: false,
+    isAuthenticated: null,
     loginRequested: false,
     loginFailed: false
 };
@@ -26,13 +26,16 @@ export default (state = authenticationReducerDefaultState, action) => {
         case LOG_IN_ERROR:
             return {
                 ...state,
+                isAuthenticated: false,
                 loginRequested: false,
                 loginFailed: true
             };
         case LOG_OUT:
             return {
                 ...state,
-                ...authenticationReducerDefaultState
+                isAuthenticated: false,
+                loginRequested: false,
+                loginFailed: false
             };
         default:
             return state;

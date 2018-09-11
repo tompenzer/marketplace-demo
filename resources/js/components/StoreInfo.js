@@ -1,64 +1,32 @@
 import React from "react";
 import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
+import { checkStoreAuth, loadStoreDetails } from "../actions/stores";
 import { connect } from 'react-redux';
+import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
 import Snackbar from '@material-ui/core/Snackbar';
-import axios, { getAuthHeaders } from "../api/axiosInstance";
-import { storeInfoApi, storeAuthApi, unitsApi, currenciesApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import { ADDED_TO_CART_SNACKBAR, ACCESS_TOKEN, ROUTES } from "../api/strings";
 import ProductList from './ProductList';
 
 class StoreInfo extends React.Component {
 
     state = {
-      store: {
-          products: []
-      },
-      prevPrice: null,
-      quantity: 1,
-      storeId: undefined,
       autoHideDuration: 3000,
       snackbarOpen:false,
-      isLoading: false,
-      storeNotFound: false,
-      snackbarMessage: "",
-      userHasAuth: false
-    };
-
-    loadStoreDetails = (storeId) => {
-        this.setState({ storeId, isLoading: true });
-
-        // Get the store info
-        axios.get(storeInfoApi(storeId)).then((response) => (
-            this.setState({
-                store: response.data,
-                isLoading: false,
-                storeNotFound: false
-            })
-        )).catch((error) => (
-            this.setState({
-                isLoading: false,
-                storeNotFound: true
-            })
-        ));
-
-        // Check if logged in user has authorization to edit store.
-        axios.get(storeAuthApi(storeId), getAuthHeaders()).then((response) => {
-            this.setState({ userHasAuth: response.data } )
-        });
+      snackbarMessage: ""
     };
 
     componentWillReceiveProps(nextProps) {
         if (this.props.match.params.storeId !== nextProps.match.params.storeId) {
-            this.loadStoreDetails(nextProps.match.params.storeId);
+            this.props.dispatch(checkStoreAuth(nextProps.match.params.storeId));
+            this.props.dispatch(loadStoreDetails(nextProps.match.params.storeId));
         }
     }
 
     componentDidMount() {
-        // load the store details here
-        this.loadStoreDetails(this.props.match.params.storeId);
+        this.props.dispatch(checkStoreAuth(this.props.match.params.storeId));
+        this.props.dispatch(loadStoreDetails(this.props.match.params.storeId));
     }
 
     handleAddToCart = (product) => {
@@ -71,12 +39,12 @@ class StoreInfo extends React.Component {
         let editStore,
             addProduct;
 
-        if (this.state.userHasAuth) {
+        if (this.props.stores.storeAuth) {
             editStore = (
                 <Button
                     bsStyle={"info"}
                     className={"edit-store margin-b-s"}
-                    onClick={() => (this.props.history.push(ROUTES.stores.update.split(':storeId')[0] + this.state.store.id + ROUTES.stores.update.split(':storeId')[1]))}
+                    onClick={() => (this.props.history.push(ROUTES.stores.update.split(':storeId')[0] + this.props.stores.storeDetails.id + ROUTES.stores.update.split(':storeId')[1]))}
                 >
                     Edit store
                 </Button>
@@ -85,16 +53,18 @@ class StoreInfo extends React.Component {
                 <Button
                     bsStyle={"primary"}
                     className={"add-store-product margin-b-s"}
-                    onClick={() => (this.props.history.push(ROUTES.products.store.split(':storeId')[0] + this.state.store.id + ROUTES.products.store.split(':storeId')[1]))}
+                    onClick={() => (this.props.history.push(ROUTES.products.store.split(':storeId')[0] + this.props.stores.storeDetails.id + ROUTES.products.store.split(':storeId')[1]))}
                 >
                     Add store product
                 </Button>
             )
         }
 
-        if (this.state.isLoading) {
+        if (this.props.stores.storesRequested) {
             return <LoadingScreen/>
-        } else if (this.state.storeNotFound) {
+        }
+
+        if (this.props.stores.storesError) {
             return <InformationPanel
                     panelTitle={"Store Not available"}
                     informationHeading={"The requested store was not found."}
@@ -108,11 +78,11 @@ class StoreInfo extends React.Component {
                     <Col lg={12} md={12}>
                         <div className="store-info-left-margin">
                             <h2 className="d-flex">
-                                {this.state.store.name}
+                                {this.props.stores.storeDetails.name}
                                 <span className="margin-l-a">{editStore}</span>
                             </h2>
                             <div className="store-info-seller-name">
-                                <span>{this.state.store.sellerName}</span>
+                                <span>{this.props.stores.storeDetails.sellerName}</span>
                             </div>
                             <hr />
                         </div>
@@ -126,7 +96,7 @@ class StoreInfo extends React.Component {
                         <div className={"store-info-left-margin"}>
                             <h3 className={"store-description-heading"}>Store Description:</h3>
                             <hr/>
-                            <p className={"store-description"}>{this.state.store.description}</p>
+                            <p className={"store-description"}>{this.props.stores.storeDetails.description}</p>
                         </div>
                     </Col>
                 </Row>
@@ -137,13 +107,14 @@ class StoreInfo extends React.Component {
                     <Col lg={12} md={12}>
                         <h3 className={"store-description-heading"}>Our products:</h3>
                         {addProduct}
+                        {this.props.stores.storeDetails.products &&
                         <ProductList
-                            products={this.state.store.products}
-                            store={{ id: this.state.store.id, name: this.state.store.name }}
+                            products={this.props.stores.storeDetails.products}
+                            store={{ id: this.props.stores.storeDetails.id, name: this.props.stores.storeDetails.name }}
                             handleAddToCart={this.handleAddToCart}
-                            userHasAuth={this.state.userHasAuth}
+                            userHasAuth={this.props.stores.storeAuth}
                             history={this.props.history}
-                        />
+                        />}
                     </Col>
                 </Row>
 
@@ -165,7 +136,7 @@ class StoreInfo extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        authentication: state.authentication
+        stores: state.stores
     };
 };
 

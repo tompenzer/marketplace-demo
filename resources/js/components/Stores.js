@@ -2,6 +2,7 @@ import React from "react";
 import { Link, withRouter } from 'react-router-dom';
 import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
+import { loadStores } from "../actions/stores";
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -11,8 +12,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
-import axios from "../api/axiosInstance";
-import { storesApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
 import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
@@ -21,52 +20,28 @@ import ProductInfo from "../components/ProductInfo";
 class Stores extends React.Component {
 
     state = {
-      stores: [],
       autoHideDuration: 3000,
-      isLoading: false,
-      storesNotFound: false,
       snackbarOpen: false,
       snackbarMessage: ''
     };
 
-    loadStores(query) {
-        this.setState(() => ({ isLoading: true }));
-
-        let options = {};
-
-        if (query) {
-            options.params = { q: query };
-        }
-
-        // Fetch the stores.
-        axios.get(storesApi, options).then((response) => {
-            this.setState({
-                stores: response.data.data,
-                isLoading: false,
-                storesNotFound: false
-            });
-        }).catch((error) => {
-            this.setState({
-                isLoading: false,
-                storesNotFound: true
-            });
-        });
-    }
-
-    componentDidMount(){
-        this.loadStores(this.props.match.params.q);
+    componentDidMount() {
+        this.props.dispatch(loadStores(this.props.match.params.q));
     }
 
     componentWillReceiveProps(nextProps){
-        if(this.props.match.params.q !== nextProps.match.params.q){
-            this.loadStores(nextProps.match.params.q);
+        if (this.props.match.params.q !== nextProps.match.params.q) {
+            this.props.dispatch(loadStores(nextProps.match.params.q));
         }
     }
 
     addToCartOnClick = (product) => {
         // dispatching an action to redux store
         this.props.dispatch(addToCart(product));
-        this.setState(() => ({snackbarOpen: true, snackbarMessage: ADDED_TO_CART_SNACKBAR}))
+        this.setState({
+            snackbarOpen: true,
+            snackbarMessage: ADDED_TO_CART_SNACKBAR
+        });
     };
 
     handleSnackbarRequestClose = () => {
@@ -92,7 +67,7 @@ class Stores extends React.Component {
 
     render() {
 
-        if(this.state.isLoading){
+        if (this.props.stores.storesRequested) {
             return (
                 <Grid>
                     <Row className="margin-b-m">
@@ -110,7 +85,7 @@ class Stores extends React.Component {
             )
         }
 
-        else if(this.state.storesNotFound){
+        if (this.props.stores.storesError) {
             return (
                 <div>
                     <InformationPanel
@@ -155,7 +130,7 @@ class Stores extends React.Component {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {this.state.stores.map(item => {
+                                    {this.props.stores.stores.map(item => {
                                         return (
                                             <TableRow key={item.id}>
                                                 <TableCell component="th" scope="row">
@@ -186,7 +161,7 @@ class Stores extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        authentication: state.authentication
+        stores: state.stores
     };
 };
 

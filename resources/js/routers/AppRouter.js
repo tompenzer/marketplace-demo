@@ -37,9 +37,9 @@ const appRouter = () => (
                 <Route path={ROUTES.products.update} exact={true} component={ProductAdd} />
                 <Route path={ROUTES.stores.index} exact={true} component={Stores} />
                 <Route path={ROUTES.stores.search} exact={true} component={Stores} />
-                <Route path={ROUTES.stores.show} exact={true} component={StoreInfo} />
                 <Route path={ROUTES.stores.store} exact={true} component={StoreAdd} />
                 <Route path={ROUTES.stores.update} exact={true} component={StoreAdd} />
+                <Route path={ROUTES.stores.show} exact={true} component={StoreInfo} />
                 <Route path={ROUTES.orders.checkout} exact={true} component={Checkout} />
                 <Route path={ROUTES.orders.confirmation} exact={true} component={Order}/>
                 <Route path={ROUTES.orders.index} exact={true} component={MyOrders}/>

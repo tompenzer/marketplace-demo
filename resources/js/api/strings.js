@@ -6,6 +6,10 @@ export const CART_UID = 'cart_uid_marketplace_demo';
 
 export const LOG_IN = 'LOG_IN';
 
+export const LOG_IN_REQUESTED = 'LOG_IN_REQUESTED';
+
+export const LOG_IN_ERROR = 'LOG_IN_ERROR';
+
 export const LOG_OUT = 'LOG_OUT';
 
 export const ADD_TO_CART = 'ADD_TO_CART';

@@ -39,18 +39,18 @@ class Stores extends React.Component {
         }
 
         // Fetch the stores.
-        axios.get(storesApi, options).then((response) => (this.setState(
-            {
+        axios.get(storesApi, options).then((response) => {
+            this.setState({
                 stores: response.data.data,
                 isLoading: false,
                 storesNotFound: false
-            }
-        ))).catch((error) => (
-            this.setState(() => ({
+            });
+        }).catch((error) => {
+            this.setState({
                 isLoading: false,
                 storesNotFound: true
-            }))
-        ));
+            });
+        });
     }
 
     componentDidMount(){

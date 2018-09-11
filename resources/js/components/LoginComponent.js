@@ -1,11 +1,9 @@
 import React from 'react';
 import { FormGroup, ControlLabel, FormControl, HelpBlock, Button, Grid, Row, Col } from 'react-bootstrap';
 import { withRouter, Link } from 'react-router-dom';
-import axios, { getAuthHeaders } from 'axios';
-import { loginAPI, getUserAPI, getUserCartAPI } from "../api/apiURLs";
-import { loginUser, logoutUser } from "../actions/authentication";
+import { logIn } from "../actions/authentication";
 import { connect } from 'react-redux';
-import { ACCESS_TOKEN, REFRESH_TOKEN, ROUTES } from "../api/strings";
+import { ROUTES } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
 import { getCart } from "../actions/shoppingCart";
 
@@ -20,60 +18,50 @@ const FieldGroup = ({ id, label, help, ...props }) => (
 class LoginComponent extends React.Component{
 
     state = {
-        passwordHelp: undefined,
-        usernameHelp: undefined,
-        invalidCredentials: undefined,
-        isLoading: false
+        passwordHelp: '',
+        usernameHelp: ''
     };
+
+    componentDidMount() {
+        if (this.props.authentication.isAuthenticated) {
+            this.props.history.push(ROUTES.root);
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.authentication.isAuthenticated) {
+            this.props.history.push(ROUTES.root);
+        }
+    }
 
     onLoginSubmit = (e) => {
         e.preventDefault();
+
         const email = e.target.formControlsUsername.value;
         const password = e.target.formControlsPassword.value;
 
         if (password.length === 0) {
-            this.setState(() => ({ passwordHelp: "Password cannot be empty" }));
-        } else{
-            this.setState(() => ({ passwordHelp: undefined }));
+            this.setState({ passwordHelp: "Password cannot be empty" });
+        } else {
+            this.setState({ passwordHelp: '' });
         }
 
         if (email.length === 0) {
-            this.setState(() => ({usernameHelp: "Username cannot be empty"}));
+            this.setState({ usernameHelp: "Username cannot be empty" });
         } else {
-            this.setState(() => ({usernameHelp: undefined}));
+            this.setState({ usernameHelp: '' });
         }
 
         if (email.length && password.length) {
             this.setState(() => ({ isLoading: true }));
 
-            const data = {
-              grant_type: "password",
-              client_id: window.Laravel.clientId,
-              client_secret: window.Laravel.clientSecret,
-              username: email,
-              password: password,
-              scope: "*"
-            };
-            axios.post(loginAPI, data)
-                .then((response) => {
-                    this.setState(() => ({ isLoading: false }));
-                    window.localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
-                    window.localStorage.setItem(REFRESH_TOKEN, response.data.refresh_token);
-                    this.props.dispatch(loginUser());
-                    this.props.history.push(ROUTES.root);
-                })
-                .catch((error) => (
-                    this.setState(() => ({
-                        invalidCredentials: true,
-                        isLoading: false
-                    }))
-                ));
+            this.props.dispatch(logIn(email, password));
         }
     };
 
-    render(){
+    render() {
 
-        if(this.state.isLoading){
+        if (this.props.authentication.loginRequested) {
             return <LoadingScreen/>
         }
 
@@ -97,7 +85,7 @@ class LoginComponent extends React.Component{
                                 placeholder="Enter password"
                                 help={this.state.passwordHelp}
                             />
-                            {this.state.invalidCredentials && <p className="error-message margin-t-s">Username or password not valid.</p>}
+                            {this.props.authentication.loginError && <p className="error-message margin-t-s">Username or password not valid.</p>}
                             <Button type={"submit"} className={'btn btn-primary'}>Login</Button>
                         </form>
                         <div>
@@ -114,7 +102,7 @@ class LoginComponent extends React.Component{
 
 const mapStateToProps = (state) => {
     return {
-        authentication: state.authentication
+        authentication: state.authentication,
     };
 };
 

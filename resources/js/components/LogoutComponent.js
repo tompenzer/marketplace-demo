@@ -15,7 +15,7 @@ class LogoutComponent extends React.Component{
             this.props.dispatch(logOut());
         }
 
-        this.props.history.push(ROUTES.auth.login);
+        this.props.history.push(ROUTES.root);
     }
 
     render() {

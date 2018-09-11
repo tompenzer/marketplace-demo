@@ -1,11 +1,7 @@
 import React from 'react';
-import { Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Panel, HelpBlock } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import axios, { getAuthHeaders } from "../api/axiosInstance";
-import { getUserAPI, storesApi, storeInfoApi, storeUpdateApi, storeAuthApi } from "../api/apiURLs";
-import { loginUser, logoutUser } from "../actions/authentication";
+import { Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Panel } from 'react-bootstrap';
 import { loadStoreDetails, checkStoreAuth, saveStore } from "../actions/stores";
-import { ACCESS_TOKEN, ROUTES } from "../api/strings";
+import { ROUTES } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
 import { connect } from 'react-redux';
 
@@ -77,10 +73,10 @@ class StoreAdd extends React.Component{
         }
 
         // Require auth; redirect to login if the auth check comes back negative.
-        if (this.props.authentication.isAuthenticated !== nextProps.authentication.isAuthenticated) {
-            if (nextProps.authentication.isAuthenticated === false) {
-                this.props.history.push(ROUTES.auth.login);
-            }
+        if (this.props.authentication.isAuthenticated !== nextProps.authentication.isAuthenticated &&
+            nextProps.authentication.isAuthenticated === false
+        ) {
+            this.props.history.push(ROUTES.auth.login);
         }
     }
 
@@ -111,12 +107,13 @@ class StoreAdd extends React.Component{
 
     handleDescriptionChange = (e) => {
         const description = e.target.value.toString();
+        let status = "error";
 
         if (description.length > 0) {
-            this.setState({ description, descriptionValidation: s });
-        } else {
-            this.setState({ descriptionValidation: "error" });
+            status = s;
         }
+
+        this.setState({ description, descriptionValidation: status });
     };
 
     handleSubmit = (e) => {
@@ -137,15 +134,15 @@ class StoreAdd extends React.Component{
     };
 
     render() {
+        if (this.props.stores.storesRequested) {
+            return <LoadingScreen/>
+        }
+
         let addOrEdit = 'Add',
             errors = '';
 
         if (this.state.storeId) {
             addOrEdit = 'Edit';
-        }
-
-        if (this.props.stores.storesRequested) {
-            return <LoadingScreen/>
         }
 
         if (this.props.stores.storeCreateErrors.length) {

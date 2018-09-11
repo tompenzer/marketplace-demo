@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Row, Col } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { ROUTES } from "../api/strings";
 
 const listItemStyle = {
     borderColor: 'rgba(0, 0, 0, 0.1)'
@@ -9,8 +10,10 @@ const listItemStyle = {
 
 class CustomListGroupItemOrder extends React.Component{
 
-    viewClickHandler = (routeName) => {
-        this.props.history.push(routeName);
+    viewClickHandler = () => {
+        this.props.history.push(
+            ROUTES.products.show.split(':')[0] + this.props.productId
+        );
     };
 
     handleAddToCart = (e) => {
@@ -40,7 +43,7 @@ class CustomListGroupItemOrder extends React.Component{
                         </Col>
 
                         <Col md={2} lg={2} sm={12} xs={12}>
-                          <Button bsStyle={"default"} className={"btn-sm btn-block margin-b-s"} onClick={() => this.viewClickHandler(`/product/${this.props.productId}`)}>View</Button>
+                          <Button bsStyle={"default"} className={"btn-sm btn-block margin-b-s"} onClick={this.viewClickHandler}>View</Button>
                           <Button bsStyle={"primary"} className={"btn-sm btn-block"} onClick={this.handleAddToCart}>Buy Again</Button>
                         </Col>
                     </Row>

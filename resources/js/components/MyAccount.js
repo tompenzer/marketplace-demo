@@ -6,6 +6,7 @@ import axios, { getAuthHeaders } from '../api/axiosInstance';
 import { getUserAPI } from "../api/apiURLs";
 import ScrollToTop from "react-scroll-up";
 import LoadingScreen from "../components/LoadingScreen";
+import { ROUTES } from "../api/strings";
 import styleVariables from '../../sass/base/_variables.scss';
 
 const fieldLabelStyle = {
@@ -30,10 +31,10 @@ class MyAccount extends React.Component{
                 })
                 .catch((error) => {
                     console.log(error.response);
-                    this.props.history.push("/");
+                    this.props.history.push(ROUTES.root);
                 })
         } else {
-            this.props.history.push("/login");
+            this.props.history.push(ROUTES.auth.login);
         }
     }
 

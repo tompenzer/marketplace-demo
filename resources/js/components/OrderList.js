@@ -4,7 +4,7 @@ import axios, { getAuthHeaders } from "../api/axiosInstance";
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
 import CustomListGroupItem from '../components/CustomListGroupItemOrder';
-import { ACCESS_TOKEN, ADDED_TO_CART_SNACKBAR } from "../api/strings";
+import { ACCESS_TOKEN, ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
 import { userOrdersApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
@@ -38,7 +38,7 @@ const OrderPanels = (props) => (
                     </Col>
                     <Col lg={2} md={2}>
                         <Link to={{
-                            pathname: `/order/${props.orderID}`,
+                            pathname: ROUTES.orders.show.split(':')[0] + props.orderID,
                             state: { authenticated: true }
                         }}>
                             View details
@@ -84,11 +84,11 @@ class OrderList extends React.Component {
         axios.get(userOrdersApi, getAuthHeaders())
             .then((response) => {
                 const orders = response.data;
-                this.setState(() => ({ orders, isLoading: false }));
+                this.setState({ orders, isLoading: false });
             })
             .catch((error) => {
                 console.log(error.response);
-                this.props.history.push("/login");
+                this.props.history.push(ROUTES.auth.login);
             });
     }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
+import { ROUTES } from "../api/strings";
 import LoginComponent from "../components/LoginComponent";
 import RegistrationComponent from "../components/RegistrationComponent";
 import LogoutComponent from "../components/LogoutComponent";
@@ -25,26 +26,26 @@ const appRouter = () => (
         <div>
             <Header/>
             <Switch>
-                <Route path="/" exact={true} component={Products} />
-                <Route path="/login" exact={true} component={LoginComponent}/>
-                <Route path="/register" exact={true} component={RegistrationComponent}/>
-                <Route path="/logout" exact={true} component={LogoutComponent}/>
-                <Route path="/products" exact={true} component={Products} />
-                <Route path="/products/:q" exact={true} component={Products} />
-                <Route path="/product/:id" exact={true} component={ProductInfo} />
-                <Route path="/stores" exact={true} component={Stores} />
-                <Route path="/stores/:q" exact={true} component={Stores} />
-                <Route path="/store/add" exact={true} component={StoreAdd} />
-                <Route path="/store/:storeId" exact={true} component={StoreInfo} />
-                <Route path="/store/:storeId/edit" exact={true} component={StoreAdd} />
-                <Route path="/store/:storeId/products/add" exact={true} component={ProductAdd} />
-                <Route path="/store/:storeId/product/:productId/edit" exact={true} component={ProductAdd} />
-                <Route path="/checkout" exact={true} component={Checkout} />
-                <Route path="/order" exact={true} component={Order}/>
-                <Route path="/orders" exact={true} component={MyOrders}/>
-                <Route path="/order/:orderId" exact={true} component={OrderDetail} />
-                <Route path="/account" exact={true} component={MyAccount}/>
-                <Route path="/about" exact={true} component={About}/>
+                <Route path={ROUTES.root} exact={true} component={Products} />
+                <Route path={ROUTES.auth.login}exact={true} component={LoginComponent}/>
+                <Route path={ROUTES.auth.register} exact={true} component={RegistrationComponent}/>
+                <Route path={ROUTES.auth.logout} exact={true} component={LogoutComponent}/>
+                <Route path={ROUTES.products.index} exact={true} component={Products} />
+                <Route path={ROUTES.products.search} exact={true} component={Products} />
+                <Route path={ROUTES.products.show} exact={true} component={ProductInfo} />
+                <Route path={ROUTES.products.store} exact={true} component={ProductAdd} />
+                <Route path={ROUTES.products.update} exact={true} component={ProductAdd} />
+                <Route path={ROUTES.stores.index} exact={true} component={Stores} />
+                <Route path={ROUTES.stores.search} exact={true} component={Stores} />
+                <Route path={ROUTES.stores.show} exact={true} component={StoreInfo} />
+                <Route path={ROUTES.stores.store} exact={true} component={StoreAdd} />
+                <Route path={ROUTES.stores.update} exact={true} component={StoreAdd} />
+                <Route path={ROUTES.orders.checkout} exact={true} component={Checkout} />
+                <Route path={ROUTES.orders.confirmation} exact={true} component={Order}/>
+                <Route path={ROUTES.orders.index} exact={true} component={MyOrders}/>
+                <Route path={ROUTES.orders.show} exact={true} component={OrderDetail} />
+                <Route path={ROUTES.users.show} exact={true} component={MyAccount}/>
+                <Route path={ROUTES.about} exact={true} component={About}/>
                 <Route component={NotFoundPage} />
             </Switch>
             <Footer/>

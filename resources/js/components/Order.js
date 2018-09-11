@@ -4,7 +4,7 @@ import OrderList from "../components/OrderList";
 import OrderConfirmation from "./OrderConfirmation";
 import { connect } from "react-redux";
 import { emptyCart } from "../actions/shoppingCart";
-import { SUCCESSFUL_ORDER } from "../api/strings";
+import { SUCCESSFUL_ORDER, ROUTES } from "../api/strings";
 import { withRouter } from "react-router-dom";
 
 class Order extends React.Component {
@@ -13,7 +13,7 @@ class Order extends React.Component {
         if (! this.props.location.state &&
             this.props.location.state.order.toString() === SUCCESSFUL_ORDER
         ) {
-            this.props.history.push("/orders");
+            this.props.history.push(ROUTES.orders.index);
         }
     }
 
@@ -22,7 +22,7 @@ class Order extends React.Component {
             this.props.shoppingCart.length > 0 &&
             this.props.location.state.order === SUCCESSFUL_ORDER
         ) {
-            this.props.history.push("/orders");
+            this.props.history.push(ROUTES.orders.index);
         }
     }
 

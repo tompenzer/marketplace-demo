@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Grid, Panel, Glyphicon } from 'react-bootstrap';
 import { Link } from "react-router-dom";
+import { ROUTES } from "../api/strings";
 
 const iconStyle = {
     fontSize: '30px'
@@ -22,7 +23,7 @@ const InformationPanel = (props) => (
 
                         <Glyphicon glyph={"shopping-cart"} style={iconStyle}/>
 
-                        <Link to={"/"}>Continue Shopping</Link>
+                        <Link to={ROUTES.root}>Continue Shopping</Link>
                     </Panel.Body>
                 </Panel>
             </Col>

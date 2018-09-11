@@ -8,7 +8,7 @@ import { Row, Col, FormGroup, ControlLabel, FormControl, Radio, Form, Button } f
 import AddressForm from "./AddressForm";
 import { withRouter } from "react-router-dom";
 import axios, { getAuthHeaders } from "../api/axiosInstance";
-import { ACCESS_TOKEN, SUCCESSFUL_ORDER } from "../api/strings";
+import { ACCESS_TOKEN, SUCCESSFUL_ORDER, ROUTES } from "../api/strings";
 import { getUserAPI, userCartTotalsApi, userOrderApi, countriesApi} from "../api/apiURLs";
 import { connect } from "react-redux";
 import LoadingScreen from "../components/LoadingScreen";
@@ -42,7 +42,7 @@ class CheckoutInformation extends React.Component {
             })
             .catch((error) => {
                 // Login is required
-                this.props.history.push('/login');
+                this.props.history.push(ROUTES.auth.login);
             });
 
         this.fillCountries();
@@ -69,7 +69,7 @@ class CheckoutInformation extends React.Component {
             .then((response) => {
                 this.props.dispatch(emptyCart());
                 this.props.history.push({
-                    pathname: '/order',
+                    pathname: ROUTES.orders.confirmation,
                     state: {
                         order: SUCCESSFUL_ORDER,
                         orderId: response.data.id

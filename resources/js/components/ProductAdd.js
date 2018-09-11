@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import axios, { getAuthHeaders } from "../api/axiosInstance";
 import { storeAuthApi, productsApi, productInfoAPI, productUpdateApi, unitsApi, currenciesApi } from "../api/apiURLs";
 import { loginUser, logoutUser } from "../actions/authentication";
-import { ACCESS_TOKEN } from "../api/strings";
+import { ACCESS_TOKEN, ROUTES } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
 import { connect } from 'react-redux';
 
@@ -55,7 +55,7 @@ class ProductAdd extends React.Component{
         // Must be logged in and be passed store context.
         if (! access_token && this.props.match && this.props.match.params.storeId) {
             this.props.dispatch(logoutUser());
-            this.props.history.push("/login");
+            this.props.history.push(ROUTES.auth.login);
         }
 
         let storeId = this.props.match.params.storeId;
@@ -80,7 +80,7 @@ class ProductAdd extends React.Component{
                 window.localStorage.removeItem(ACCESS_TOKEN);
                 this.props.dispatch(logoutUser());
                 this.setState(() => ({ isLoading: false }));
-                this.props.history.push("/login");
+                this.props.history.push(ROUTES.auth.login);
             });
 
         // If passed a product prop, pre-fill the data and we'll do a product
@@ -347,7 +347,7 @@ class ProductAdd extends React.Component{
             .then((response) => {
                 if (response.data.id) {
                     this.setState(() => ({ isLoading: false }));
-                    this.props.history.push('/product/' + response.data.id);
+                    this.props.history.push(ROUTES.products.show.split(':')[0] + response.data.id);
                 }
             })
             .catch((error) => {

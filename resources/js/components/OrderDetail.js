@@ -4,7 +4,7 @@ import { withRouter, Link } from "react-router-dom";
 import { connect } from 'react-redux';
 import axios, { getAuthHeaders } from "../api/axiosInstance";
 import LoadingScreen from "../components/LoadingScreen";
-import { ACCESS_TOKEN, ADDED_TO_CART_SNACKBAR } from "../api/strings";
+import { ACCESS_TOKEN, ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
 import { userOrderApi } from "../api/apiURLs";
 import InformationPanel from "../components/InformationPanel";
 import Stepper from '@material-ui/core/Stepper';
@@ -41,10 +41,10 @@ class OrderDetail extends React.Component{
     getOrderDetail = () => {
         axios.get(userOrderApi(this.props.match.params.orderId), getAuthHeaders())
             .then((response) => {
-                this.setState(() => ({ orderDetail: response.data, isLoading: false }));
+                this.setState({ orderDetail: response.data, isLoading: false });
             })
             .catch(() => {
-                this.setState(() => ({ isLoading: false, invalidOrder: true }));
+                this.setState({ isLoading: false, invalidOrder: true });
             });
     };
 
@@ -52,7 +52,7 @@ class OrderDetail extends React.Component{
         if (this.props.location.state && this.props.location.state.authenticated) {
             this.getOrderDetail();
         } else {
-            this.props.history.push("/login");
+            this.props.history.push(ROUTES.auth.login);
         }
     }
 
@@ -60,7 +60,7 @@ class OrderDetail extends React.Component{
         if (nextProps.location.state && nextProps.location.state.authenticated) {
             this.getOrderDetail();
         } else {
-            this.props.history.push("/login");
+            this.props.history.push(ROUTES.auth.login);
         }
     }
 
@@ -111,7 +111,7 @@ class OrderDetail extends React.Component{
                         <Row>
                             <Col lg={4} md={4}>
                                 <h2 className="page-heading">
-                                    <Link to={"/orders"}>
+                                    <Link to={ROUTES.orders.index}>
                                         <Glyphicon glyph={"chevron-left"}/>
                                         My Orders
                                     </Link>

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import axios, { getAuthHeaders } from "../api/axiosInstance";
 import { getUserAPI, storesApi, storeInfoApi, storeUpdateApi, storeAuthApi } from "../api/apiURLs";
 import { loginUser, logoutUser } from "../actions/authentication";
-import {ACCESS_TOKEN} from "../api/strings";
+import { ACCESS_TOKEN, ROUTES } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
 import { connect } from 'react-redux';
 
@@ -26,11 +26,11 @@ class StoreAdd extends React.Component{
         // Require auth to create a store - redirect to login if unauthorized.
         if (window.localStorage.getItem(ACCESS_TOKEN) === null) {
             this.props.dispatch(logoutUser());
-            this.props.history.push('/login');
+            this.props.history.push(ROUTES.auth.login);
         }
 
         // means the user is already logged in, check if it is valid
-        this.setState(() => ({isLoading: true}));
+        this.setState(() => ({ isLoading: true }));
 
         axios.get(getUserAPI, getAuthHeaders())
             .then(() => {
@@ -40,7 +40,7 @@ class StoreAdd extends React.Component{
                 window.localStorage.removeItem(ACCESS_TOKEN);
                 this.props.dispatch(logoutUser());
                 this.setState(() => ({ isLoading: false }));
-                this.props.history.push('/login');
+                this.props.history.push(ROUTES.auth.login);
             });
 
         // If passed a store prop, pre-fill the data and we'll do a store
@@ -114,7 +114,7 @@ class StoreAdd extends React.Component{
             .then((response) => {
                 if (response.data.id) {
                     this.setState(() => ({ isLoading: false }));
-                    this.props.history.push('/store/' + response.data.id);
+                    this.props.history.push(ROUTES.stores.show.split(':')[0] + response.data.id);
                 }
             })
             .catch((error) => {

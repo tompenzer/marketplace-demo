@@ -5,7 +5,7 @@ import axios, { getAuthHeaders } from 'axios';
 import { loginAPI, getUserAPI, getUserCartAPI } from "../api/apiURLs";
 import { loginUser, logoutUser } from "../actions/authentication";
 import { connect } from 'react-redux';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../api/strings";
+import { ACCESS_TOKEN, REFRESH_TOKEN, ROUTES } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
 import { getCart } from "../actions/shoppingCart";
 
@@ -60,7 +60,7 @@ class LoginComponent extends React.Component{
                     window.localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
                     window.localStorage.setItem(REFRESH_TOKEN, response.data.refresh_token);
                     this.props.dispatch(loginUser());
-                    this.props.history.push("/");
+                    this.props.history.push(ROUTES.root);
                 })
                 .catch((error) => (
                     this.setState(() => ({
@@ -103,7 +103,7 @@ class LoginComponent extends React.Component{
                         <div>
                             <br/>
                             <p>Don't have an account?</p>
-                            <Link to={"/register"} className='btn btn-default'>Register</Link>
+                            <Link to={ROUTES.auth.register} className='btn btn-default'>Register</Link>
                         </div>
                     </Col>
                 </Row>

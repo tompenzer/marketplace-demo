@@ -7,7 +7,7 @@ import axios, { getAuthHeaders } from "../api/axiosInstance";
 import { storeInfoApi, storeAuthApi, unitsApi, currenciesApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import { ADDED_TO_CART_SNACKBAR, ACCESS_TOKEN } from "../api/strings";
+import { ADDED_TO_CART_SNACKBAR, ACCESS_TOKEN, ROUTES } from "../api/strings";
 import ProductList from './ProductList';
 
 class StoreInfo extends React.Component {
@@ -76,7 +76,7 @@ class StoreInfo extends React.Component {
                 <Button
                     bsStyle={"info"}
                     className={"edit-store margin-b-s"}
-                    onClick={() => (this.props.history.push(`/store/${this.state.store.id}/edit`))}
+                    onClick={() => (this.props.history.push(ROUTES.stores.update.split(':storeId')[0] + this.state.store.id + ROUTES.stores.update.split(':storeId')[1]))}
                 >
                     Edit store
                 </Button>
@@ -85,7 +85,7 @@ class StoreInfo extends React.Component {
                 <Button
                     bsStyle={"primary"}
                     className={"add-store-product margin-b-s"}
-                    onClick={() => (this.props.history.push(`/store/${this.state.store.id}/products/add`))}
+                    onClick={() => (this.props.history.push(ROUTES.products.store.split(':storeId')[0] + this.state.store.id + ROUTES.products.store.split(':storeId')[1]))}
                 >
                     Add store product
                 </Button>

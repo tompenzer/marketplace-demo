@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import axios, { getAuthHeaders } from "../api/axiosInstance";
 import { getUserAPI, registerAPI } from "../api/apiURLs";
 import { loginUser, logoutUser } from "../actions/authentication";
-import {ACCESS_TOKEN} from "../api/strings";
+import { ACCESS_TOKEN, ROUTES } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
 import { connect } from 'react-redux';
 
@@ -31,12 +31,12 @@ class RegistrationComponent extends React.Component{
             axios.get(getUserAPI, getAuthHeaders())
                 .then((response) => {
                     this.props.dispatch(loginUser());
-                    this.props.history.push("/");
+                    this.props.history.push(ROUTES.root);
                 })
                 .catch((error) => {
                     window.localStorage.removeItem(ACCESS_TOKEN);
                     this.props.dispatch(logoutUser());
-                    this.setState(() => ({isLoading: false}));
+                    this.setState(() => ({ isLoading: false }));
                 });
         }
     }
@@ -93,7 +93,7 @@ class RegistrationComponent extends React.Component{
 
     onRegisterClick = (e) => {
         e.preventDefault();
-        this.setState(() => ({isLoading: true}));
+        this.setState(() => ({ isLoading: true }));
         const data = {
             name: this.state.fullName,
             email: this.state.email,
@@ -103,11 +103,11 @@ class RegistrationComponent extends React.Component{
 
         axios.post(registerAPI, data)
             .then(() => {
-                this.props.history.push("/login");
+                this.props.history.push(ROUTES.auth.login);
             })
             .catch((error) => {
                  const errors = Object.values(error.response.data.errors);
-                 this.setState(() => ({isLoading: false, errors }));
+                 this.setState(() => ({ isLoading: false, errors }));
             });
     };
 
@@ -207,7 +207,7 @@ class RegistrationComponent extends React.Component{
                         <div>
                             <br/>
                             <p>Already have an account?</p>
-                            <Link to={"/login"} className='btn btn-default'>Login</Link>
+                            <Link to={ROUTES.auth.login} className='btn btn-default'>Login</Link>
                         </div>
                     </Col>
                 </Row>

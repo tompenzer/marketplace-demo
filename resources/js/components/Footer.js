@@ -2,6 +2,7 @@ import React from 'react';
 import { Navbar, Grid, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styleVariables from '../../sass/base/_variables.scss';
+import { ROUTES } from "../api/strings";
 
 const footerLinkStyle = {
     color: styleVariables.offBlack
@@ -13,15 +14,15 @@ const Footer = () => (
             <Grid>
                 <Row>
                     <Col md={4} sm={12} className="text-center padding-s">
-                        <Link style={footerLinkStyle} to="/account">My Account</Link>
+                        <Link style={footerLinkStyle} to={ROUTES.users.show}>My Account</Link>
                     </Col>
 
                     <Col md={4} sm={12} className="text-center padding-s">
-                        <Link style={footerLinkStyle} to="/orders">My Orders</Link>
+                        <Link style={footerLinkStyle} to={ROUTES.orders.index}>My Orders</Link>
                     </Col>
 
                     <Col md={4} sm={12} className="text-center padding-s">
-                        <Link style={footerLinkStyle} to="/about">About Project</Link>
+                        <Link style={footerLinkStyle} to={ROUTES.about}>About Project</Link>
                     </Col>
                 </Row>
 

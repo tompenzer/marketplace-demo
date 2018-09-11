@@ -5,6 +5,7 @@ import ProductInfo from "./ProductInfo";
 import { connect } from 'react-redux';
 import { editCart } from "../actions/shoppingCart";
 import styleVariables from '../../sass/base/_variables.scss';
+import { ROUTES } from "../api/strings";
 
 const cartListItemStyle = {
     borderColor: 'rgba(0, 0, 0, 0.1)'
@@ -78,7 +79,7 @@ class CustomListGroupItemCart extends React.Component{
             <li className="list-group-item" style={cartListItemStyle}>
                 <Row>
                     <Col lg={6} md={6} sm={12} xs={12}>
-                        <h4><Link to={`/product/${this.props.productId}`}>{this.props.name}</Link></h4>
+                        <h4><Link to={ROUTES.products.show.split(':')[0] + this.props.productId}>{this.props.name}</Link></h4>
                     </Col>
 
                     <Col lg={3} md={3} sm={12} xs={12}>

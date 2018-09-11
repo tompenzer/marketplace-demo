@@ -3,6 +3,7 @@ import { Modal, Button, ListGroup, Row, Col } from "react-bootstrap";
 import CustomListGroupItem from "../components/CustomListGroupItemCart";
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
+import { ROUTES } from "../api/strings";
 import styleVariables from '../../sass/base/_variables.scss';
 
 export const totalReducer = (accumulator, item) => {
@@ -25,7 +26,7 @@ class ShoppingCart extends React.Component{
 
     onCheckoutClick = () => {
       this.props.handleClose();
-      this.props.history.push("/checkout");
+      this.props.history.push(ROUTES.orders.checkout);
     };
 
     render() {

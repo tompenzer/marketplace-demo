@@ -4,6 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 import {addToCart} from "../actions/shoppingCart";
 import {image} from "./image";
 import { connect } from 'react-redux';
+import { ROUTES } from "../api/strings";
 
 class CustomListGroupItemProduct extends React.Component{
 
@@ -21,13 +22,15 @@ class CustomListGroupItemProduct extends React.Component{
         this.props.dispatch(addToCart(product));
     };
 
-    viewClickHandler = (routeName) => {
-        this.props.history.push(routeName);
+    viewClickHandler = () => {
+        this.props.history.push(
+            ROUTES.products.show.split(':')[0] + this.props.productId
+        );
     };
 
     render() {
         return (
-            <li className="list-group-item" onClick={() => this.viewClickHandler(`/product/${this.props.productID}`)}>
+            <li className="list-group-item" onClick={this.viewClickHandler}>
                 <div className={"media-left"}>
                     <img className="media-object" height={64} width={64} src={this.props.image ? this.props.image : image} alt="..." />
                 </div>
@@ -45,7 +48,7 @@ class CustomListGroupItemProduct extends React.Component{
                         <Col md={3} lg={3} sm={12} xs={12}>
                             <div>
                               <span>
-                                  <Button bsStyle={"default"} className={"btn-sm btn-block margin-b-s"} onClick={() => this.viewClickHandler(`/product/${this.props.productID}`)}>View</Button>
+                                  <Button bsStyle={"default"} className={"btn-sm btn-block margin-b-s"} onClick={this.viewClickHandler}>View</Button>
                                   <Button bsStyle={"primary"} className={"btn-sm btn-block"} onClick={this.addToCartOnClick}>Add to Cart</Button>
                               </span>
                             </div>

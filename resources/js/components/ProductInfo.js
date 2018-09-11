@@ -8,7 +8,7 @@ import axios from "../api/axiosInstance";
 import { productInfoAPI } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import { ADDED_TO_CART_SNACKBAR } from "../api/strings";
+import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
 
 class ProductInfo extends React.Component {
 
@@ -81,15 +81,15 @@ class ProductInfo extends React.Component {
     };
 
     onQuantityBlur = () => {
-        if(this.state.quantity.length === 0 || (this.state.quantity.length > 0 && parseInt(this.state.quantity) < 1)){
-            this.setState(() => ({ quantity: 1 }))
+        if (this.state.quantity.length === 0 ||
+            (this.state.quantity.length > 0 && parseInt(this.state.quantity) < 1)
+        ) {
+            this.setState({ quantity: 1 });
         }
     };
 
     handleSnackbarRequestClose = () => {
-        this.setState({
-            snackbarOpen: false,
-        });
+        this.setState({ snackbarOpen: false });
     };
 
     static removeItemFromCart = (productId, props) => {
@@ -106,10 +106,9 @@ class ProductInfo extends React.Component {
 
     render() {
 
-        if(this.state.isLoading){
+        if (this.state.isLoading) {
             return <LoadingScreen/>
-        }
-        else if(this.state.productNotFound){
+        } else if (this.state.productNotFound) {
             return <InformationPanel
                     panelTitle={"Product Not available"}
                     informationHeading={"You are on the wrong page!"}
@@ -125,7 +124,7 @@ class ProductInfo extends React.Component {
                             <h2>{this.state.product.name}</h2>
                             <div className="text-gray">
                                 <span>Sold by: </span>
-                                <Link to={'/store/' + this.state.product.store.id}>{this.state.product.store.name}</Link>
+                                <Link to={ROUTES.stores.show.split(':')[0] + this.state.product.store.id}>{this.state.product.store.name}</Link>
                             </div>
                             <hr />
                         </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
 import { logOut } from "../actions/authentication";
+import { ROUTES } from "../api/strings";
 
 class LogoutComponent extends React.Component{
 
@@ -14,7 +15,7 @@ class LogoutComponent extends React.Component{
             this.props.dispatch(logOut());
         }
 
-        this.props.history.push("/login");
+        this.props.history.push(ROUTES.auth.login);
     }
 
     render() {

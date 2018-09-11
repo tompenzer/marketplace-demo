@@ -4,6 +4,7 @@ import { Row, Col, Button, FormControl, Popover, ButtonToolbar, Overlay } from "
 import ProductInfo from "./ProductInfo";
 import { connect } from 'react-redux';
 import { editCart } from "../actions/shoppingCart";
+import { ROUTES } from "../api/strings";
 
 const listItemStyle = {
     borderColor: 'rgba(0, 0, 0, 0.1)'
@@ -45,12 +46,11 @@ class CustomListGroupItemCheckout extends React.Component{
 
     onQuantityBlur = (e) => {
         let quantity = e.target.value;
-        if(quantity.length > 0 && parseInt(quantity) > 0 && parseInt(quantity) < 100){
+        if (quantity.length > 0 && parseInt(quantity) > 0 && parseInt(quantity) < 1000) {
             this.setState(() => ({quantity}));
             this.editCart(parseInt(quantity));
-        }
-        else{
-            this.setState(() => ({quantity: 1}));
+        } else {
+            this.setState({ quantity: 1 });
             this.editCart(1);
         }
     };
@@ -65,7 +65,7 @@ class CustomListGroupItemCheckout extends React.Component{
                 <div className={"media-body"}>
                     <Row>
                         <Col lg={5} md={5} sm={12} xs={12}>
-                            <h4 className={"media-heading"}><Link to={'/product/' + this.props.productId}>{this.props.name}</Link></h4>
+                            <h4 className={"media-heading"}><Link to={ROUTES.products.show.split(':')[0] + this.props.productId}>{this.props.name}</Link></h4>
                             <div>
                                 <ButtonToolbar>
                                     <Button onClick={this.handleRemoveClick} bsStyle={"link"} className={"btn-sm"}>Remove</Button>

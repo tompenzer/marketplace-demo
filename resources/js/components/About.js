@@ -1,6 +1,7 @@
 import React from "react";
 import { Grid, Col, Row, ListGroup, ListGroupItem } from "react-bootstrap";
 import LoadingOrderAnimation from 'react-loading-order-with-animation';
+import { REPO_URL } from "../api/strings";
 
 const About = () => (
     <Grid className="page-min-height">
@@ -11,7 +12,7 @@ const About = () => (
 
             <Col lg={12} md={12}>
                 <a
-                    href={"https://github.com/tompenzer/marketplace-demo"}
+                    href={REPO_URL}
                     target="_blank">
                     Project Github link
                 </a>

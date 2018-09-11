@@ -15,7 +15,7 @@ import axios from "../api/axiosInstance";
 import { storesApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import { ADDED_TO_CART_SNACKBAR } from "../api/strings";
+import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
 import ProductInfo from "../components/ProductInfo";
 
 class Stores extends React.Component {
@@ -121,7 +121,7 @@ class Stores extends React.Component {
                     <Button
                         bsStyle={"primary"}
                         className={"add-store"}
-                        onClick={() => (this.props.history.push('/store/add'))}
+                        onClick={() => (this.props.history.push(ROUTES.stores.store))}
                     >Add store
                     </Button>
                 </div>
@@ -133,7 +133,7 @@ class Stores extends React.Component {
                 <Button
                     bsStyle={"primary"}
                     className={"add-store"}
-                    onClick={() => (this.props.history.push('/store/add'))}
+                    onClick={() => (this.props.history.push(ROUTES.stores.store))}
                 >
                     Add store
                 </Button>
@@ -159,7 +159,7 @@ class Stores extends React.Component {
                                         return (
                                             <TableRow key={item.id}>
                                                 <TableCell component="th" scope="row">
-                                                    <Link to={'store/' + item.id}>{item.name}</Link>
+                                                    <Link to={ROUTES.stores.show.split(':')[0] + item.id}>{item.name}</Link>
                                                 </TableCell>
                                                 <TableCell>{item.description}</TableCell>
                                             </TableRow>

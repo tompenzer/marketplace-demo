@@ -27,6 +27,7 @@
         "node-sass": "^4.9.3",
         "normalize.css": "^8.0.0",
         "popper.js": "^1.14.4",
+        "prop-types": "^15.6.2",
         "react": "^16.5.0",
         "react-bootstrap": "^0.32.3",
         "react-bootstrap-table": "^4.3.1",

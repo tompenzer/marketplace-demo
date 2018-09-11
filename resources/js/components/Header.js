@@ -8,6 +8,7 @@ import MenuList from '@material-ui/core/MenuList';
 import MenuItemMUI from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import styleVariables from '../../sass/base/_variables.scss';
+import { ROUTES } from "../api/strings";
 
 const glyphIconStyle = {
     fontSize: styleVariables.textSizeXl
@@ -24,144 +25,134 @@ const cartBadgeStyle = {
 class Header extends React.Component{
 
     state = {
-        isOpenElectronics: false,
-        isOpenBook: false,
-        isOpenHome: false,
-        placeholder: 'Search products',
-        searchMenuItems: [ 'Products', 'Stores' ],
-        searchMenuItemsActive: [ 'Products', 'Stores' ],
-        dropDownSelected: 'Products',
-        searchBoxText: '',
+        searchMenuItems: [{
+            label: 'Products',
+            placeholder: 'Search products',
+            path: ROUTES.products.index
+        }, {
+            label: 'Stores',
+            placeholder: 'Search stores',
+            path: ROUTES.stores.index
+        }],
+        searchMenuItemsActive: [0, 1],
+        searchMenuItemSelected: 0,
+        searchFieldPlaceholder: '',
+        searchFieldText: '',
         shoppingCartOpen: false,
-        menuItemMUI: [{
+        userMenuItems: [],
+        accountMenuOpen: false,
+        accountMenuTarget: null
+    };
+
+    componentDidMount() {
+        this.setUserMenuOptions(this.props.authentication.isAuthenticated || false);
+
+        this.searchMenuSelectHelper(this.state.searchMenuItemSelected);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.authentication.isAuthenticated !== nextProps.authentication.isAuthenticated) {
+            this.setUserMenuOptions(nextProps.authentication.isAuthenticated);
+        }
+    }
+
+    searchMenuSelectHelper = (itemId) => {
+        this.setState({
+            searchFieldPlaceholder: this.state.searchMenuItems[itemId].placeholder,
+            searchMenuItemsActive: [...this.state.searchMenuItems.keys()].filter(id => id != itemId),
+            searchMenuItemSelected: itemId
+        });
+    };
+
+    setUserMenuOptions = (authenticated) => {
+        let options = [{
             label: 'Log In',
-            path: '/login'
+            path: ROUTES.auth.login
         }, {
             label: 'Register',
-            path: '/register'
-        }],
-        open: false
-    };
+            path: ROUTES.auth.register
+        }];
 
-    categoryStateChangeHelper = (category) => {
-        this.setState(() => ({
-            placeholder: 'Search ' + category.toLowerCase(),
-            searchMenuItemsActive: this.state.searchMenuItems.filter((v) => (v !== category)),
-            dropDownSelected: category
-        }));
-    };
-
-    changeMenuMUIOptionsAuthenticated = () => {
-        this.setState({ menuItemMUI: [{
+        if (authenticated) {
+            options = [{
                 label: 'My account',
-                path: '/account'
+                path: ROUTES.users.show
             }, {
                 label: 'My Orders',
-                path: '/orders'
+                path: ROUTES.orders.index
             },
-            'Divider', {
+            'divider', {
                 label: 'Log out',
-                path: '/logout'
-            }]
-        });
-    };
-
-    changeMenuMUIOptionsUnauthenticated = () => {
-        this.setState({ menuItemMUI: [{
-                label: 'Log In',
-                path: '/login'
-            }, {
-                label: 'Register',
-                path: '/register'
-            }]
-        });
-    };
-
-    componentWillReceiveProps(nextProps){
-        if (this.props.authentication.isAuthenticated !== nextProps.authentication.isAuthenticated) {
-            if (nextProps.authentication.isAuthenticated) {
-                this.changeMenuMUIOptionsAuthenticated();
-            } else {
-                this.changeMenuMUIOptionsUnauthenticated();
-            }
-        }
-    }
-
-    componentDidMount(){
-        if(this.props.authentication.isAuthenticated){
-            this.changeMenuMUIOptionsAuthenticated();
-        }
-        else{
-            this.changeMenuMUIOptionsUnauthenticated();
+                path: ROUTES.auth.logout
+            }];
         }
 
-        this.categoryStateChangeHelper(this.state.dropDownSelected);
-    }
-
-    categoryClickHandler = (routeName) => {
-        this.props.history.push(routeName);
+        this.setState({ userMenuItems: options });
     };
 
-    onSearchFormSubmit = (e) => {
+    handleSearchFieldChange = (e) => {
+        const searchFieldText = e.target.value;
+
+        if (searchFieldText.length < 255) {
+            this.setState({ searchFieldText });
+        }
+    };
+
+    handleSearchFormSubmit = (e) => {
         e.preventDefault();
+
+        const path = this.state.searchMenuItems[this.state.searchMenuItemSelected].path;
         let searchQuery = '';
 
-        if (this.state.searchBoxText) {
-            searchQuery = '/' + this.state.searchBoxText;
+        // Product and store search routes are the index route + '/' + {search term}.
+        if (this.state.searchFieldText) {
+            searchQuery = '/' + this.state.searchFieldText;
         }
 
-        this.props.history.push('/' + this.state.dropDownSelected.toLowerCase() + searchQuery);
+        this.props.history.push(path + searchQuery);
     };
 
-    menuOptionsClick = (url) => {
-        this.setState(() => ({open: false}));
-        this.props.history.push(url);
-    };
-
-    searchBoxChange = (e) => {
-        let searchBoxText = e.target.value;
-        if(searchBoxText.length < 25){
-            this.setState(() => ({searchBoxText}));
-        }
-    };
-
-    searchCategoryChange = (selectedCategory) => {
-        this.categoryStateChangeHelper(selectedCategory);
-    };
-
-    shoppingCartModalShow = () => {
-        this.setState(() => ({shoppingCartOpen: true}));
-    };
-
-    shoppingCartModalHide = () => {
-        this.setState(() => ({shoppingCartOpen: false}));
-    };
-
-    handleUserAccountClick = (event) => {
+    handleUserAccountClick = (e) => {
         // This prevents ghost click.
-        event.preventDefault();
+        e.preventDefault();
 
         this.setState({
-            open: true,
-            anchorEl: event.currentTarget,
+            accountMenuTarget: e.target,
+            accountMenuOpen: true
         });
     };
 
     handleUserAccountClose = () => {
-        this.setState({
-            open: false,
-        });
+        this.setState({ accountMenuOpen: false });
     };
 
-    render(){
-        let shoppingCartTotal = this.props.shoppingCart ? this.props.shoppingCart.reduce((accumulator, item) => {
-            return accumulator + item.quantity;
-        }, 0) : 0;
+    handleUserAccountMenuOptionClick = (url) => {
+        this.setState({ accountMenuOpen: false });
+        this.props.history.push(url);
+    };
+
+    shoppingCartModalShow = () => {
+        this.setState({ shoppingCartOpen: true });
+    };
+
+    shoppingCartModalHide = () => {
+        this.setState({ shoppingCartOpen: false });
+    };
+
+    render() {
+        let shoppingCartTotal = 0;
+
+        if (this.props.shoppingCart) {
+            shoppingCartTotal = this.props.shoppingCart.reduce((accumulator, item) => {
+                return accumulator + item.quantity;
+            }, 0);
+        }
+
         return (
             <Navbar>
                 <Navbar.Header>
                     <Navbar.Brand>
-                        <Link to="/">Marketplace</Link>
+                        <Link to={ROUTES.root}>Marketplace</Link>
                     </Navbar.Brand>
                     <Navbar.Toggle />
                 </Navbar.Header>
@@ -169,68 +160,73 @@ class Header extends React.Component{
                     <Nav>
                         <NavItem
                             title="Products"
-                            onClick={() => this.categoryClickHandler("/products")}
+                            href={ROUTES.products.index}
                         >
                           Products
                         </NavItem>
                         <NavItem
                             title="Stores"
-                            onClick={() => this.categoryClickHandler("/stores")}
+                            href={ROUTES.stores.index}
                         >
                           Stores
                         </NavItem>
                     </Nav>
                     <Navbar.Form pullRight>
-                        <form onSubmit={this.onSearchFormSubmit}>
+                        <form onSubmit={this.handleSearchFormSubmit}>
                             <FormGroup>
                                 <InputGroup>
                                 <FormControl type="text"
-                                             placeholder={this.state.placeholder}
-                                             value={this.state.searchBoxText}
-                                             onChange={this.searchBoxChange}
+                                             placeholder={this.state.searchFieldPlaceholder}
+                                             value={this.state.searchFieldText}
+                                             onChange={this.handleSearchFieldChange}
                                              inputRef={ref => { this.input = ref; }}
                                 />
                                 <DropdownButton
                                     componentClass={InputGroup.Button}
                                     id="input-dropdown-addon"
-                                    title={this.state.dropDownSelected}
+                                    title={this.state.searchMenuItems[this.state.searchMenuItemSelected].label}
                                 >
-                                    {
-                                        this.state.searchMenuItemsActive.map((menuItem) => (
-                                            <MenuItem key={menuItem}
-                                                      onSelect={() => this.searchCategoryChange(menuItem)}>{menuItem}</MenuItem>
-                                        ))
-                                    }
+                                    {this.state.searchMenuItemsActive.map((itemId) => (
+                                        <MenuItem
+                                            key={'searchMenuItem' + itemId}
+                                            onSelect={() => this.searchMenuSelectHelper(itemId)}
+                                        >
+                                            {this.state.searchMenuItems[itemId].label}
+                                        </MenuItem>
+                                    ))}
                                 </DropdownButton>
                                 </InputGroup>
                                 <Button className="margin-l-xs" type="submit"><Glyphicon glyph={"search"}/></Button>
-                                <Button className="margin-l-s" onClick={this.shoppingCartModalShow} bsStyle={"link"}>
-                                    <Glyphicon glyph="shopping-cart" style={glyphIconStyle}/>
-                                    {shoppingCartTotal > 0 &&
-                                    <Badge style={cartBadgeStyle}>{shoppingCartTotal}</Badge>
-                                    }
-                                </Button>
-                                    <Button
-                                        onClick={this.handleUserAccountClick}
-                                        bsStyle="link"
-                                    ><Glyphicon glyph="user" style={glyphIconStyle}/></Button>
-                                    <Popover
-                                        open={this.state.open}
-                                        anchorEl={this.state.anchorEl}
-                                        onClose={this.handleUserAccountClose}
-                                        anchorOrigin={{horizontal: 'center', vertical: 'top'}}
-                                        transformOrigin={{horizontal: 'center', vertical: 'top'}}
-                                    >
-                                        <MenuList open={this.state.open}>
-                                            {this.state.menuItemMUI.map((item, key) => {
-                                                if (item === "Divider") {
-                                                    return <Divider key={key}/>
-                                                }
-                                                return <MenuItemMUI key={key} onClick={() => this.menuOptionsClick(item.path)}>{item.label}</MenuItemMUI>
-                                            })}
-                                        </MenuList>
-                                    </Popover>
                             </FormGroup>
+                            <Button className="margin-l-s" onClick={this.shoppingCartModalShow} bsStyle={"link"}>
+                                <Glyphicon glyph="shopping-cart" style={glyphIconStyle}/>
+                                {shoppingCartTotal > 0 &&
+                                <Badge style={cartBadgeStyle}>{shoppingCartTotal}</Badge>
+                                }
+                            </Button>
+                            <Button
+                                onClick={this.handleUserAccountClick}
+                                bsStyle="link"
+                            >
+                                <Glyphicon glyph="user" style={glyphIconStyle}/>
+                            </Button>
+                            <Popover
+                                open={this.state.accountMenuOpen}
+                                anchorEl={this.state.accountMenuTarget}
+                                onClose={this.handleUserAccountClose}
+                                anchorOrigin={{horizontal: 'center', vertical: 'top'}}
+                                transformOrigin={{horizontal: 'center', vertical: 'top'}}
+                            >
+                                <MenuList open={this.state.accountMenuOpen}>
+                                    {this.state.userMenuItems.map((item, key) => {
+                                        if (item === "divider") {
+                                            return <Divider key={key}/>
+                                        }
+
+                                        return <MenuItemMUI key={key} onClick={() => this.handleUserAccountMenuOptionClick(item.path)}>{item.label}</MenuItemMUI>
+                                    })}
+                                </MenuList>
+                            </Popover>
                         </form>
                     </Navbar.Form>
                     <ShoppingCart handleClose={this.shoppingCartModalHide} show={this.state.shoppingCartOpen}/>

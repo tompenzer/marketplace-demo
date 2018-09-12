@@ -21,12 +21,9 @@ yarn-error.log
 npm-debug.log
 
 # Public dir
-public/
-!public/index.php
-!public/.htaccess
-!public/robots.txt
-!public/favicon.ico
-!public/web.config
+/public/images
+/public/js
+/public/css
 
 # Secrets
 provisioning/deploy.sh

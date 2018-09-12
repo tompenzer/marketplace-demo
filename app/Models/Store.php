@@ -88,7 +88,7 @@ class Store extends Model
     {
         return Auth::check() && (
             Auth::user()->isSiteAdmin()
-            || $this->users()->where('id', Auth::user()->id)->isNotEmpty()
+            || $this->hasUser(Auth::user()->id)
         );
     }
 
@@ -99,6 +99,6 @@ class Store extends Model
      */
     public function hasUser($user_id): bool
     {
-        return $this->users()->where('user_id', $user_id)->isNotEmpty();
+        return $this->users()->where('users.id', $user_id)->count() > 0;
     }
 }

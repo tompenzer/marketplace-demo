@@ -48,7 +48,7 @@ class CartController extends Controller
         }
 
         // Refresh the expiration upon fetch.
-        return self::setCart($cart_uid, $cart);// Ensure it converts to a JSON array, not object.
+        return self::setCart($cart_uid, $cart);
     }
 
     /**
@@ -141,7 +141,7 @@ class CartController extends Controller
     }
 
     /**
-     * Handing Order creation in the cart controller since we need access to the
+     * Handling Order creation in the Cart controller since we need access to the
      * cart.
      *
      * @param  OrderRequest $request Validated order request.

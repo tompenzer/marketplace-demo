@@ -1,14 +1,12 @@
 import React from 'react';
-import { Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Panel, HelpBlock } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import axios, { getAuthHeaders } from "../api/axiosInstance";
-import { storeAuthApi, productsApi, productInfoAPI, productUpdateApi, unitsApi, currenciesApi } from "../api/apiURLs";
-import { loginUser, logoutUser } from "../actions/authentication";
+import { connect } from 'react-redux';
+import axios from "../api/axiosInstance";
+import { unitsApi, currenciesApi } from "../api/apiURLs";
 import { loadProductDetails, saveProduct } from "../actions/products";
 import { checkStoreAuth } from "../actions/stores";
-import { ACCESS_TOKEN, ROUTES } from "../api/strings";
+import { ROUTES } from "../api/strings";
+import { Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Panel, HelpBlock } from 'react-bootstrap';
 import LoadingScreen from "../components/LoadingScreen";
-import { connect } from 'react-redux';
 
 const s = "success";
 

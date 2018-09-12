@@ -2,6 +2,7 @@ import React from "react";
 import { Link, withRouter } from 'react-router-dom';
 import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
+import { loadProductDetails } from "../actions/products";
 import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import axios from "../api/axiosInstance";
@@ -13,16 +14,7 @@ import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
 class ProductInfo extends React.Component {
 
     state = {
-      product: {
-          store: {},
-          currency: {},
-          width_unit: {},
-          height_unit: {},
-          length_unit: {},
-          weight_unit: {}
-      },
       quantity: 1,
-      productId: undefined,
       autoHideDuration: 3000,
       snackbarOpen:false,
       isLoading: false,
@@ -30,42 +22,27 @@ class ProductInfo extends React.Component {
       snackbarMessage: ""
     };
 
-    loadProductDetails = (productId) => {
-        this.setState(() => ({ productId, isLoading: true }));
-
-        axios.get(productInfoAPI(productId)).then((response) => (
-            this.setState({
-                product: response.data,
-                isLoading: false,
-                productNotFound: false
-            })
-        )).catch((error) => (
-            this.setState(() => ({
-                isLoading: false,
-                productNotFound: true
-            }))
-        ));
-    };
-
     componentWillReceiveProps(nextProps) {
-        if (this.props.match.params.id !== nextProps.match.params.id) {
-            this.loadProductDetails(nextProps.match.params.id);
+        if (this.props.match.params.id !== nextProps.match.params.id &&
+            parseInt(nextProps.match.params.id) == nextProps.match.params.id
+        ) {
+            this.props.dispatch(loadProductDetails(nextProps.match.params.id));
         }
     }
 
     componentDidMount() {
         // load the product details here
-        this.loadProductDetails(this.props.match.params.id);
+        this.props.dispatch(loadProductDetails(this.props.match.params.id));
     }
 
     addToCartOnClick = () => {
         // dispatching an action to redux store
         this.props.dispatch(addToCart({
-            productId: this.state.product.id,
-            name: this.state.product.name,
+            productId: this.props.products.productDetails.id,
+            name: this.props.products.productDetails.name,
             quantity: this.state.quantity,
-            price: this.state.product.price,
-            currency: this.state.product.currency.abbreviation
+            price: this.props.products.productDetails.price,
+            currency: this.props.products.productDetails.currency.abbreviation
         }));
         this.setState(() => ({
             snackbarOpen: true,
@@ -75,7 +52,7 @@ class ProductInfo extends React.Component {
 
     onQuantityChange = (e) => {
         let quantity = e.target.value;
-        if (quantity.length < 3){
+        if (quantity < 1000){
             this.setState(() => ({ quantity }));
         }
     };
@@ -92,23 +69,23 @@ class ProductInfo extends React.Component {
         this.setState({ snackbarOpen: false });
     };
 
-    static removeItemFromCart = (productId, props) => {
-        props.dispatch(removeFromCart({ productId }));
-    };
-
     handleUndoAction = () => {
-        if (this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR) {
-            ProductInfo.removeItemFromCart(this.state.productId, this.props);
+        if (this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR &&
+            this.props.products.productDetails.id
+        ) {
+            this.props.dispatch(removeFromCart({ productId: this.props.products.productDetails.id }));
         }
 
         this.handleSnackbarRequestClose();
     };
 
     render() {
-
-        if (this.state.isLoading) {
+// console.log(this.props.products);
+        if (this.props.products.productsRequested) {
             return <LoadingScreen/>
-        } else if (this.state.productNotFound) {
+        }
+
+        if (this.props.products.productsError) {
             return <InformationPanel
                     panelTitle={"Product Not available"}
                     informationHeading={"You are on the wrong page!"}
@@ -121,10 +98,11 @@ class ProductInfo extends React.Component {
                 <Row>
                     <Col lg={12} md={12}>
                         <div className={"margin-div-five"}>
-                            <h2>{this.state.product.name}</h2>
+                            <h2>{this.props.products.productDetails.name}</h2>
                             <div className="text-gray">
                                 <span>Sold by: </span>
-                                <Link to={ROUTES.stores.show.split(':')[0] + this.state.product.store.id}>{this.state.product.store.name}</Link>
+                                {this.props.products.productDetails.store &&
+                                <Link to={ROUTES.stores.show.split(':')[0] + this.props.products.productDetails.store.id}>{this.props.products.productDetails.store.name}</Link>}
                             </div>
                             <hr />
                         </div>
@@ -140,46 +118,45 @@ class ProductInfo extends React.Component {
 
                             <hr/>
 
-                            <p className="text-xl">{this.state.product.description}</p>
+                            <p className="text-xl">{this.props.products.productDetails.description}</p>
 
                             <br/>
 
                             <h4>Product specifications</h4>
 
                             <p>
-                                Width: {this.state.product.width} {this.state.product.width_unit.abbreviation}<br/>
-                                Height: {this.state.product.height} {this.state.product.height_unit.abbreviation}<br/>
-                                Length: {this.state.product.length} {this.state.product.length_unit.abbreviation}<br/>
-                                Weight: {this.state.product.weight} {this.state.product.weight_unit.abbreviation}
+                                Width: {this.props.products.productDetails.width} {this.props.products.productDetails.width_unit ? this.props.products.productDetails.width_unit.abbreviation : ''}<br/>
+                                Height: {this.props.products.productDetails.height} {this.props.products.productDetails.height_unit ? this.props.products.productDetails.height_unit.abbreviation : ''}<br/>
+                                Length: {this.props.products.productDetails.length} {this.props.products.productDetails.length_unit ? this.props.products.productDetails.length_unit.abbreviation : ''}<br/>
+                                Weight: {this.props.products.productDetails.weight} {this.props.products.productDetails.weight_unit ? this.props.products.productDetails.weight_unit.abbreviation : ''}
                             </p>
                         </div>
                     </Col>
 
                     <Col md={4} sm={12}>
                         <div className="product-info-price margin-t-m text-right">
-                            <span className="text-green text-2xl">{this.state.product.currency.abbreviation} {this.state.product.price}</span>
+                            <span className="text-green text-2xl">{this.props.products.productDetails.currency ? this.props.products.productDetails.currency.abbreviation : ''} {this.props.products.productDetails.price}</span>
                         </div>
 
-                        {this.props.authentication.isAuthenticated &&
-                            <div>
-                                <FormGroup controlId="formQuantitySelect" className={"quantity-select"}>
-                                    <ControlLabel>Quantity</ControlLabel>
-                                    <FormControl
-                                        type="number"
-                                        value={this.state.quantity}
-                                        onChange={this.onQuantityChange}
-                                        onBlur={this.onQuantityBlur}
-                                    />
-                                </FormGroup>
+                        <div>
+                            <FormGroup controlId="formQuantitySelect" className={"quantity-select"}>
+                                <ControlLabel>Quantity</ControlLabel>
+                                <FormControl
+                                    type="number"
+                                    value={this.state.quantity}
+                                    onChange={this.onQuantityChange}
+                                    onBlur={this.onQuantityBlur}
+                                />
+                            </FormGroup>
 
-                                <Button
-                                    bsStyle={"primary"}
-                                    className={"add-to-cart-product"}
-                                    onClick={this.addToCartOnClick}
-                                >Add to Cart
-                                </Button>
-                            </div>
-                        }
+                            <Button
+                                bsStyle={"primary"}
+                                className={"add-to-cart-product"}
+                                onClick={this.addToCartOnClick}
+                            >
+                                Add to Cart
+                            </Button>
+                        </div>
                     </Col>
                 </Row>
 
@@ -199,10 +176,8 @@ class ProductInfo extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        authentication: state.authentication
-    };
-};
+const mapStateToProps = (state) => ({
+    products: state.products
+});
 
 export default connect(mapStateToProps)(ProductInfo);

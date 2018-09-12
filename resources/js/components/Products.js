@@ -2,6 +2,7 @@ import React from "react";
 import { Link, withRouter } from 'react-router-dom';
 import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
+import { loadProducts } from "../actions/products";
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -21,18 +22,12 @@ import ProductList from './ProductList';
 class Products extends React.Component {
 
     state = {
-      products: [],
-      unitsDimension: {},
-      unitsWeight: {},
-      currencies: {},
       query: "",
       storeId: null,
       autoHideDuration: 3000,
-      isLoading: false,
-      productsNotFound: false,
       snackbarOpen: false,
       snackbarMessage: "",
-      userHasAuth: false
+      cartProductId: null
     };
 
     loadProducts(query) {
@@ -66,42 +61,46 @@ class Products extends React.Component {
             query = this.props.match.params.q;
         }
 
-        this.loadProducts(query);
+        this.props.dispatch(loadProducts(query));
     }
 
     componentWillReceiveProps(nextProps){
-        if(this.props.match.params.q !== nextProps.match.params.q){
-            this.loadProducts(nextProps.match.params.q);
+        if (this.props.match.params.q !== nextProps.match.params.q) {
+            this.props.dispatch(loadProducts(nextProps.match.params.q));
         }
     }
 
     handleAddToCart = (product) => {
         // dispatching an action to redux store
         this.props.dispatch(addToCart(product));
-        this.setState(() => ({snackbarOpen: true, snackbarMessage: ADDED_TO_CART_SNACKBAR}));
+
+        this.setState({
+            snackbarOpen: true,
+            snackbarMessage: ADDED_TO_CART_SNACKBAR,
+            cartProductId: product.productId
+        });
     };
 
     handleSnackbarRequestClose = () => {
         this.setState({
             snackbarOpen: false,
+            cartProductId: null
         });
     };
 
-    static removeItemFromCart = (productID, props) => {
-        props.dispatch(removeFromCart({ productID }));
-    };
-
     handleUndoAction = () => {
-        if (this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR) {
-            ProductInfo.removeItemFromCart(this.state.productID, this.props);
+        if (this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR &&
+            parseInt(this.state.cartProductId) == this.state.cartProductId
+        ) {
+            this.props.dispatch(removeFromCart({ productId: this.state.cartProductId }));
         }
 
         this.handleSnackbarRequestClose();
     };
 
-    render(){
+    render() {
 
-        if(this.state.isLoading){
+        if (this.props.products.productsRequested) {
             return (
                 <Grid>
                     <Row className="margin-b-m">
@@ -119,7 +118,7 @@ class Products extends React.Component {
             )
         }
 
-        else if(this.state.productsNotFound){
+        if (this.props.products.productsError) {
             return <InformationPanel
                     panelTitle={"There are no products currently available"}
                     informationHeading={"Something went wrong."}
@@ -138,7 +137,7 @@ class Products extends React.Component {
                 <Row>
                     <Col md={12} sm={12}>
                         <ProductList
-                            products={this.state.products}
+                            products={this.props.products.products}
                             handleAddToCart={this.handleAddToCart}
                         />
                     </Col>
@@ -157,10 +156,8 @@ class Products extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        authentication: state.authentication
-    };
-};
+const mapStateToProps = (state) => ({
+    products: state.products
+});
 
 export default connect(mapStateToProps)(Products);

@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import axios, { getAuthHeaders } from "../api/axiosInstance";
 import { storeAuthApi, productsApi, productInfoAPI, productUpdateApi, unitsApi, currenciesApi } from "../api/apiURLs";
 import { loginUser, logoutUser } from "../actions/authentication";
+import { loadProductDetails, saveProduct } from "../actions/products";
+import { checkStoreAuth } from "../actions/stores";
 import { ACCESS_TOKEN, ROUTES } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
 import { connect } from 'react-redux';
@@ -50,43 +52,69 @@ class ProductAdd extends React.Component{
 
     // Require auth to create a product - redirect to login if unauthorized.
     componentDidMount() {
-        const access_token = window.localStorage.getItem(ACCESS_TOKEN);
-
-        // Must be logged in and be passed store context.
-        if (! access_token && this.props.match && this.props.match.params.storeId) {
-            this.props.dispatch(logoutUser());
+        // Require auth to add/edit stores.
+        if (this.props.authentication.isAuthenticated === false) {
             this.props.history.push(ROUTES.auth.login);
         }
 
-        let storeId = this.props.match.params.storeId;
-
-        // means the user is already logged in, check if it is valid
-        this.setState(() => ({
-            isLoading: true,
-            storeId: storeId
-        }));
-
-        axios.get(storeAuthApi(storeId), getAuthHeaders())
-            .then((response) => {
-                this.setState(() => ({
-                    isLoading: false,
-                    userHasAuth: response.data
-                 }));
-
-                 this.fillUnits();
-                 this.fillCurrencies();
-            })
-            .catch((error) => {
-                window.localStorage.removeItem(ACCESS_TOKEN);
-                this.props.dispatch(logoutUser());
-                this.setState(() => ({ isLoading: false }));
-                this.props.history.push(ROUTES.auth.login);
-            });
+        // If passed a storeId prop, and it's an integer (as opposed to the word
+        // "add" from the shared create route), pre-fill the data and we'll do a
+        // store update rather than adding a new store.
+        if (this.props.match &&
+            this.props.match.params.storeId &&
+            parseInt(this.props.match.params.storeId) == this.props.match.params.storeId
+        ) {
+            this.setState({ storeId: this.props.match.params.storeId });
+            this.props.dispatch(checkStoreAuth(this.props.match.params.storeId));
+        }
 
         // If passed a product prop, pre-fill the data and we'll do a product
         // update rather than adding a new product.
-        if (this.props.match.params.productId) {
-            this.loadProductDetails(this.props.match.params.productId);
+        if (this.props.match &&
+            this.props.match.params.productId &&
+            parseInt(this.props.match.params.productId) == this.props.match.params.productId
+        ) {
+            this.setState({ productId: this.props.match.params.productId });
+            this.props.dispatch(loadProductDetails(this.props.match.params.productId));
+        }
+
+        this.fillUnits();
+        this.fillCurrencies();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.match.params.storeId !== nextProps.match.params.storeId &&
+            parseInt(nextProps.match.params.storeId) == nextProps.match.params.storeId
+        ) {
+            this.setState({ storeId: nextProps.match.params.storeId });
+            this.props.dispatch(checkStoreAuth(nextProps.match.params.storeId));
+        }
+
+        if (this.props.match.params.productId !== nextProps.match.params.productId &&
+            parseInt(nextProps.match.params.productId) == nextProps.match.params.productId
+        ) {
+            this.setState({ productId: nextProps.match.params.productId });
+            this.props.dispatch(loadProductDetails(nextProps.match.params.productId));
+        }
+
+        if (nextProps.products.productDetails.id &&
+            this.props.products.productDetails !== nextProps.products.productDetails
+        ) {
+            this.updateProductInfo(nextProps.products.productDetails);
+        }
+
+        // If a product has been created/updated, redirect to it.
+        if (this.props.products.productCreated !== nextProps.products.productCreated &&
+            parseInt(nextProps.products.productCreated) == nextProps.products.productCreated
+        ) {
+            this.props.history.push(ROUTES.products.show.split(':')[0] + nextProps.products.productCreated);
+        }
+
+        // Require auth; redirect to login if the auth check comes back negative.
+        if (this.props.authentication.isAuthenticated !== nextProps.authentication.isAuthenticated &&
+            nextProps.authentication.isAuthenticated === false
+        ) {
+            this.props.history.push(ROUTES.auth.login);
         }
     }
 
@@ -124,201 +152,167 @@ class ProductAdd extends React.Component{
         });
     }
 
-    loadProductDetails = (productId) => {
-        this.setState(() => ({ productId, isLoading: true }));
-
-        axios.get(productInfoAPI(productId)).then((response) => (
-            this.setState(() => ({
-                productName: response.data.name,
-                productNameValidation: s,
-                description: response.data.description,
-                descriptionValidation: s,
-                width: response.data.width,
-                widthValidation: s,
-                widthUnitId: response.data.width_unit_id,
-                height: response.data.height,
-                heightValidation: s,
-                heightUnitId: response.data.height_unit_id,
-                length: response.data.length,
-                lengthValidation: s,
-                lengthUnitId: response.data.length_unit_id,
-                weight: response.data.weight,
-                weightValidation: s,
-                weightUnitId: response.data.weight_unit_id,
-                price: response.data.price,
-                priceValidation: s,
-                currencyId: response.data.currency_id,
-                isLoading: false,
-                productNotFound: false
-            }))
-        )).catch((error) => (
-            this.setState(() => ({
-                isLoading: false,
-                productNotFound: true
-            }))
-        ));
+    updateProductInfo = (product) => {
+        this.setState({
+            productId: product.id,
+            productName: product.name,
+            productNameValidation: s,
+            description: product.description,
+            descriptionValidation: s,
+            width: product.width,
+            widthValidation: s,
+            widthUnitId: product.width_unit_id,
+            height: product.height,
+            heightValidation: s,
+            heightUnitId: product.height_unit_id,
+            length: product.length,
+            lengthValidation: s,
+            lengthUnitId: product.length_unit_id,
+            weight: product.weight,
+            weightValidation: s,
+            weightUnitId: product.weight_unit_id,
+            price: product.price,
+            priceValidation: s,
+            currencyId: product.currency_id,
+        });
     };
 
     handleNameChange = (e) => {
         const productName = e.target.value;
-        let productNameValidation = null;
+        let status = "error";
 
-        if (productName.length > 0 && productName.length < 255){
-            productNameValidation = "success";
-            this.setState(() => ({ productName, productNameValidation }));
-        } else {
-            productNameValidation = "error";
-            this.setState(() => ({ productNameValidation }));
+        if (productName.length > 0 && productName.length < 255) {
+            status = s;
         }
+
+        this.setState({ productName, productNameValidation: status });
     };
 
     handleDescriptionChange = (e) => {
         const description = e.target.value;
-        let descriptionValidation;
+        let status = "error";
 
-        if (description.length > 0){
-            descriptionValidation = "success";
-            this.setState(() => ({ description, descriptionValidation }));
-        } else {
-            descriptionValidation = "error";
-            this.setState(() => ({ descriptionValidation }));
+        if (description.length > 0) {
+            status = s;
         }
+
+        this.setState({ description, descriptionValidation: status });
     };
 
     handleWidthChange = (e) => {
         const width = e.target.value;
-        let widthValidation;
+        let status = "error";
 
-        if (width.length > 0 && parseFloat(width) == width){
-            widthValidation = "success";
-            this.setState(() => ({ width, widthValidation }));
-        } else {
-            widthValidation = "error";
-            this.setState(() => ({ widthValidation }));
+        if (width.length > 0 && parseFloat(width) == width) {
+            status = s;
         }
+
+        this.setState({ width, widthValidation: status });
     };
 
     handleWidthUnitChange = (e) => {
         const widthUnitId = e.target.value;
-        let widthUnitValidation;
+        let status = "error";
 
-        if (widthUnitId.length > 0 && parseInt(widthUnitId) == widthUnitId){
-            widthUnitValidation = "success";
-            this.setState(() => ({ widthUnitId, widthUnitValidation }));
-        } else {
-            widthUnitValidation = "error";
-            this.setState(() => ({ widthUnitValidation }));
+        if (widthUnitId.length > 0 && parseInt(widthUnitId) == widthUnitId) {
+            status = s;
         }
+
+        this.setState({ widthUnitId, widthUnitValidation: status });
     };
 
     handleHeightChange = (e) => {
         const height = e.target.value;
-        let heightValidation;
+        let status = "error";
 
         if (parseFloat(height) == height) {
-            heightValidation = "success";
-            this.setState(() => ({ height, heightValidation }));
-        } else {
-            heightValidation = "error";
-            this.setState(() => ({ heightValidation }));
+            status = s;
         }
+
+        this.setState({ height, heightValidation: status });
     };
 
     handleHeightUnitChange = (e) => {
         const heightUnitId = e.target.value;
-        let heightUnitValidation;
+        let status = "error";
 
-        if (heightUnitId.length > 0 && parseInt(heightUnitId) == heightUnitId){
-            heightUnitValidation = "success";
-            this.setState(() => ({ heightUnitId, heightUnitValidation }));
-        } else {
-            heightUnitValidation = "error";
-            this.setState(() => ({ heightUnitValidation }));
+        if (heightUnitId.length > 0 && parseInt(heightUnitId) == heightUnitId) {
+            status = s;
         }
+
+        this.setState({ heightUnitId, heightUnitValidation: status });
     };
 
     handleLengthChange = (e) => {
         const length = e.target.value;
-        let lengthValidation;
+        let status = "error";
 
         if (parseFloat(length) == length) {
-            lengthValidation = "success";
-            this.setState(() => ({ length, lengthValidation }));
-        } else {
-            lengthValidation = "error";
-            this.setState(() => ({ lengthValidation }));
+            status = s;
         }
+
+        this.setState({ length, lengthValidation: status });
     };
 
     handleLengthUnitChange = (e) => {
         const lengthUnitId = e.target.value;
-        let lengthUnitValidation;
+        let status = "error";
 
-        if (lengthUnitId.length > 0 && parseInt(lengthUnitId) == lengthUnitId){
-            lengthUnitValidation = "success";
-            this.setState(() => ({ lengthUnitId, lengthUnitValidation }));
-        } else {
-            lengthUnitValidation = "error";
-            this.setState(() => ({ lengthUnitValidation }));
+        if (lengthUnitId.length > 0 && parseInt(lengthUnitId) == lengthUnitId) {
+            status = s;
         }
+
+        this.setState({ lengthUnitId, lengthUnitValidation: status });
     };
 
     handleWeightChange = (e) => {
         const weight = e.target.value;
-        let weightValidation;
+        let status = "error";
 
         if (parseFloat(weight) == weight) {
-            weightValidation = "success";
-            this.setState(() => ({ weight, weightValidation }));
-        } else {
-            weightValidation = "error";
-            this.setState(() => ({ weightValidation }));
+            status = s;
         }
+
+        this.setState({ weight, weightValidation: status });
     };
 
     handleWeightUnitChange = (e) => {
         const weightUnitId = e.target.value;
-        let weightUnitValidation;
+        let status = "error";
 
-        if (weightUnitId.length > 0 && parseInt(weightUnitId) == weightUnitId){
-            weightUnitValidation = "success";
-            this.setState(() => ({ weightUnitId, weightUnitValidation }));
-        } else {
-            weightUnitValidation = "error";
-            this.setState(() => ({ weightUnitValidation }));
+        if (weightUnitId.length > 0 && parseInt(weightUnitId) == weightUnitId) {
+            status = s;
         }
+
+        this.setState({ weightUnitId, weightUnitValidation: status });
     };
 
     handlePriceChange = (e) => {
         const price = e.target.value;
-        let priceValidation;
+        let status = "error";
 
         if (parseFloat(price) == price) {
-            priceValidation = "success";
-            this.setState(() => ({ price, priceValidation }));
-        } else {
-            priceValidation = "error";
-            this.setState(() => ({ priceValidation }));
+            status = s;
         }
+
+        this.setState({ price, priceValidation: status });
     };
 
     handleCurrencyChange = (e) => {
         const currencyId = e.target.value;
-        let currencyValidation;
+        let status = "error";
 
-        if (currencyId.length > 0 && parseInt(currencyId) == currencyId){
-            currencyValidation = "success";
-            this.setState(() => ({ currencyId, currencyValidation }));
-        } else {
-            currencyValidation = "error";
-            this.setState(() => ({ currencyValidation }));
+        if (currencyId.length > 0 && parseInt(currencyId) == currencyId) {
+            status = s;
         }
+
+        this.setState({ currencyId, currencyValidation: status });
     };
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.setState(() => ({ isLoading: true }));
-        const data = {
+
+        const product = {
             store_id: this.state.storeId,
             name: this.state.productName,
             description: this.state.description,
@@ -334,36 +328,42 @@ class ProductAdd extends React.Component{
             currency_id: this.state.currencyId
         };
 
-        let url = productsApi;
-
-        if (this.state.productId !== null) {
-            // Laravel uses POST requests with a pseudo-method `_method`
-            // postfield for actions other than GET and POST.
-            data._method = 'put';
-            url = productUpdateApi(this.state.productId);
+        if (parseInt(this.state.productId) == this.state.productId) {
+            product.id = this.state.productId;
         }
 
-        axios.post(url, data, getAuthHeaders())
-            .then((response) => {
-                if (response.data.id) {
-                    this.setState(() => ({ isLoading: false }));
-                    this.props.history.push(ROUTES.products.show.split(':')[0] + response.data.id);
-                }
-            })
-            .catch((error) => {
-                 this.setState(() => ({ isLoading: false, errors: Object.values(error.response.data.errors) }));
-            });
+        this.props.dispatch(saveProduct(product));
     };
 
-    render(){
-        let addOrEdit = 'Add';
+    render() {
+        let addOrEdit = 'Add',
+            errors = '';
 
         if (this.state.productId) {
             addOrEdit = 'Edit';
         }
 
-        if (this.state.isLoading) {
+        if (this.props.products.productsRequested) {
             return <LoadingScreen/>
+        }
+
+        if (this.props.products.productCreateErrors.length) {
+            errors = (
+                <Panel bsStyle="danger">
+                    <Panel.Heading>
+                        <Panel.Title componentClass="h3">Error adding product</Panel.Title>
+                    </Panel.Heading>
+                    <Panel.Body>
+                        <ul>
+                            {this.props.products.productCreateErrors.map((item) => (
+                                item.map((error, k) => (
+                                    <li key={k}>{error}</li>
+                                ))
+                            ))}
+                        </ul>
+                    </Panel.Body>
+                </Panel>
+            );
         }
 
         return (
@@ -371,24 +371,7 @@ class ProductAdd extends React.Component{
                 <Row>
                     <Col mdOffset={2} lgOffset={2} lg={7} md={7}>
                         <h3 className={"text-center"}>{addOrEdit} a product</h3>
-                        {this.state.errors.length > 0 &&
-                        <div>
-                            <Panel bsStyle="danger">
-                                <Panel.Heading>
-                                    <Panel.Title componentClass="h3">Error adding product</Panel.Title>
-                                </Panel.Heading>
-                                <Panel.Body>
-                                    <ul>
-                                        {this.state.errors.map((item) => (
-                                            item.map((error, k) => (
-                                                <li key={k}>{error}</li>
-                                            ))
-                                        ))}
-                                    </ul>
-                                </Panel.Body>
-                            </Panel>
-                        </div>
-                        }
+                        {errors}
                         <form onSubmit={this.handleSubmit}>
 
                             <FormGroup
@@ -413,7 +396,7 @@ class ProductAdd extends React.Component{
                                 <FormControl
                                     componentClass="textarea"
                                     value={this.state.description}
-                                    placeholder="Some of the services provided"
+                                    placeholder="A description of the product."
                                     onChange={this.handleDescriptionChange}
                                 />
                                 <FormControl.Feedback />
@@ -606,4 +589,10 @@ class ProductAdd extends React.Component{
     }
 }
 
-export default connect()(ProductAdd);
+const mapStateToProps = (state) => ({
+    authentication: state.authentication,
+    products: state.products,
+    stores: state.stores
+});
+
+export default connect(mapStateToProps)(ProductAdd);

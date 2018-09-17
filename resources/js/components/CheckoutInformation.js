@@ -7,82 +7,56 @@ import MaterialButton from '@material-ui/core/Button';
 import { Row, Col, FormGroup, ControlLabel, FormControl, Radio, Form, Button } from "react-bootstrap";
 import AddressForm from "./AddressForm";
 import { withRouter } from "react-router-dom";
-import axios, { getAuthHeaders } from "../api/axiosInstance";
-import { ACCESS_TOKEN, SUCCESSFUL_ORDER, ROUTES } from "../api/strings";
-import { getUserAPI, userCartTotalsApi, userOrderApi, countriesApi} from "../api/apiURLs";
+import { SUCCESSFUL_ORDER, ROUTES } from "../api/strings";
 import { connect } from "react-redux";
 import LoadingScreen from "../components/LoadingScreen";
 import { totalReducer } from "./ShoppingCart";
-import { cartUid, emptyCart } from "../actions/shoppingCart";
-
-const FieldGroup = ({ id, label, validationState=null, ...props }) => (
-        <FormGroup controlId={id} validationState={validationState}>
-            <ControlLabel>{label}</ControlLabel>
-            <FormControl {...props} />
-            <FormControl.Feedback />
-        </FormGroup>
-);
+import { emptyCart } from "../actions/shoppingCart";
+import { getUserInfo, placeOrder } from "../actions/users";
+import { getCountries } from "../actions/utilities";
 
 const s = "success";
 
 class CheckoutInformation extends React.Component {
 
-    state = {
-        countries: {},
-        loadedAddresses: [],
-        isLoading: false
-    };
-
     componentDidMount() {
-        this.setState({ isLoading: true });
+        this.props.dispatch(getUserInfo());
 
-        axios.get(getUserAPI, getAuthHeaders())
-            .then((response) => {
-                this.setState(() => ({ loadedAddresses: response.data.addresses, isLoading: false }));
-            })
-            .catch((error) => {
-                // Login is required
-                this.props.history.push(ROUTES.auth.login);
-            });
-
-        this.fillCountries();
+        this.props.dispatch(getCountries());
     }
 
-    fillCountries() {
-        // Make an object of country abbreviations keyed to their IDs.
-        axios.get(countriesApi).then((response) => {
-            let countries = {};
+    componentWillReceiveProps(nextProps) {
+        // If an order has been created/updated, redirect to it.
+        if (this.props.users.orderCreated !== nextProps.users.orderCreated &&
+            parseInt(nextProps.users.orderCreated) == nextProps.users.orderCreated
+        ) {
+            this.props.dispatch(emptyCart());
+            this.props.history.push({
+                pathname: ROUTES.orders.confirmation,
+                state: {
+                    order: SUCCESSFUL_ORDER,
+                    orderId: nextProps.users.orderCreated
+                }
+            });
+        }
 
-            for (let country of response.data) {
-                countries[country.id] = country.abbreviation + ' - ' + country.name;
-            }
-
-            this.setState({ countries });
-        });
+        // Require auth; redirect to login if the auth check comes back negative.
+        if (this.props.authentication.isAuthenticated !== nextProps.authentication.isAuthenticated &&
+            nextProps.authentication.isAuthenticated === false
+        ) {
+            this.props.history.push(ROUTES.auth.login);
+        }
     }
 
     handleSubmit = (address) => {
-        // process the order
-        this.setState(() => ({ isLoading: true }));
-
-        axios.post(userOrderApi(cartUid), address, getAuthHeaders())
-            .then((response) => {
-                this.props.dispatch(emptyCart());
-                this.props.history.push({
-                    pathname: ROUTES.orders.confirmation,
-                    state: {
-                        order: SUCCESSFUL_ORDER,
-                        orderId: response.data.id
-                    }
-                });
-            })
-            .catch((error) => {
-                console.log(error.response);
-            });
+        this.props.dispatch(placeOrder(address));
     };
 
     render() {
-        if (this.state.isLoading) {
+        if (this.props.users.usersRequested ||
+            this.props.utilities.countriesRequested ||
+            this.props.users.orderRequested
+        ) {
             return <LoadingScreen/>
         }
 
@@ -90,8 +64,8 @@ class CheckoutInformation extends React.Component {
             <Row>
                 <Col lg={12} md={12}>
                     <AddressForm
-                        loadedAddresses={this.state.loadedAddresses}
-                        countries={this.state.countries}
+                        loadedAddresses={this.props.users.user ? this.props.users.user.addresses : []}
+                        countries={this.props.utilities.countries}
                         handleSubmit={this.handleSubmit}
                     />
                 </Col>
@@ -103,7 +77,9 @@ class CheckoutInformation extends React.Component {
 const mapStateToProps = (state) => {
     return {
         authentication: state.authentication,
-        shoppingCart: state.shoppingCart
+        shoppingCart: state.shoppingCart,
+        users: state.users,
+        utilities: state.utilities,
     };
 };
 

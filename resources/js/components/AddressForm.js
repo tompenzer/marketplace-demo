@@ -27,7 +27,7 @@ export default class AddressForm extends React.Component {
     };
 
     componentDidMount(){
-        if (this.props.loadedAddresses !== null) {
+        if (this.props.loadedAddresses) {
             this.props.loadedAddresses.map((address) => {
                 // FormControl inputs don't like `null` values; scrub them.
                 Object.keys(address).forEach((key) => (address[key] === null) && delete address[key]);

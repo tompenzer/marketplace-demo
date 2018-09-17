@@ -4,6 +4,7 @@ import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { loadProducts } from "../actions/products";
 import { connect } from 'react-redux';
+import { ADDED_TO_CART_SNACKBAR } from "../api/strings";
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -12,11 +13,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
-import axios from "../api/axiosInstance";
-import { productsApi } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import { ADDED_TO_CART_SNACKBAR } from "../api/strings";
 import ProductList from './ProductList';
 
 class Products extends React.Component {
@@ -29,30 +27,6 @@ class Products extends React.Component {
       snackbarMessage: "",
       cartProductId: null
     };
-
-    loadProducts(query) {
-        this.setState(() => ({ isLoading: true }));
-
-        let options = {};
-
-        if (query) {
-            options.params = { q: query };
-        }
-
-        // Fetch the products.
-        axios.get(productsApi, options).then((response) => (this.setState(
-            {
-                products: response.data.data,
-                isLoading: false,
-                productsNotFound: false
-            }
-        ))).catch((error) => (
-            this.setState({
-                isLoading: false,
-                productsNotFound: true
-            })
-        ));
-    }
 
     componentDidMount() {
         let query;

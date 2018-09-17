@@ -3,7 +3,7 @@ import { Navbar, FormControl, FormGroup, Nav, NavItem, MenuItem, Button, Glyphic
 import { Link, withRouter } from 'react-router-dom';
 import ShoppingCart from '../components/ShoppingCart';
 import { connect } from 'react-redux';
-import Popover, {PopoverAnimationVertical} from '@material-ui/core/Popover';
+import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItemMUI from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';

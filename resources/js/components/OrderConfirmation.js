@@ -1,6 +1,6 @@
 import React from "react";
-import {Link} from "react-router-dom";
-import {Panel, Glyphicon} from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { Panel, Glyphicon } from "react-bootstrap";
 import { ROUTES } from "../api/strings";
 
 const OrderConfirmation = (props) => (

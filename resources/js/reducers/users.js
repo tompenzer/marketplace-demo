@@ -4,16 +4,24 @@ import {
     USERS_ERROR,
     ORDER_CREATED,
     ORDER_REQUESTED,
-    ORDER_ERRORS
+    ORDER_ERRORS,
+    CART_REQUESTED,
+    CART_ERROR,
+    CART_TOTALS
 } from "../api/strings";
 
+// Cart totals is part of the users store since shoppingCart store is a flat
+// array of items.
 const usersReducerDefaultState = {
     user: {},
     usersRequested: false,
     usersError: false,
     orderCreated: null,
     orderRequested: false,
-    orderErrors: []
+    orderErrors: [],
+    cartTotals: {},
+    cartRequested: false,
+    cartError: false
 };
 
 export default (state = usersReducerDefaultState, action) => {
@@ -56,6 +64,27 @@ export default (state = usersReducerDefaultState, action) => {
                 orderCreated: null,
                 orderRequested: false,
                 orderErrors: action.orderErrors
+            };
+        case CART_TOTALS:
+            return {
+                ...state,
+                cartTotals: action.cartTotals,
+                cartRequested: false,
+                cartError: false
+            };
+        case CART_REQUESTED:
+            return {
+                ...state,
+                cartTotals: {},
+                cartRequested: true,
+                cartError: false
+            };
+        case CART_ERROR:
+            return {
+                ...state,
+                cartTotals: {},
+                cartRequested: true,
+                cartError: true
             };
         default:
             return state;

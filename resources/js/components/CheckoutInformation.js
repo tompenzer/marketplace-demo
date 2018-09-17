@@ -23,6 +23,10 @@ class CheckoutInformation extends React.Component {
         this.props.dispatch(getUserInfo());
 
         this.props.dispatch(getCountries());
+
+        if (this.props.authentication.isAuthenticated === false) {
+            this.props.history.push(ROUTES.auth.login);
+        }
     }
 
     componentWillReceiveProps(nextProps) {

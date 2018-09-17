@@ -1,8 +1,8 @@
 import React from "react";
-import {Button, Row, Col} from 'react-bootstrap';
+import { Button, Row, Col } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
-import {addToCart} from "../actions/shoppingCart";
-import {image} from "./image";
+import { addToCart } from "../actions/shoppingCart";
+import { image } from "./image";
 import { connect } from 'react-redux';
 import { ROUTES } from "../api/strings";
 

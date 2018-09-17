@@ -75,6 +75,12 @@ export const EDIT_CART = 'EDIT_CART';
 
 export const EMPTY_CART = 'EMPTY_CART';
 
+export const CART_REQUESTED = 'CART_REQUESTED';
+
+export const CART_ERROR = 'CART_ERROR';
+
+export const CART_TOTALS = 'CART_TOTALS';
+
 
 // Routes and paths
 export const ROUTES = {

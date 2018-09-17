@@ -1,5 +1,10 @@
 // default state
-import {ADD_TO_CART, EDIT_CART, EMPTY_CART, REMOVE_FROM_CART} from "../api/strings";
+import {
+    ADD_TO_CART,
+    EDIT_CART,
+    EMPTY_CART,
+    REMOVE_FROM_CART
+} from "../api/strings";
 
 const shoppingCartReducerDefaultState = [];
 

@@ -1,9 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import axios from "../api/axiosInstance";
-import { unitsApi, currenciesApi } from "../api/apiURLs";
 import { loadProductDetails, saveProduct } from "../actions/products";
 import { checkStoreAuth } from "../actions/stores";
+import { getCurrencies, getUnits } from "../actions/utilities";
 import { ROUTES } from "../api/strings";
 import { Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Panel, HelpBlock } from 'react-bootstrap';
 import LoadingScreen from "../components/LoadingScreen";
@@ -16,9 +15,6 @@ class ProductAdd extends React.Component{
         storeId: null,
         productId: null,
         productNotFound: null,
-        unitsDimension: {},
-        unitsWeight: {},
-        currencies: {},
         productNameValidation: null,
         productName: '',
         descriptionValidation: null,
@@ -76,8 +72,8 @@ class ProductAdd extends React.Component{
             this.props.dispatch(loadProductDetails(this.props.match.params.productId));
         }
 
-        this.fillUnits();
-        this.fillCurrencies();
+        this.props.dispatch(getCurrencies());
+        this.props.dispatch(getUnits());
     }
 
     componentWillReceiveProps(nextProps) {
@@ -114,40 +110,6 @@ class ProductAdd extends React.Component{
         ) {
             this.props.history.push(ROUTES.auth.login);
         }
-    }
-
-    fillUnits() {
-        // Make an object of unit abbreviations keyed to their IDs.
-        axios.get(unitsApi).then((response) => {
-            let unitsDimension = {},
-                unitsWeight = {};
-
-            for (let unit of response.data) {
-                switch (unit.type.name) {
-                    case 'dimension':
-                        unitsDimension[unit.id] = unit.abbreviation;
-                        break;
-                    case 'weight':
-                        unitsWeight[unit.id] = unit.abbreviation;
-                        break;
-                }
-            }
-
-            this.setState({ unitsDimension, unitsWeight });
-        });
-    }
-
-    fillCurrencies() {
-        // Make an object of currency abbreviations keyed to their IDs.
-        axios.get(currenciesApi).then((response) => {
-            let currencies = {};
-
-            for (let currency of response.data) {
-                currencies[currency.id] = currency.abbreviation;
-            }
-
-            this.setState({ currencies: currencies });
-        });
     }
 
     updateProductInfo = (product) => {
@@ -341,7 +303,12 @@ class ProductAdd extends React.Component{
             addOrEdit = 'Edit';
         }
 
-        if (this.props.products.productsRequested) {
+        if (this.props.products.productsRequested ||
+            this.props.utilities.unitsRequested ||
+            this.props.utilities.currenciesRequested ||
+            ! this.props.utilities.units.dimension ||
+            ! this.props.utilities.currencies[1]
+        ) {
             return <LoadingScreen/>
         }
 
@@ -427,7 +394,7 @@ class ProductAdd extends React.Component{
                                             componentClass="select"
                                             onChange={this.handleWidthUnitChange}
                                         >
-                                            {Object.keys(this.state.unitsDimension).map((key) => (<option key={'width-' + key} value={key}>{this.state.unitsDimension[key]}</option>))}
+                                            {Object.keys(this.props.utilities.units.dimension).map((key) => (<option key={'width-' + key} value={key}>{this.props.utilities.units.dimension[key]}</option>))}
                                         </FormControl>
                                     </FormGroup>
                                 </Col>
@@ -460,7 +427,7 @@ class ProductAdd extends React.Component{
                                             componentClass="select"
                                             onChange={this.handleHeightUnitChange}
                                         >
-                                            {Object.keys(this.state.unitsDimension).map((key) => (<option key={'height-' + key} value={key}>{this.state.unitsDimension[key]}</option>))}
+                                            {Object.keys(this.props.utilities.units.dimension).map((key) => (<option key={'height-' + key} value={key}>{this.props.utilities.units.dimension[key]}</option>))}
                                         </FormControl>
                                     </FormGroup>
                                 </Col>
@@ -493,7 +460,7 @@ class ProductAdd extends React.Component{
                                             componentClass="select"
                                             onChange={this.handleLengthUnitChange}
                                         >
-                                            {Object.keys(this.state.unitsDimension).map((key) => (<option key={'length-' + key} value={key}>{this.state.unitsDimension[key]}</option>))}
+                                            {Object.keys(this.props.utilities.units.dimension).map((key) => (<option key={'length-' + key} value={key}>{this.props.utilities.units.dimension[key]}</option>))}
                                         </FormControl>
                                     </FormGroup>
                                 </Col>
@@ -526,7 +493,7 @@ class ProductAdd extends React.Component{
                                             componentClass="select"
                                             onChange={this.handleWeightUnitChange}
                                         >
-                                            {Object.keys(this.state.unitsWeight).map((key) => (<option key={'weight-' + key} value={key}>{this.state.unitsWeight[key]}</option>))}
+                                            {Object.keys(this.props.utilities.units.weight).map((key) => (<option key={'weight-' + key} value={key}>{this.props.utilities.units.weight[key]}</option>))}
                                         </FormControl>
                                     </FormGroup>
                                 </Col>
@@ -559,7 +526,7 @@ class ProductAdd extends React.Component{
                                             componentClass="select"
                                             onChange={this.handleCurrencyChange}
                                         >
-                                            {Object.keys(this.state.currencies).map((key) => (<option key={'curr-' + key} value={key}>{this.state.currencies[key]}</option>))}
+                                            {Object.keys(this.props.utilities.currencies).map((key) => (<option key={'curr-' + key} value={key}>{this.props.utilities.currencies[key]}</option>))}
                                         </FormControl>
                                     </FormGroup>
                                 </Col>
@@ -590,7 +557,8 @@ class ProductAdd extends React.Component{
 const mapStateToProps = (state) => ({
     authentication: state.authentication,
     products: state.products,
-    stores: state.stores
+    stores: state.stores,
+    utilities: state.utilities
 });
 
 export default connect(mapStateToProps)(ProductAdd);

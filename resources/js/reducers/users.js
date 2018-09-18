@@ -7,7 +7,13 @@ import {
     ORDER_ERRORS,
     CART_REQUESTED,
     CART_ERROR,
-    CART_TOTALS
+    CART_TOTALS,
+    ORDER_INFO,
+    ORDER_INFO_REQUESTED,
+    ORDER_INFO_ERROR,
+    USER_ORDERS,
+    ORDERS_REQUESTED,
+    ORDERS_ERROR
 } from "../api/strings";
 
 // Cart totals is part of the users store since shoppingCart store is a flat
@@ -19,6 +25,12 @@ const usersReducerDefaultState = {
     orderCreated: null,
     orderRequested: false,
     orderErrors: [],
+    order: {},
+    orderInfoRequested: false,
+    orderInfoError: false,
+    orders: [],
+    ordersRequested: false,
+    ordersError: false,
     cartTotals: {},
     cartRequested: false,
     cartError: false
@@ -83,8 +95,50 @@ export default (state = usersReducerDefaultState, action) => {
             return {
                 ...state,
                 cartTotals: {},
-                cartRequested: true,
+                cartRequested: false,
                 cartError: true
+            };
+        case ORDER_INFO:
+            return {
+                ...state,
+                order: action.order,
+                orderInfoRequested: false,
+                orderInfoError: false
+            };
+        case ORDER_INFO_REQUESTED:
+            return {
+                ...state,
+                order: {},
+                orderInfoRequested: true,
+                orderInfoError: false
+            };
+        case ORDER_INFO_ERROR:
+            return {
+                ...state,
+                order: {},
+                orderInfoRequested: false,
+                orderInfoError: true
+            };
+        case USER_ORDERS:
+            return {
+                ...state,
+                orders: action.orders,
+                ordersRequested: false,
+                ordersError: false
+            };
+        case ORDERS_REQUESTED:
+            return {
+                ...state,
+                orders: {},
+                ordersRequested: true,
+                ordersError: false
+            };
+        case ORDERS_ERROR:
+            return {
+                ...state,
+                orders: {},
+                ordersRequested: false,
+                ordersError: true
             };
         default:
             return state;

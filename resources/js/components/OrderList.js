@@ -1,14 +1,13 @@
 import React from "react";
-import { Grid, Row, Col, Panel, ListGroup } from "react-bootstrap";
-import axios, { getAuthHeaders } from "../api/axiosInstance";
+import { Row, Col, Panel, ListGroup } from "react-bootstrap";
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
-import CustomListGroupItem from '../components/CustomListGroupItemOrder';
-import { ACCESS_TOKEN, ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
-import { userOrdersApi } from "../api/apiURLs";
-import LoadingScreen from "../components/LoadingScreen";
+import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
+import { getUserOrders } from "../actions/users";
 import Snackbar from '@material-ui/core/Snackbar';
+import LoadingScreen from "../components/LoadingScreen";
+import CustomListGroupItem from '../components/CustomListGroupItemOrder';
 import styleVariables from '../../sass/base/_variables.scss';
 
 const headingLabelStyle = {
@@ -71,50 +70,50 @@ const OrderPanels = (props) => (
 class OrderList extends React.Component {
 
     state = {
-        orders: [],
+        addedToCartProductId: null,
         snackbarOpen: false,
         snackbarMessage: '',
-        autoHideDuration: 3000,
-        isLoading: false
+        autoHideDuration: 3000
     };
 
     componentDidMount() {
-        this.setState(() => ({ isLoading: true }));
+        if (this.props.authentication.isAuthenticated === false) {
+            this.props.history.push(ROUTES.auth.login);
+        }
 
-        axios.get(userOrdersApi, getAuthHeaders())
-            .then((response) => {
-                const orders = response.data;
-                this.setState({ orders, isLoading: false });
-            })
-            .catch((error) => {
-                console.log(error.response);
-                this.props.history.push(ROUTES.auth.login);
-            });
+        this.props.dispatch(getUserOrders());
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.authentication.isAuthenticated === false) {
+            this.props.history.push(ROUTES.auth.login);
+        }
     }
 
     handleAddToCart = (product = {}) => {
         this.props.dispatch(addToCart(product));
-        this.setState({ snackbarOpen: true, snackbarMessage: ADDED_TO_CART_SNACKBAR });
+        this.setState({
+            addedToCartProductId: product.productId,
+            snackbarOpen: true,
+            snackbarMessage: ADDED_TO_CART_SNACKBAR
+        });
     };
 
     handleSnackbarRequestClose = () => {
         this.setState({ snackbarOpen: false });
     };
 
-    static removeItemFromCart = (productId, props) => {
-        props.dispatch(removeFromCart({ productId }));
-    };
-
     handleUndoAction = () => {
-        if(this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR){
-            ProductInfo.removeItemFromCart(this.state.productId, this.props);
+        if (this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR) {
+            this.props.dispatch(removeFromCart({ productId: this.state.addedToCartProductId }));
+            this.setState({ addedToCartProductId: null });
         }
         this.handleSnackbarRequestClose();
     };
 
     render() {
 
-        if (this.state.isLoading) {
+        if (this.props.users.ordersRequested) {
             return <LoadingScreen/>
         }
 
@@ -123,9 +122,9 @@ class OrderList extends React.Component {
                 <h2 className="page-heading">My orders</h2>
                 <hr/>
                 <br/>
-                {this.state.orders.length === 0 ?
+                {this.props.users.orders.length === 0 ?
                 <p>You haven't placed any orders.</p> :
-                this.state.orders.data.map((order) => {
+                this.props.users.orders.data.map((order) => {
                 return <OrderPanels
                         key={'order' + order.id}
                         orderDate={order.created_at}
@@ -171,10 +170,9 @@ class OrderList extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        authentication: state.authentication
-    };
-};
+const mapStateToProps = state => ({
+    authentication: state.authentication,
+    users: state.users
+});
 
 export default connect(mapStateToProps)(withRouter(OrderList));

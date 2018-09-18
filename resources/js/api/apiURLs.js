@@ -42,6 +42,10 @@ export const userOrderApi = (cartUid) => (
     `/api/order/${cartUid}`
 );
 
+export const userOrderInfoApi = (orderId) => (
+    `/api/order/${orderId}`
+);
+
 export const userAddressApi = (userId) => (
     `/api/user/${userId}/addresses`
 );
@@ -67,10 +71,6 @@ export const logoutAPI = "/api/logout";
 export const registerAPI = "/api/register";
 
 export const userOrdersApi = "/api/orders";
-
-export const orderDetailAPI = (order_id) => (
-    `/api/order/${order_id}`
-);
 
 export const contactAPI = "/api/contact";
 

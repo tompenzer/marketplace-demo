@@ -5,9 +5,15 @@ import {
     USERS_ERROR,
     ORDER_CREATED,
     ORDER_REQUESTED,
-    ORDER_ERRORS
+    ORDER_ERRORS,
+    ORDER_INFO,
+    ORDER_INFO_REQUESTED,
+    ORDER_INFO_ERROR,
+    USER_ORDERS,
+    ORDERS_REQUESTED,
+    ORDERS_ERROR
 } from "../api/strings";
-import { getUserAPI, userOrderApi } from "../api/apiURLs";
+import { getUserAPI, userOrderApi, userOrdersApi, userOrderInfoApi } from "../api/apiURLs";
 import { cartUid } from "../actions/shoppingCart";
 
 export const addUserHelper = (user = {}) => ({
@@ -37,6 +43,31 @@ export const addOrderErrors = (errors = []) => ({
     orderErrors: errors
 });
 
+export const addOrderInfoHelper = (order = {}) => ({
+    type: ORDER_INFO,
+    order
+});
+
+export const orderInfoRequested = () => ({
+    type: ORDER_INFO_REQUESTED
+});
+
+export const orderInfoError = () => ({
+    type: ORDER_INFO_ERROR
+});
+
+export const addUserOrdersHelper = (orders = []) => ({
+    type: USER_ORDERS,
+    orders
+});
+
+export const ordersRequested = () => ({
+    type: ORDERS_REQUESTED
+});
+
+export const ordersError = () => ({
+    type: ORDERS_ERROR
+});
 
 export const getUserInfo = () => {
     return (dispatch, getState) => {
@@ -46,7 +77,7 @@ export const getUserInfo = () => {
             .then(response => {
                 dispatch(addUserHelper(response.data));
             })
-            .catch(error => {
+            .catch(() => {
                 dispatch(usersError());
             });
     }
@@ -64,4 +95,32 @@ export const placeOrder = (address) => {
                 dispatch(addOrderErrors(Object.values(error.response.data.errors)));
             });
     }
+};
+
+export const getOrderInfo = (orderId) => {
+    return (dispatch, getState) => {
+        dispatch(orderInfoRequested());
+
+        axios.get(userOrderInfoApi(orderId), getAuthHeaders())
+            .then(response => {
+                dispatch(addOrderInfoHelper(response.data));
+            })
+            .catch(() => {
+                dispatch(orderInfoError());
+            });
+    }
+};
+
+export const getUserOrders = () => {
+    return (dispatch, getState) => {
+        dispatch(ordersRequested());
+
+        axios.get(userOrdersApi, getAuthHeaders())
+            .then(response => {
+                dispatch(addUserOrdersHelper(response.data));
+            })
+            .catch(() => {
+                dispatch(ordersError());
+            });
+    };
 };

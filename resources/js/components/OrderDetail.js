@@ -2,17 +2,16 @@ import React from "react";
 import { Grid, Row, Col, Panel, ListGroup, Glyphicon } from "react-bootstrap";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from 'react-redux';
-import axios, { getAuthHeaders } from "../api/axiosInstance";
-import LoadingScreen from "../components/LoadingScreen";
-import { ACCESS_TOKEN, ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
-import { userOrderApi } from "../api/apiURLs";
-import InformationPanel from "../components/InformationPanel";
+import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
+import { addToCart, removeFromCart } from "../actions/shoppingCart";
+import { getOrderInfo } from "../actions/users";
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import CustomListGroupItem from '../components/CustomListGroupItemOrder';
-import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import Snackbar from '@material-ui/core/Snackbar';
+import LoadingScreen from "../components/LoadingScreen";
+import InformationPanel from "../components/InformationPanel";
+import CustomListGroupItem from '../components/CustomListGroupItemOrder';
 import styleVariables from '../../sass/base/_variables.scss';
 
 const headingLabelStyle = {
@@ -29,38 +28,27 @@ const headingTextStyle = {
 class OrderDetail extends React.Component{
 
     state = {
-        isLoading: true,
-        orderDetail: {},
         snackbarOpen: false,
         snackbarMessage: '',
         addedToCartProductId: null,
-        autoHideDuration: 3000,
-        invalidOrder: false
-    };
-
-    getOrderDetail = () => {
-        axios.get(userOrderApi(this.props.match.params.orderId), getAuthHeaders())
-            .then((response) => {
-                this.setState({ orderDetail: response.data, isLoading: false });
-            })
-            .catch(() => {
-                this.setState({ isLoading: false, invalidOrder: true });
-            });
+        autoHideDuration: 3000
     };
 
     componentDidMount() {
-        if (this.props.location.state && this.props.location.state.authenticated) {
-            this.getOrderDetail();
-        } else {
+        if (this.props.authentication.isAuthenticated === false) {
             this.props.history.push(ROUTES.auth.login);
         }
+
+        this.props.dispatch(getOrderInfo(this.props.match.params.orderId));
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.location.state && nextProps.location.state.authenticated) {
-            this.getOrderDetail();
-        } else {
+        if (nextProps.authentication.isAuthenticated === false) {
             this.props.history.push(ROUTES.auth.login);
+        }
+
+        if (this.props.match.params.orderId !== nextProps.match.params.orderId) {
+            this.props.dispatch(getOrderInfo(nextProps.match.params.orderId));
         }
     }
 
@@ -77,13 +65,9 @@ class OrderDetail extends React.Component{
         this.setState({ snackbarOpen: false });
     };
 
-    static removeItemFromCart = (productId, props) => {
-        props.dispatch(removeFromCart({ productId }));
-    };
-
     handleUndoAction = () => {
         if (this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR) {
-            OrderDetail.removeItemFromCart(this.state.addedToCartProductId, this.props);
+            this.props.dispatch(removeFromCart({ productId: this.state.addedToCartProductId }))
             this.setState({ addedToCartProductId: null });
         }
 
@@ -92,9 +76,7 @@ class OrderDetail extends React.Component{
 
     render() {
 
-        if (this.state.isLoading) {
-            return <LoadingScreen/>
-        } else if (this.state.invalidOrder) {
+        if (this.props.users.orderInfoError) {
             return <InformationPanel
                 panelTitle={"Invalid Order"}
                 informationHeading={"You are on invalid order page!"}
@@ -102,7 +84,9 @@ class OrderDetail extends React.Component{
             />
         }
 
-        const { orderDetail } = this.state;
+        if (this.props.users.orderInfoRequested || ! this.props.users.order.id) {
+            return <LoadingScreen/>
+        }
 
         return (
             <Grid>
@@ -124,7 +108,7 @@ class OrderDetail extends React.Component{
                                         Order Identification:
                                     </span>{' '}
                                     <span className={"order-panel-attributes"}>
-                                        {this.props.match.params.id}
+                                        {this.props.match.params.orderId}
                                     </span>
                                 </p>
                             </Col>
@@ -144,7 +128,7 @@ class OrderDetail extends React.Component{
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span style={headingTextStyle}>{orderDetail.created_at.split(" ")[0]}</span>
+                                        <span style={headingTextStyle}>{this.props.users.order.created_at.split(" ")[0]}</span>
                                     </Col>
 
                                     <Col lg={2} md={2}>
@@ -152,7 +136,7 @@ class OrderDetail extends React.Component{
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span style={headingTextStyle}>{orderDetail.created_at.split(" ")[1]} EST</span>
+                                        <span style={headingTextStyle}>{this.props.users.order.created_at.split(" ")[1]} EST</span>
                                     </Col>
                                 </Row>
 
@@ -162,7 +146,7 @@ class OrderDetail extends React.Component{
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span style={headingTextStyle}>${parseFloat(orderDetail.total).toFixed(2)}</span>
+                                        <span style={headingTextStyle}>${parseFloat(this.props.users.order.total).toFixed(2)}</span>
                                     </Col>
 
                                     <Col lg={2} md={2}>
@@ -170,7 +154,7 @@ class OrderDetail extends React.Component{
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span style={headingTextStyle}>{orderDetail.items.length}</span>
+                                        <span style={headingTextStyle}>{this.props.users.order.items.length}</span>
                                     </Col>
                                 </Row>
                             </Panel.Body>
@@ -212,7 +196,7 @@ class OrderDetail extends React.Component{
                             </Panel.Heading>
                             <Panel.Body>
                                 <ListGroup>
-                                    {orderDetail.items.map((item) => (
+                                    {this.props.users.order.items.map((item) => (
                                         <CustomListGroupItem
                                             key={'orderItem' + item.product.id}
                                             productName={item.product.name}
@@ -251,10 +235,9 @@ class OrderDetail extends React.Component{
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        authentication: state.authentication
-    };
-};
+const mapStateToProps = state => ({
+    authentication: state.authentication,
+    users: state.users
+});
 
 export default connect(mapStateToProps)(withRouter(OrderDetail));

@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { Row, Col, Button, Form, FormGroup, FormControl, Glyphicon, Tooltip, OverlayTrigger } from "react-bootstrap";
 import ProductInfo from "./ProductInfo";
 import { connect } from 'react-redux';
-import { editCart } from "../actions/shoppingCart";
+import { removeFromCart, editCart } from "../actions/shoppingCart";
 import styleVariables from '../../sass/base/_variables.scss';
 import { ROUTES } from "../api/strings";
 
@@ -69,9 +69,8 @@ class CustomListGroupItemCart extends React.Component{
         }
     }
 
-    removeFromCart = (e) => {
-        e.stopPropagation();
-        ProductInfo.removeItemFromCart(this.props.productId, this.props);
+    removeFromCart = () => {
+        this.props.dispatch(removeFromCart({ productId: this.props.productId }));
     }
 
     render() {

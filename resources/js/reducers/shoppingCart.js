@@ -12,18 +12,16 @@ const shoppingCartReducerDefaultState = [];
 export default (state = shoppingCartReducerDefaultState, action) => {
     switch (action.type) {
         case ADD_TO_CART:
-            let idAlreadyExists = state.some(function (el) {
-                return el.productId.toString() === action.shoppingCart.productId.toString();
-            });
+            let idAlreadyExists = state.some(el => (el.productId.toString() === action.shoppingCart.productId.toString()));
+
             if (idAlreadyExists) {
                 return state;
             }
-            else {
-                return [
-                    ...state,
-                    action.shoppingCart
-                ];
-            }
+
+            return [
+                ...state,
+                action.shoppingCart
+            ];
         case REMOVE_FROM_CART:
             return state.filter(({ productId }) => productId.toString() !== action.productId.toString());
         case EDIT_CART:

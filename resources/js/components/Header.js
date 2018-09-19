@@ -144,7 +144,7 @@ class Header extends React.Component{
 
         if (this.props.shoppingCart) {
             shoppingCartTotal = this.props.shoppingCart.reduce((accumulator, item) => {
-                return accumulator + item.quantity;
+                return accumulator + parseInt(item.quantity);
             }, 0);
         }
 

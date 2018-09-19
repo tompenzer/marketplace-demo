@@ -17,8 +17,6 @@ class ProductInfo extends React.Component {
       quantity: 1,
       autoHideDuration: 3000,
       snackbarOpen:false,
-      isLoading: false,
-      productNotFound: false,
       snackbarMessage: ""
     };
 
@@ -31,7 +29,6 @@ class ProductInfo extends React.Component {
     }
 
     componentDidMount() {
-        // load the product details here
         this.props.dispatch(loadProductDetails(this.props.match.params.id));
     }
 
@@ -44,16 +41,16 @@ class ProductInfo extends React.Component {
             price: this.props.products.productDetails.price,
             currency: this.props.products.productDetails.currency.abbreviation
         }));
-        this.setState(() => ({
+        this.setState({
             snackbarOpen: true,
             snackbarMessage: ADDED_TO_CART_SNACKBAR
-        }))
+        });
     };
 
     onQuantityChange = (e) => {
         let quantity = e.target.value;
         if (quantity < 1000){
-            this.setState(() => ({ quantity }));
+            this.setState({ quantity });
         }
     };
 
@@ -80,7 +77,6 @@ class ProductInfo extends React.Component {
     };
 
     render() {
-// console.log(this.props.products);
         if (this.props.products.productsRequested) {
             return <LoadingScreen/>
         }
@@ -166,8 +162,8 @@ class ProductInfo extends React.Component {
                         message={this.state.snackbarMessage}
                         action="undo"
                         autoHideDuration={this.state.autoHideDuration}
-                        onActionClick={this.handleUndoAction}
-                        onRequestClose={this.handleSnackbarRequestClose}
+                        onClick={this.handleUndoAction}
+                        onClose={this.handleSnackbarRequestClose}
                     />
                 </div>
             </Grid>

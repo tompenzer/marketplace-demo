@@ -1,15 +1,13 @@
 import React from "react";
 import { Link, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { loadProductDetails } from "../actions/products";
-import { connect } from 'react-redux';
+import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
 import Snackbar from '@material-ui/core/Snackbar';
-import axios from "../api/axiosInstance";
-import { productInfoAPI } from "../api/apiURLs";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
 
 class ProductInfo extends React.Component {
 

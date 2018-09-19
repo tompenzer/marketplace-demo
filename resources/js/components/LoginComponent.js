@@ -100,10 +100,8 @@ class LoginComponent extends React.Component{
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        authentication: state.authentication,
-    };
-};
+const mapStateToProps = state => ({
+    authentication: state.authentication,
+});
 
 export default connect(mapStateToProps)(withRouter(LoginComponent));

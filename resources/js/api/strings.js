@@ -15,6 +15,12 @@ export const LOG_IN_ERROR = 'LOG_IN_ERROR';
 
 export const LOG_OUT = 'LOG_OUT';
 
+export const USER_CREATED = 'USER_CREATED';
+
+export const USER_CREATE_REQUESTED = 'USER_CREATE_REQUESTED';
+
+export const USER_CREATE_ERRORS = 'USER_CREATE_ERRORS';
+
 export const STORES = 'STORES';
 
 export const STORES_REQUESTED = 'STORES_REQUESTED';

@@ -42,7 +42,7 @@ const ProductList = props => (
                             <TableCell component="th" scope="row">
                                 <Link to={
                                     ROUTES.products.show
-                                        .replace(':productId', item.id)
+                                        .replace(':id', item.id)
                                 }>{item.name}</Link>
                             </TableCell>
                             {! props.store && <TableCell>
@@ -52,8 +52,8 @@ const ProductList = props => (
                                 }>{store.name}</Link>
                             </TableCell>}
                             <TableCell numeric>{
-                                Number.parseFloat(item.price).toFixed(2) +
-                                ' ' + item.currency.abbreviation
+                                item.currency.abbreviation + ' ' +
+                                Number.parseFloat(item.price).toFixed(2)
                             }</TableCell>
                             <TableCell numeric>{
                                 item.width + ' ' +

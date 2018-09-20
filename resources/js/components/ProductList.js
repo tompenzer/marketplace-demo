@@ -1,12 +1,12 @@
 import React from "react";
 import { Link, withRouter } from 'react-router-dom';
 import { Button } from "react-bootstrap";
+import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import { ROUTES } from "../api/strings";
 
 /**
@@ -40,18 +40,37 @@ const ProductList = props => (
                     return (
                         <TableRow key={item.id}>
                             <TableCell component="th" scope="row">
-                                <Link to={ROUTES.products.show.replace(':productId', item.id)}>{item.name}</Link>
+                                <Link to={
+                                    ROUTES.products.show
+                                        .replace(':productId', item.id)
+                                }>{item.name}</Link>
                             </TableCell>
                             <TableCell>
-                                <Link to={ROUTES.stores.show.replace(':storeId', store.id)}>{store.name}</Link>
+                                <Link to={
+                                    ROUTES.stores.show
+                                        .replace(':storeId', store.id)
+                                }>{store.name}</Link>
                             </TableCell>
-                            <TableCell numeric>{Number.parseFloat(item.price).toFixed(2) + ' ' + item.currency.abbreviation}</TableCell>
-                            <TableCell numeric>{`${item.width} ${item.width_unit.abbreviation}, ${item.height} ${item.height_unit.abbreviation}, ${item.length} ${item.length_unit.abbreviation}`}</TableCell>
-                            <TableCell numeric>{Number.parseFloat(item.weight).toFixed(2) + ' ' + item.weight_unit.abbreviation}</TableCell>
+                            <TableCell numeric>{
+                                Number.parseFloat(item.price).toFixed(2) +
+                                ' ' + item.currency.abbreviation
+                            }</TableCell>
+                            <TableCell numeric>{
+                                Number.parseFloat(item.width).toFixed(2) +
+                                ' ' + item.width_unit.abbreviation + ', ' +
+                                Number.parseFloat(item.height).toFixed(2) +
+                                ' ' + item.height_unit.abbreviation + ', ' +
+                                Number.parseFloat(item.length).toFixed(2) +
+                                ' ' + item.length_unit.abbreviation
+                            }</TableCell>
+                            <TableCell numeric>{
+                                Number.parseFloat(item.weight).toFixed(2) +
+                                ' ' + item.weight_unit.abbreviation
+                            }</TableCell>
                             <TableCell numeric>
                                 <Button
-                                    bsStyle={"primary"}
-                                    className={"add-to-cart-product margin-b-s"}
+                                    bsStyle="primary"
+                                    className="add-to-cart-product margin-b-s"
                                     onClick={() => props.handleAddToCart(item)}
                                 >Add to Cart
                                 </Button>

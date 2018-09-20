@@ -7,7 +7,6 @@ export default class AddressForm extends React.Component {
 
     state = {
         id: null,
-        countries: {},
         recipient: '',
         street_1: '',
         street_2: '',
@@ -21,17 +20,19 @@ export default class AddressForm extends React.Component {
         cityValidation: null,
         stateValidation: null,
         postalCodeValidation: null,
-        countryValidation: s,
-        phoneValidation: null,
-        editDisabled: false
+        phoneValidation: null
     };
 
     componentDidMount(){
         if (this.props.loadedAddresses) {
             this.props.loadedAddresses.map((address) => {
                 // FormControl inputs don't like `null` values; scrub them.
-                Object.keys(address).forEach((key) => (address[key] === null) && delete address[key]);
+                Object.keys(address).forEach(
+                    key => address[key] === null && delete address[key]
+                );
 
+                // Sets this.state.id, which we'll pass to the back-end unless
+                // any edits are made, at which point we reset the id.
                 this.setState({
                     ...address,
                     recipientValidation: s,
@@ -39,85 +40,101 @@ export default class AddressForm extends React.Component {
                     cityValidation: s,
                     stateValidation: s,
                     postalCodeValidation: s,
-                    countryValidation: s,
-                    phoneValidation: s,
-                    editDisabled: false
+                    phoneValidation: s
                 });
             });
-        }
-
-        if (this.props.countries !== null) {
-            this.setState({ countries: this.props.countries });
         }
     }
 
     // Setting id to null if we make any edits, so we add it to the user.
     handleRecipientChange = (e) => {
-        let recipient = e.target.value.trim();
+        let recipient = e.target.value.trim()
+            recipientValidation = 'error';
 
         if (recipient.length > 0 && recipient.length <= 255) {
-            this.setState(() => ({ recipient, recipientValidation: s, id: null }));
-        } else {
-            this.setState(() => ({ recipientValidation: "error" }));
+            recipientValidation = s;
         }
 
+        this.setState({
+            recipient,
+            recipientValidation,
+            id: null
+        });
     };
 
     handleAddressOneChange = (e) => {
-        let street_1 = e.target.value.trim();
+        let street_1 = e.target.value.trim()
+            addressValidation = 'error';
 
         if (street_1.length > 0 && street_1.length <= 255) {
-            this.setState(() => ({ street_1, addressValidation: s, id: null }));
-        } else {
-            this.setState(() => ({ addressValidation: "error" }));
+            addressValidation = s;
         }
 
+        this.setState({
+            street_1,
+            addressValidation,
+            id: null
+        });
     };
 
     handleAddressTwoChange = (e) => {
         let street_2 = e.target.value.trim();
+
         if (street_2.length <= 255) {
-            this.setState(() => ({ street_2, id: null }));
+            this.setState({ street_2, id: null });
         }
     };
 
     handleCityChange = (e) => {
-        let city = e.target.value.trim();
+        let city = e.target.value.trim(),
+            cityValidation = 'error';
 
         if (city.length > 0 && city.length <= 255) {
-            this.setState(() => ({ city, cityValidation: s, id: null }));
-        } else {
-            this.setState(() => ({ cityValidation: "error" }));
+            cityValidation = s;
         }
+
+        this.setState({
+            city,
+            cityValidation,
+            id: null
+        });
     };
 
     handleStateChange = (e) => {
-        let state = e.target.value.trim();
+        let state = e.target.value.trim(),
+            stateValidation = 'error';
 
         if (state.length > 0 && state.length <= 255) {
-            this.setState(() => ({ state, stateValidation: s, id: null }));
-        } else {
-            this.setState(() => ({ stateValidation: "error" }));
+            stateValidation = s;
         }
+
+        this.setState({
+            state,
+            stateValidation,
+            id: null
+        });
     };
 
     handlePostalCodeChange = (e) => {
-        let postal_code = e.target.value.trim();
+        let postal_code = e.target.value.trim(),
+            postalCodeValidation = 'error';
 
         if (postal_code.length > 0 && postal_code.length <= 255) {
-            this.setState(() => ({ postal_code, postalCodeValidation: s, id: null }));
-        } else {
-            this.setState(() => ({ postalCodeValidation: "error" }));
+            postalCodeValidation = s;
         }
+
+        this.setState({
+            postal_code,
+            postalCodeValidation,
+            id: null
+        });
     };
 
     handleCountryChange = (e) => {
         let country_id = e.target.value.trim();
 
-        if (this.state.countries[country_id]) {
-            this.setState(() => ({ country_id, countryValidation: s, id: null }));
-        } else {
-            this.setState(() => ({ countryValidation: "error" }));
+        if (this.props.countries[country_id]) {
+            this.setState({ country_id, id: null });
         }
     };
 
@@ -132,7 +149,18 @@ export default class AddressForm extends React.Component {
     };
 
     handleAddress = () => {
-        const { id, recipient, street_1, street_2, city, state, postal_code, country_id, phone } = this.state;
+        const {
+            id,
+            recipient,
+            street_1,
+            street_2,
+            city,
+            state,
+            postal_code,
+            country_id,
+            phone
+        } = this.state;
+
         this.props.handleSubmit({
             id,
             recipient,
@@ -146,11 +174,10 @@ export default class AddressForm extends React.Component {
         });
     };
 
-
-    render(){
+    render() {
         return (
             <form onSubmit={this.handleAddress}>
-                <fieldset disabled={this.state.editDisabled}>
+                <fieldset>
                     <FormGroup
                         controlId="formBasicRecipient"
                         validationState={this.state.recipientValidation}
@@ -240,14 +267,21 @@ export default class AddressForm extends React.Component {
                         <Col lg={4} md={4} sm={12}>
                             <FormGroup
                                 controlId="formCountryId"
-                                validationState={this.state.countryValidation}
                             >
                                 <ControlLabel>Country</ControlLabel>
                                 <FormControl
                                     componentClass="select"
                                     onChange={this.handleCountryChange}
                                 >
-                                    {Object.keys(this.state.countries).map((key) => (<option key={'country-' + key} value={key}>{this.state.countries[key]}</option>))}
+                                    {Object.keys(this.props.countries)
+                                        .map((key) => (
+                                            <option
+                                                key={'country-' + key}
+                                                value={key}
+                                                >
+                                                {this.props.countries[key]}
+                                            </option>
+                                        ))}
                                 </FormControl>
                             </FormGroup>
                         </Col>
@@ -273,7 +307,6 @@ export default class AddressForm extends React.Component {
                     this.state.cityValidation === s &&
                     this.state.stateValidation === s &&
                     this.state.postalCodeValidation === s &&
-                    this.state.countryValidation === s &&
                     this.state.phoneValidation === s &&
                     <Button
                         type="submit"

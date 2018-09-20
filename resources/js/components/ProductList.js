@@ -76,8 +76,8 @@ const ProductList = props => (
                                 </Button>
                                 {props.userHasAuth &&
                                 <Button
-                                    bsStyle={"info"}
-                                    className={"edit-store-product margin-l-m"}
+                                    bsStyle="info"
+                                    className="edit-store-product margin-l-m"
                                     onClick={() => props.history.push(
                                         ROUTES.products.update
                                             .replace(':storeId', store.id)

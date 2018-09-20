@@ -1,5 +1,12 @@
 import React from "react";
-import { FormGroup, ControlLabel, FormControl, Row, Col, Button } from "react-bootstrap";
+import {
+    FormGroup,
+    ControlLabel,
+    FormControl,
+    Row,
+    Col,
+    Button
+} from "react-bootstrap";
 
 const s = "success";
 

@@ -26,7 +26,7 @@ const ProductList = props => (
             <TableHead>
                 <TableRow>
                     <TableCell>Product name</TableCell>
-                    <TableCell>Sold by</TableCell>
+                    {! props.store && <TableCell>Sold by</TableCell>}
                     <TableCell numeric>Price</TableCell>
                     <TableCell numeric>Dimensions (w, h, l)</TableCell>
                     <TableCell numeric>Weight</TableCell>
@@ -45,12 +45,12 @@ const ProductList = props => (
                                         .replace(':productId', item.id)
                                 }>{item.name}</Link>
                             </TableCell>
-                            <TableCell>
+                            {! props.store && <TableCell>
                                 <Link to={
                                     ROUTES.stores.show
                                         .replace(':storeId', store.id)
                                 }>{store.name}</Link>
-                            </TableCell>
+                            </TableCell>}
                             <TableCell numeric>{
                                 Number.parseFloat(item.price).toFixed(2) +
                                 ' ' + item.currency.abbreviation

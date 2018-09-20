@@ -32,7 +32,7 @@ const getProductEditPath = (props, product) => {
  *
  * @param {object} props The properties send to the React component.
  */
-const ProductList = (props) => (
+const ProductList = props => (
     <Paper className="margin-b-xl">
         <Table>
             <TableHead>
@@ -62,7 +62,7 @@ const ProductList = (props) => (
                                 <Button
                                     bsStyle={"primary"}
                                     className={"add-to-cart-product margin-b-s"}
-                                    onClick={() => props.handleAddToCart({ productId: item.id, name: item.name, quantity: 1, price: item.price, currency: item.currency.abbreviation })}
+                                    onClick={() => props.handleAddToCart(item)}
                                 >Add to Cart
                                 </Button>
                                 {props.userHasAuth &&

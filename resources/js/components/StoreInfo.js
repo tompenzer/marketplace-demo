@@ -7,7 +7,7 @@ import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
 import Snackbar from '@material-ui/core/Snackbar';
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import ProductList from './ProductList';
+import ProductList from '../components/ProductList';
 
 class StoreInfo extends React.Component {
 

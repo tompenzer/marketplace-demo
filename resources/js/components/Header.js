@@ -159,14 +159,18 @@ class Header extends React.Component{
                 <Navbar.Collapse>
                     <Nav>
                         <NavItem
+                            componentClass={Link}
                             title="Products"
                             href={ROUTES.products.index}
+                            to={ROUTES.products.index}
                         >
                           Products
                         </NavItem>
                         <NavItem
+                            componentClass={Link}
                             title="Stores"
                             href={ROUTES.stores.index}
+                            to={ROUTES.stores.index}
                         >
                           Stores
                         </NavItem>

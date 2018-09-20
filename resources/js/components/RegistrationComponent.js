@@ -1,14 +1,12 @@
 import React from 'react';
 import { Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Panel, HelpBlock } from 'react-bootstrap';
 import { withRouter, Link } from 'react-router-dom';
-import axios, { getAuthHeaders } from "../api/axiosInstance";
-import { getUserAPI, registerAPI } from "../api/apiURLs";
 import { registerUser } from "../actions/authentication";
-import { ACCESS_TOKEN, ROUTES } from "../api/strings";
+import { ROUTES } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
 import { connect } from 'react-redux';
 
-const s = "success";
+const s = 'success';
 
 class RegistrationComponent extends React.Component{
 
@@ -65,7 +63,7 @@ class RegistrationComponent extends React.Component{
 
     handleFullNameChange = (e) => {
         const fullName = e.target.value;
-        let fullNameValidation = "error";
+        let fullNameValidation = 'error';
 
         if (fullName.length > 0 && fullName.length < 255) {
             fullNameValidation = s;
@@ -81,7 +79,7 @@ class RegistrationComponent extends React.Component{
 
     onEmailChange = (e) => {
         const email = e.target.value;
-        let emailValidation = "error";
+        let emailValidation = 'error';
 
         if (email.length <= 255 &&
             RegistrationComponent.emailValidation(email.trim())
@@ -111,7 +109,7 @@ class RegistrationComponent extends React.Component{
             <Grid>
                 <Row>
                     <Col mdOffset={2} lgOffset={2} lg={7} md={7}>
-                        <h3 className={"text-center"}>Register</h3>
+                        <h3 className="text-center">Register</h3>
                         {this.props.authentication.registrationErrors.length > 0 &&
                         <div>
                             <Panel bsStyle="danger">
@@ -186,13 +184,13 @@ class RegistrationComponent extends React.Component{
                                     placeholder="Confirm Password"
                                     onChange={this.confirmPasswordChange}
                                 />
-                                {this.state.password.length > 0 && ! this.state.passwordValidation && <span className={"error-message margin-t-s"}>Password doesn't match.</span>}
+                                {this.state.password.length > 0 && ! this.state.passwordValidation && <span className="error-message margin-t-s">Password doesn't match.</span>}
                             </FormGroup>
 
                             {this.state.fullNameValidation === s &&
                             this.state.emailValidation === s &&
                             this.state.passwordValidation &&
-                            <Button type="submit" onClick={this.onRegisterSubmit} bsStyle={"primary"}>Register</Button>
+                            <Button type="submit" onClick={this.onRegisterSubmit} bsStyle="primary">Register</Button>
                             }
                         </form>
                         <div>

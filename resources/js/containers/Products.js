@@ -15,16 +15,15 @@ import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
-import ProductList from './ProductList';
+import ProductList from '../components/ProductList';
 
 class Products extends React.Component {
 
     state = {
-      query: "",
-      storeId: null,
+      query: '',
       autoHideDuration: 3000,
       snackbarOpen: false,
-      snackbarMessage: "",
+      snackbarMessage: '',
       cartProductId: null
     };
 
@@ -45,24 +44,32 @@ class Products extends React.Component {
     }
 
     handleAddToCart = (product) => {
-        // dispatching an action to redux store
-        this.props.dispatch(addToCart(product));
+        const { id, name, price, currency } = product;
+        // Dispatch the cart add redux store action.
+        this.props.dispatch(addToCart({
+            productId: id,
+            name,
+            quantity: 1,
+            price,
+            currency: currency.abbreviation
+        }));
 
+        // Set the snackbar state to allow undo of the cart add action.
         this.setState({
             snackbarOpen: true,
             snackbarMessage: ADDED_TO_CART_SNACKBAR,
-            cartProductId: product.productId
+            cartProductId: id
         });
     };
 
-    handleSnackbarRequestClose = () => {
+    handleSnackbarClose = () => {
         this.setState({
             snackbarOpen: false,
             cartProductId: null
         });
     };
 
-    handleUndoAction = () => {
+    handleSnackbarUndo = () => {
         if (this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR &&
             parseInt(this.state.cartProductId) == this.state.cartProductId
         ) {
@@ -122,15 +129,15 @@ class Products extends React.Component {
                     message={this.state.snackbarMessage}
                     action="undo"
                     autoHideDuration={this.state.autoHideDuration}
-                    onClick={this.handleUndoAction}
-                    onClose={this.handleSnackbarRequestClose}
+                    onClick={this.handleSnackbarUndo}
+                    onClose={this.handleSnackbarClose}
                 />
             </Grid>
         )
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
     products: state.products
 });
 

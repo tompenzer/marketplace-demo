@@ -56,12 +56,12 @@ const ProductList = props => (
                                 ' ' + item.currency.abbreviation
                             }</TableCell>
                             <TableCell numeric>{
-                                Number.parseFloat(item.width).toFixed(2) +
-                                ' ' + item.width_unit.abbreviation + ', ' +
-                                Number.parseFloat(item.height).toFixed(2) +
-                                ' ' + item.height_unit.abbreviation + ', ' +
-                                Number.parseFloat(item.length).toFixed(2) +
-                                ' ' + item.length_unit.abbreviation
+                                item.width + ' ' +
+                                item.width_unit.abbreviation + ', ' +
+                                item.height + ' ' +
+                                item.height_unit.abbreviation + ', ' +
+                                item.length + ' ' +
+                                item.length_unit.abbreviation
                             }</TableCell>
                             <TableCell numeric>{
                                 Number.parseFloat(item.weight).toFixed(2) +

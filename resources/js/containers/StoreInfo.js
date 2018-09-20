@@ -1,20 +1,17 @@
 import React from "react";
-import { Grid, Row, Col, ControlLabel, FormGroup, FormControl, Button, Glyphicon } from "react-bootstrap";
-import { addToCart, removeFromCart } from "../actions/shoppingCart";
+import { Grid, Row, Col, Button } from "react-bootstrap";
 import { checkStoreAuth, loadStoreDetails } from "../actions/stores";
 import { connect } from 'react-redux';
-import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
-import Snackbar from '@material-ui/core/Snackbar';
+import { ROUTES } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
 import InformationPanel from "../components/InformationPanel";
 import ProductList from '../components/ProductList';
+import CartActions from '../components/CartActions';
 
 class StoreInfo extends React.Component {
 
     state = {
-      autoHideDuration: 3000,
-      snackbarOpen:false,
-      snackbarMessage: ""
+      cartProduct: {}
     };
 
     componentWillReceiveProps(nextProps) {
@@ -29,10 +26,10 @@ class StoreInfo extends React.Component {
         this.props.dispatch(loadStoreDetails(this.props.match.params.storeId));
     }
 
+    // Pass the product added to cart from the ProductList to its sibling
+    // component CartActions.
     handleAddToCart = (product) => {
-        // dispatching an action to redux store
-        this.props.dispatch(addToCart(product));
-        this.setState(() => ({snackbarOpen: true, snackbarMessage: ADDED_TO_CART_SNACKBAR}))
+        this.setState({ cartProduct: product });
     };
 
     render() {
@@ -118,16 +115,7 @@ class StoreInfo extends React.Component {
                     </Col>
                 </Row>
 
-                <div>
-                    <Snackbar
-                        open={this.state.snackbarOpen}
-                        message={this.state.snackbarMessage}
-                        action="undo"
-                        autoHideDuration={this.state.autoHideDuration}
-                        onActionClick={this.handleUndoAction}
-                        onRequestClose={this.handleSnackbarRequestClose}
-                    />
-                </div>
+                <CartActions product={this.state.cartProduct} dispatch={this.props.dispatch}/>
             </Grid>
 
         )

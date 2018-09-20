@@ -11,7 +11,7 @@ import Products from "../containers/Products";
 import ProductInfo from '../components/ProductInfo';
 import ProductAdd from "../components/ProductAdd";
 import Stores from "../containers/Stores";
-import StoreInfo from '../components/StoreInfo';
+import StoreInfo from '../containers/StoreInfo';
 import StoreAdd from "../components/StoreAdd";
 import MyAccount from "../components/MyAccount";
 import MyOrders from "../components/MyOrders";
@@ -27,7 +27,7 @@ const appRouter = () => (
             <Header/>
             <Switch>
                 <Route path={ROUTES.root} exact={true} component={Products} />
-                <Route path={ROUTES.auth.login}exact={true} component={LoginComponent}/>
+                <Route path={ROUTES.auth.login} exact={true} component={LoginComponent}/>
                 <Route path={ROUTES.auth.register} exact={true} component={RegistrationComponent}/>
                 <Route path={ROUTES.auth.logout} exact={true} component={LogoutComponent}/>
                 <Route path={ROUTES.products.index} exact={true} component={Products} />

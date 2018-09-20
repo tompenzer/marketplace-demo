@@ -31,31 +31,31 @@ class Header extends React.Component{
     constructor(props) {
         super(props);
 
+        this.state = {
+            location: {},
+            searchMenuItems: [{
+                label: 'Products',
+                placeholder: 'Search products',
+                path: ROUTES.products.index
+            }, {
+                label: 'Stores',
+                placeholder: 'Search stores',
+                path: ROUTES.stores.index
+            }],
+            searchMenuItemsActive: [0, 1],
+            searchMenuItemSelected: 0,
+            searchFieldPlaceholder: '',
+            searchFieldText: '',
+            shoppingCartOpen: false,
+            userMenuItems: [],
+            accountMenuOpen: false,
+            accountMenuTarget: null
+        };
+
         this.props.history.listen((location, action) => {
             this.setState({ location });
         });
     }
-
-    state = {
-        location: {},
-        searchMenuItems: [{
-            label: 'Products',
-            placeholder: 'Search products',
-            path: ROUTES.products.index
-        }, {
-            label: 'Stores',
-            placeholder: 'Search stores',
-            path: ROUTES.stores.index
-        }],
-        searchMenuItemsActive: [0, 1],
-        searchMenuItemSelected: 0,
-        searchFieldPlaceholder: '',
-        searchFieldText: '',
-        shoppingCartOpen: false,
-        userMenuItems: [],
-        accountMenuOpen: false,
-        accountMenuTarget: null
-    };
 
     componentDidMount() {
         this.setUserMenuOptions(this.props.authentication.isAuthenticated || false);

@@ -9,18 +9,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { ROUTES } from "../api/strings";
 
-const getProductEditPath = (props, product) => {
-    const storeId = props.store ? props.store.id : product.store.id,
-        productEditRouteStore = ROUTES.products.update.split(':storeId'),
-        productEditRouteProduct = productEditRouteStore[1].split(':productId');
-
-    return productEditRouteStore[0] +
-        storeId +
-        productEditRouteProduct[0] +
-        product.id +
-        productEditRouteProduct[1];
-}
-
 /**
  * Generate a product list from an array of products.
  *
@@ -47,13 +35,15 @@ const ProductList = props => (
             </TableHead>
             <TableBody>
                 {props.products.map(item => {
+                    const store = props.store ? props.store : item.store;
+
                     return (
                         <TableRow key={item.id}>
                             <TableCell component="th" scope="row">
-                                <Link to={ROUTES.products.show.split(':')[0] + item.id}>{item.name}</Link>
+                                <Link to={ROUTES.products.show.replace(':productId', item.id)}>{item.name}</Link>
                             </TableCell>
                             <TableCell>
-                                <Link to={ROUTES.stores.show.split(':')[0] + (props.store ? props.store.id : item.store.id)}>{(props.store ? props.store.name : item.store.name)}</Link>
+                                <Link to={ROUTES.stores.show.replace(':storeId', store.id)}>{store.name}</Link>
                             </TableCell>
                             <TableCell numeric>{Number.parseFloat(item.price).toFixed(2) + ' ' + item.currency.abbreviation}</TableCell>
                             <TableCell numeric>{`${item.width} ${item.width_unit.abbreviation}, ${item.height} ${item.height_unit.abbreviation}, ${item.length} ${item.length_unit.abbreviation}`}</TableCell>
@@ -69,7 +59,11 @@ const ProductList = props => (
                                 <Button
                                     bsStyle={"info"}
                                     className={"edit-store-product margin-l-m"}
-                                    onClick={() => props.history.push(getProductEditPath(props, item))}
+                                    onClick={() => props.history.push(
+                                        ROUTES.products.update
+                                            .replace(':storeId', store.id)
+                                            .replace(':productId', item.id)
+                                        )}
                                 >
                                     Edit Product
                                 </Button>}

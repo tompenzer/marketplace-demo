@@ -33,6 +33,18 @@ class StoreInfo extends React.Component {
     };
 
     render() {
+        if (this.props.stores.storesRequested) {
+            return <LoadingScreen/>
+        }
+
+        if (this.props.stores.storesError) {
+            return <InformationPanel
+                    panelTitle={"Store Not available"}
+                    informationHeading={"The requested store was not found."}
+                    message={"Something went wrong; not sure how you got here, but that wasn't supposed to happen..."}
+                    />
+        }
+
         let editStore,
             addProduct;
 
@@ -55,18 +67,6 @@ class StoreInfo extends React.Component {
                     Add store product
                 </Button>
             )
-        }
-
-        if (this.props.stores.storesRequested) {
-            return <LoadingScreen/>
-        }
-
-        if (this.props.stores.storesError) {
-            return <InformationPanel
-                    panelTitle={"Store Not available"}
-                    informationHeading={"The requested store was not found."}
-                    message={"Something went wrong; not sure how you got here, but that wasn't supposed to happen..."}
-                    />
         }
 
         return (

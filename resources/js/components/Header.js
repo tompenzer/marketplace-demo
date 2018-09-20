@@ -22,9 +22,22 @@ const cartBadgeStyle = {
     top: '-10px'
 };
 
+const navBarFormStyle = {
+    marginBottom: 6,
+    marginTop: 6
+}
+
 class Header extends React.Component{
+    constructor(props) {
+        super(props);
+
+        this.props.history.listen((location, action) => {
+            this.setState({ location });
+        });
+    }
 
     state = {
+        location: {},
         searchMenuItems: [{
             label: 'Products',
             placeholder: 'Search products',
@@ -48,6 +61,8 @@ class Header extends React.Component{
         this.setUserMenuOptions(this.props.authentication.isAuthenticated || false);
 
         this.searchMenuSelectHelper(this.state.searchMenuItemSelected);
+
+        this.setState({ location: this.props.location });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -163,6 +178,9 @@ class Header extends React.Component{
                             title="Products"
                             href={ROUTES.products.index}
                             to={ROUTES.products.index}
+                            active={this.state.location.pathname &&
+                                (this.state.location.pathname === ROUTES.products.index ||
+                                 this.state.location.pathname === ROUTES.root)}
                         >
                           Products
                         </NavItem>
@@ -171,11 +189,12 @@ class Header extends React.Component{
                             title="Stores"
                             href={ROUTES.stores.index}
                             to={ROUTES.stores.index}
+                            active={this.state.location.pathname && this.state.location.pathname === ROUTES.stores.index}
                         >
                           Stores
                         </NavItem>
                     </Nav>
-                    <Navbar.Form pullRight>
+                    <Navbar.Form pullRight style={navBarFormStyle}>
                         <form onSubmit={this.handleSearchFormSubmit}>
                             <FormGroup>
                                 <InputGroup>

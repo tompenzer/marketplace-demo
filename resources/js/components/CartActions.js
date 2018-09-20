@@ -19,7 +19,8 @@ class CartActions extends React.Component {
 
     componentWillReceiveProps(nextProps){
         if (nextProps.product.id &&
-            this.props.product !== nextProps.product
+            (! this.props.product.id ||
+                this.props.product.id !== nextProps.product.id)
         ) {
             this.handleAddToCart(nextProps.product);
         }
@@ -51,8 +52,10 @@ class CartActions extends React.Component {
     };
 
     handleSnackbarUndo = () => {
-        if (parseInt(this.state.addedToCartProductId) == this.state.addedToCartProductId) {
-            this.props.dispatch(removeFromCart({ productId: this.state.addedToCartProductId }));
+        if (this.state.addedToCartProductId !== null) {
+            this.props.dispatch(
+                removeFromCart({ productId: this.state.addedToCartProductId })
+            );
         }
 
         this.handleSnackbarClose();

@@ -15,7 +15,7 @@ import StoreInfo from '../containers/StoreInfo';
 import StoreAdd from "../components/StoreAdd";
 import MyAccount from "../components/MyAccount";
 import MyOrders from "../components/MyOrders";
-import Checkout from "../components/Checkout";
+import Checkout from "../containers/Checkout";
 import Order from "../components/Order";
 import OrderDetail from "../components/OrderDetail";
 import About from "../components/About";

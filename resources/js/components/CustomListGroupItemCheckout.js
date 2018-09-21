@@ -1,9 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 import { Row, Col, Button, FormControl, Popover, ButtonToolbar, Overlay } from "react-bootstrap";
-import ProductInfo from "./ProductInfo";
-import { connect } from 'react-redux';
-import { editCart } from "../actions/shoppingCart";
 import { ROUTES } from "../api/strings";
 
 const listItemStyle = {
@@ -14,49 +11,44 @@ const quantityFieldStyle = {
     width: '45px'
 }
 
-class CustomListGroupItemCheckout extends React.Component{
+export default class CustomListGroupItemCheckout extends React.Component{
+    constructor(props) {
+        super(props);
 
-    state = {
-        quantity: this.props.quantity,
-        productId: this.props.productId,
-        showRemoveConfirmation: false
-    };
+        // Create a reference for the Remove button that we'll pass to the
+        // confirmation dialog overlay.
+        this.removeButton = React.createRef();
 
-    handleRemoveClick = e => {
-        this.setState({ target: e.target, showRemoveConfirmation: !this.state.showRemoveConfirmation });
+        this.state = {
+            quantity: this.props.quantity,
+            showRemoveConfirmation: false
+        };
+    }
+
+    handleRemoveClick = () => {
+        this.setState({
+            showRemoveConfirmation: ! this.state.showRemoveConfirmation
+        });
     };
 
     handleConfirmationCancel = () => {
-        this.setState({showRemoveConfirmation: false})
-    };
-
-    editCart = (quantity) => {
-        let updates = {
-          quantity
-        };
-        this.props.dispatch(editCart(this.state.productId, updates));
+        this.setState({ showRemoveConfirmation: false });
     };
 
     onQuantityChange = (e) => {
         let quantity = e.target.value;
-        if(quantity.length < 3){
-            this.setState(() => ({quantity}));
-        }
-    };
 
-    onQuantityBlur = (e) => {
-        let quantity = e.target.value;
-        if (quantity.length > 0 && parseInt(quantity) > 0 && parseInt(quantity) < 1000) {
-            this.setState(() => ({quantity}));
-            this.editCart(parseInt(quantity));
+        if (parseInt(quantity) != quantity ||
+            parseInt(quantity) <= 0 ||
+            parseInt(quantity) >= 1000
+        ) {
+            quantity = 1;
         } else {
-            this.setState({ quantity: 1 });
-            this.editCart(1);
+            quantity = parseInt(quantity);
         }
-    };
 
-    removeFromCart = () => {
-        ProductInfo.removeItemFromCart(this.state.productId, this.props);
+        this.setState({ quantity });
+        this.props.onChangeCartQuantity(this.props.productId, quantity);
     };
 
     render() {
@@ -65,14 +57,28 @@ class CustomListGroupItemCheckout extends React.Component{
                 <div className={"media-body"}>
                     <Row>
                         <Col lg={5} md={5} sm={12} xs={12}>
-                            <h4 className={"media-heading"}><Link to={ROUTES.products.show.split(':')[0] + this.props.productId}>{this.props.name}</Link></h4>
+                            <h4 className={"media-heading"}>
+                                <Link to={
+                                    ROUTES.products.show
+                                        .replace(':id', this.props.productId)
+                                }>
+                                    {this.props.name}
+                                </Link>
+                            </h4>
                             <div>
                                 <ButtonToolbar>
-                                    <Button onClick={this.handleRemoveClick} bsStyle={"link"} className={"btn-sm"}>Remove</Button>
+                                    <Button
+                                        onClick={this.handleRemoveClick}
+                                        ref={this.removeButton}
+                                        bsStyle={"link"}
+                                        className={"btn-sm"}
+                                    >
+                                        Remove
+                                    </Button>
 
                                     <Overlay
                                         show={this.state.showRemoveConfirmation}
-                                        target={this.state.target}
+                                        target={this.removeButton.current}
                                         placement="right"
                                         container={this}
                                         containerPadding={20}
@@ -84,8 +90,20 @@ class CustomListGroupItemCheckout extends React.Component{
                                                 <br />
                                                 <br />
 
-                                                <Button className={"btn-sm"} bsStyle={"danger"} onClick={this.removeFromCart}>Remove</Button>
-                                                <Button className={"btn-sm"} bsStyle={"link"} onClick={this.handleConfirmationCancel}>Cancel</Button>
+                                                <Button
+                                                    className={"btn-sm"}
+                                                    bsStyle={"danger"}
+                                                    onClick={this.props.onRemoveFromCart}
+                                                >
+                                                    Remove
+                                                </Button>
+                                                <Button
+                                                    className={"btn-sm"}
+                                                    bsStyle={"link"}
+                                                    onClick={this.handleConfirmationCancel}
+                                                >
+                                                    Cancel
+                                                </Button>
                                             </span>
                                         </Popover>
                                     </Overlay>
@@ -102,7 +120,6 @@ class CustomListGroupItemCheckout extends React.Component{
                                         className="d-inline"
                                         value={this.state.quantity}
                                         onChange={this.onQuantityChange}
-                                        onBlur={this.onQuantityBlur}
                                         style={quantityFieldStyle}
                                     />
                                 </span>
@@ -112,7 +129,9 @@ class CustomListGroupItemCheckout extends React.Component{
                         <Col md={3} lg={3} sm={12} xs={12} className="text-right">
                             <div className={"checkout-price-div"}>
                               <span className={"cart-price"}>
-                                  ${parseFloat(parseFloat(this.props.price) * parseInt(this.state.quantity)).toFixed(2)}
+                                  ${parseFloat(
+                                      parseFloat(this.props.price) * parseInt(this.state.quantity)
+                                  ).toFixed(2)}
                               </span>
                             </div>
                         </Col>
@@ -122,5 +141,3 @@ class CustomListGroupItemCheckout extends React.Component{
         )
     }
 }
-
-export default connect()(CustomListGroupItemCheckout);

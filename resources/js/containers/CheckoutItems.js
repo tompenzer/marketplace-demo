@@ -2,7 +2,7 @@ import React from "react";
 import { ListGroup, Row, Col } from "react-bootstrap";
 import { connect } from "react-redux";
 import CustomListGroupItem from "../components/CustomListGroupItemCheckout";
-import { getCartTotals } from "../actions/shoppingCart";
+import { getCartTotals, editCart, removeFromCart } from "../actions/shoppingCart";
 import LoadingScreen from "../components/LoadingScreen";
 
 class CheckoutItems extends React.Component{
@@ -10,6 +10,32 @@ class CheckoutItems extends React.Component{
     componentDidMount() {
         this.props.dispatch(getCartTotals());
     }
+
+    componentWillReceiveProps(nextProps) {
+        // Refresh cart totals after an item quantity is changed.
+        if (this.props.users.cartEditRequested !== nextProps.users.cartEditRequested &&
+            ! nextProps.users.cartEditRequested
+        ) {
+            console.log('test');
+            this.props.dispatch(getCartTotals());
+        }
+
+        // Refresh cart totals after an item is removed from the cart.
+        if (this.props.users.cartRemoveRequested !== nextProps.users.cartRemoveRequested &&
+            ! nextProps.users.cartRemoveRequested
+        ) {
+            this.props.dispatch(getCartTotals());
+        }
+    }
+
+    handleChangeCartQuantity = (productId, quantity) => {
+        this.props.dispatch(editCart(productId, { quantity }));
+    };
+
+    removeFromCart = productId => {
+        this.props.dispatch(removeFromCart({ productId }));
+    };
+
 
     render() {
         if (this.props.users.cartRequested) {
@@ -22,7 +48,12 @@ class CheckoutItems extends React.Component{
                 <br/>
                 <ListGroup className={"checkout-items-listgroup"}>
                     {this.props.shoppingCart.map(item => (
-                        <CustomListGroupItem key={item.productId} {...item} />
+                        <CustomListGroupItem
+                            key={item.productId}
+                            {...item}
+                            onChangeCartQuantity={this.handleChangeCartQuantity}
+                            onRemoveFromCart={() => this.removeFromCart(item.productId)}
+                         />
                     ))}
                 </ListGroup>
                 <hr/>

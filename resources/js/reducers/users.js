@@ -7,6 +7,11 @@ import {
     ORDER_ERRORS,
     CART_REQUESTED,
     CART_ERROR,
+    CART_REMOVE_REQUESTED,
+    CART_REMOVE_COMPLETED,
+    CART_EDIT_REQUESTED,
+    CART_EDIT_COMPLETED,
+    CART_EDIT_ERRORS,
     CART_TOTALS,
     ORDER_INFO,
     ORDER_INFO_REQUESTED,
@@ -33,7 +38,10 @@ const usersReducerDefaultState = {
     ordersError: false,
     cartTotals: {},
     cartRequested: false,
-    cartError: false
+    cartError: false,
+    cartRemoveRequested: false,
+    cartEditRequested: false,
+    cartEditErrors: []
 };
 
 export default (state = usersReducerDefaultState, action) => {
@@ -97,6 +105,35 @@ export default (state = usersReducerDefaultState, action) => {
                 cartTotals: {},
                 cartRequested: false,
                 cartError: true
+            };
+        case CART_REMOVE_REQUESTED:
+            return {
+                ...state,
+                cartRemoveRequested: true
+            };
+        case CART_REMOVE_COMPLETED:
+            return {
+                ...state,
+                cartRemoveRequested: false
+            };
+        case CART_EDIT_REQUESTED:
+            return {
+                ...state,
+                cartEditRequested: true,
+                cartEditErrors: []
+            };
+        case CART_EDIT_COMPLETED:
+            return {
+                ...state,
+                cartEditRequested: false,
+                cartEditErrors: []
+            }
+        case CART_EDIT_ERRORS:
+            return {
+                ...state,
+                orderCreated: null,
+                cartEditRequested: false,
+                cartEditErrors: action.cartEditErrors
             };
         case ORDER_INFO:
             return {

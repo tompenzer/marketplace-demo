@@ -55,7 +55,7 @@ export default class AddressForm extends React.Component {
 
     // Setting id to null if we make any edits, so we add it to the user.
     handleRecipientChange = (e) => {
-        let recipient = e.target.value.trim()
+        let recipient = e.target.value.trim(),
             recipientValidation = 'error';
 
         if (recipient.length > 0 && recipient.length <= 255) {
@@ -70,7 +70,7 @@ export default class AddressForm extends React.Component {
     };
 
     handleAddressOneChange = (e) => {
-        let street_1 = e.target.value.trim()
+        let street_1 = e.target.value.trim(),
             addressValidation = 'error';
 
         if (street_1.length > 0 && street_1.length <= 255) {
@@ -146,16 +146,21 @@ export default class AddressForm extends React.Component {
     };
 
     handlePhoneChange = (e) => {
-        let phone = e.target.value.trim();
+        let phone = e.target.value.trim(),
+            phoneValidation = 'error';
 
         if (phone.length > 0 && phone.length <= 255) {
-            this.setState(() => ({ phone, phoneValidation: s, id: null }));
-        } else {
-            this.setState(() => ({ phoneValidation: "error" }));
+            phoneValidation = s;
         }
+
+        this.setState({
+            phone,
+            phoneValidation,
+            id: null
+        });
     };
 
-    handleAddress = () => {
+    handleAddressSubmit = () => {
         const {
             id,
             recipient,
@@ -183,7 +188,7 @@ export default class AddressForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleAddress}>
+            <form onSubmit={this.handleAddressSubmit}>
                 <fieldset>
                     <FormGroup
                         controlId="formBasicRecipient"

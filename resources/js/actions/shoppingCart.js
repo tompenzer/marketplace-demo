@@ -5,8 +5,12 @@ import {
     CART_UID,
     ADD_TO_CART,
     EDIT_CART,
+    CART_EDIT_REQUESTED,
+    CART_EDIT_COMPLETED,
+    CART_EDIT_ERRORS,
     EMPTY_CART,
     REMOVE_FROM_CART,
+    CART_REMOVE_REQUESTED,
     CART_REQUESTED,
     CART_ERROR,
     CART_TOTALS
@@ -21,12 +25,40 @@ if (! cartUid) {
     window.localStorage.setItem(CART_UID, cartUid);
 }
 
+// Handled by users reducer, state stored in users store
 export const cartRequested = () => ({
     type: CART_REQUESTED
 });
 
+// Handled by users reducer, state stored in users store
 export const cartError = () => ({
     type: CART_ERROR
+});
+
+// Handled by users reducer, state stored in users store
+export const cartRemovalRequested = () => ({
+    type: CART_REMOVE_REQUESTED
+});
+
+// Handled by users reducer, state stored in users store
+export const cartRemovalCompleted = () => ({
+    type: CART_REMOVE_COMPLETED
+});
+
+// Handled by users reducer, state stored in users store
+export const cartEditRequested = () => ({
+    type: CART_EDIT_REQUESTED
+});
+
+// Handled by users reducer, state stored in users store
+export const cartEditCompleted = () => ({
+    type: CART_EDIT_COMPLETED
+});
+
+// Handled by users reducer, state stored in users store
+export const cartEditErrors = (errors = []) => ({
+    type: CART_EDIT_ERRORS,
+    cartEditErrors: errors
 });
 
 export const addToCartHelper = (
@@ -107,14 +139,19 @@ export const getCart = () => {
 
 export const removeFromCart = ({ productId } = {}) => {
     return (dispatch, getState) => {
-        dispatch(cartRequested());
+        // Since the shoppingCart redux store is just a flat array of  items,
+        // we're dispatching additional actions to the user store to track the
+        // request cycle.
+        dispatch(cartRemovalRequested());
 
         axios.post(removeFromCartApi(cartUid, productId), { _method: 'delete' })
             .then(response => {
                 dispatch(removeFromCartHelper(productId));
+                dispatch(cartRemovalCompleted());
             })
             .catch(error => {
                 dispatch(cartError());
+                dispatch(cartRemovalCompleted());
             });
     }
 };
@@ -145,7 +182,7 @@ export const addToCart = (product = {}) => {
 
 export const editCart = (productId, update = {}) => {
     return (dispatch, getState) => {
-        dispatch(cartRequested());
+        dispatch(cartEditRequested());
 
         const data = {
             ...update,
@@ -155,9 +192,12 @@ export const editCart = (productId, update = {}) => {
         axios.post(editCartApi(cartUid, productId), data)
             .then(response => {
                 dispatch(editCartHelper(productId, update));
+                dispatch(cartEditCompleted());
             })
             .catch(error => {
-                dispatch(cartError());
+                dispatch(cartEditErrors(
+                    Object.values(error.response.data.errors)
+                ));
             });
     }
 };

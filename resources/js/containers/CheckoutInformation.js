@@ -1,19 +1,13 @@
 import React from "react";
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
-import MaterialButton from '@material-ui/core/Button';
-import { Row, Col, FormGroup, ControlLabel, FormControl, Radio, Form, Button } from "react-bootstrap";
-import AddressForm from "./AddressForm";
+import { Row, Col } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 import { SUCCESSFUL_ORDER, ROUTES } from "../api/strings";
 import { connect } from "react-redux";
-import LoadingScreen from "../components/LoadingScreen";
-import { totalReducer } from "./ShoppingCart";
 import { emptyCart } from "../actions/shoppingCart";
 import { getUserInfo, placeOrder } from "../actions/users";
 import { getCountries } from "../actions/utilities";
+import AddressForm from "../components/AddressForm";
+import LoadingScreen from "../components/LoadingScreen";
 
 const s = "success";
 

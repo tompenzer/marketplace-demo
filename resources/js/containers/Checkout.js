@@ -1,9 +1,9 @@
 import React from "react";
 import { Grid, Col, Row } from "react-bootstrap";
 import { connect } from "react-redux";
-import CheckoutItems from "../components/CheckoutItems";
+import CheckoutItems from "../containers/CheckoutItems";
 import CheckoutNoItems from "../components/CheckoutNoItems";
-import CheckoutInformation from "../components/CheckoutInformation";
+import CheckoutInformation from "../containers/CheckoutInformation";
 
 const Checkout = (props) => (
     <Grid className="page-min-height">

@@ -1,11 +1,18 @@
 import React from "react";
-import { Link, withRouter } from 'react-router-dom';
-import { Row, Col, Button, Form, FormGroup, FormControl, Glyphicon, Tooltip, OverlayTrigger } from "react-bootstrap";
-import ProductInfo from "./ProductInfo";
-import { connect } from 'react-redux';
-import { removeFromCart, editCart } from "../actions/shoppingCart";
-import styleVariables from '../../sass/base/_variables.scss';
+import { Link } from 'react-router-dom';
+import {
+    Row,
+    Col,
+    Button,
+    Form,
+    FormGroup,
+    FormControl,
+    Glyphicon,
+    Tooltip,
+    OverlayTrigger
+} from "react-bootstrap";
 import { ROUTES } from "../api/strings";
+import styleVariables from '../../sass/base/_variables.scss';
 
 const cartListItemStyle = {
     borderColor: 'rgba(0, 0, 0, 0.1)'
@@ -29,7 +36,7 @@ const tooltip = (
     </Tooltip>
 );
 
-class CustomListGroupItemCart extends React.Component{
+export default class CustomListGroupItemCart extends React.Component{
 
     state = {
         quantity: this.props.quantity
@@ -51,8 +58,8 @@ class CustomListGroupItemCart extends React.Component{
             return;
         }
 
-        this.props.dispatch(editCart(this.props.productId, { quantity }));
         this.setState({ quantity });
+        this.props.onChangeCartQuantity(this.props.productId, quantity);
     }
 
     handleQuantityIncrease = () => {
@@ -69,23 +76,28 @@ class CustomListGroupItemCart extends React.Component{
         }
     }
 
-    removeFromCart = () => {
-        this.props.dispatch(removeFromCart({ productId: this.props.productId }));
-    }
-
     render() {
         return (
             <li className="list-group-item" style={cartListItemStyle}>
                 <Row>
                     <Col lg={6} md={6} sm={12} xs={12}>
-                        <h4><Link to={ROUTES.products.show.split(':')[0] + this.props.productId}>{this.props.name}</Link></h4>
+                        <h4>
+                            <Link to={ROUTES.products.show
+                                .replace(':id', this.props.productId)
+                            }>
+                                {this.props.name}
+                            </Link>
+                        </h4>
                     </Col>
 
                     <Col lg={3} md={3} sm={12} xs={12}>
                         <div className="cart-quantity-div">
                             <Form inline onSubmit={(e) => { e.stopPropagation(); }}>
                                 <FormGroup controlId="cartQuantityDecrease">
-                                    <Button onClick={this.handleQuantityDecrease}>-</Button>
+                                    <Button
+                                        onClick={this.handleQuantityDecrease}>
+                                        -
+                                    </Button>
                                 </FormGroup>{' '}
                                 <FormGroup controlId="cartQuantity">
                                     <FormControl
@@ -99,7 +111,10 @@ class CustomListGroupItemCart extends React.Component{
                                     />
                                 </FormGroup>{' '}
                                 <FormGroup controlId="cartQuantityIncrease">
-                                    <Button onClick={this.handleQuantityIncrease}>+</Button>
+                                    <Button
+                                        onClick={this.handleQuantityIncrease}>
+                                        +
+                                    </Button>
                                 </FormGroup>
                             </Form>
                         </div>
@@ -108,7 +123,10 @@ class CustomListGroupItemCart extends React.Component{
                     <Col md={2} lg={2} sm={12} xs={12}>
                         <div className={"cart-price-div"}>
                           <span className={"cart-price"}>
-                              ${this.state.quantity && parseFloat(parseFloat(this.props.price) * parseInt(this.state.quantity)).toFixed(2)}
+                              ${this.state.quantity &&
+                                  parseFloat(
+                                      parseFloat(this.props.price) * parseInt(this.state.quantity)
+                                  ).toFixed(2)}
                           </span>
                         </div>
                     </Col>
@@ -116,7 +134,9 @@ class CustomListGroupItemCart extends React.Component{
                     <Col md={1} lg={1} sm={12} xs={12}>
                         <div className={"cart-remove-div"}>
                             <OverlayTrigger placement="top" overlay={tooltip}>
-                                <span onClick={this.removeFromCart}><Glyphicon glyph={"remove"}/></span>
+                                <span onClick={this.props.onRemoveFromCart}>
+                                    <Glyphicon glyph={"remove"}/>
+                                </span>
                             </OverlayTrigger>
                         </div>
                     </Col>
@@ -125,5 +145,3 @@ class CustomListGroupItemCart extends React.Component{
         )
     }
 }
-
-export default connect()(withRouter(CustomListGroupItemCart));

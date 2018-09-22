@@ -1,9 +1,10 @@
 import React from "react";
 import { Modal, Button, ListGroup, Row, Col } from "react-bootstrap";
-import CustomListGroupItem from "../components/CustomListGroupItemCart";
 import { connect } from 'react-redux';
 import { withRouter } from "react-router-dom";
+import { removeFromCart, editCart } from "../actions/shoppingCart";
 import { ROUTES } from "../api/strings";
+import CustomListGroupItem from "../components/CustomListGroupItemCart";
 import styleVariables from '../../sass/base/_variables.scss';
 
 export const totalReducer = (accumulator, item) => {
@@ -24,9 +25,17 @@ const cartTotalAmountStyle = {
 
 class ShoppingCart extends React.Component{
 
-    onCheckoutClick = () => {
+    handleCheckoutClick = () => {
       this.props.handleClose();
       this.props.history.push(ROUTES.orders.checkout);
+    };
+
+    handleChangeCartQuantity = (productId, quantity) => {
+        this.props.dispatch(editCart(productId, { quantity }));
+    };
+
+    handleRemoveFromCart = productId => {
+        this.props.dispatch(removeFromCart({ productId }));
     };
 
     render() {
@@ -38,7 +47,13 @@ class ShoppingCart extends React.Component{
                 <div>
                     <ListGroup>
                         {this.props.shoppingCart.map((item) => {
-                            return <CustomListGroupItem key={item.productId} {...item} {...this.props} />;
+                            return <CustomListGroupItem
+                                key={item.productId}
+                                {...item}
+                                {...this.props}
+                                onChangeCartQuantity={this.handleChangeCartQuantity}
+                                onRemoveFromCart={() => this.handleRemoveFromCart(item.productId)}
+                            />
                         })}
                     </ListGroup>
 
@@ -80,7 +95,7 @@ class ShoppingCart extends React.Component{
                 <Modal.Footer>
                     <Button onClick={this.props.handleClose}>Continue Shopping</Button>
                     {this.props.shoppingCart.length > 0 &&
-                        <Button bsStyle="primary" onClick={this.onCheckoutClick}>Checkout</Button>
+                        <Button bsStyle="primary" onClick={this.handleCheckoutClick}>Checkout</Button>
                     }
                 </Modal.Footer>
             </Modal>

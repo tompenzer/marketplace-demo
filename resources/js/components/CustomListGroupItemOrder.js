@@ -1,7 +1,6 @@
 import React from "react";
+import { withRouter } from 'react-router-dom';
 import { Button, Row, Col } from 'react-bootstrap';
-import { Link, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
 import { ROUTES } from "../api/strings";
 
 const listItemStyle = {
@@ -12,15 +11,9 @@ class CustomListGroupItemOrder extends React.Component{
 
     viewClickHandler = () => {
         this.props.history.push(
-            ROUTES.products.show.split(':')[0] + this.props.productId
+            ROUTES.products.show.replace(':id', this.props.productId)
         );
     };
-
-    handleAddToCart = (e) => {
-        e.stopPropagation();
-
-        this.props.handleAddToCart();
-    }
 
     render() {
         return (
@@ -44,7 +37,7 @@ class CustomListGroupItemOrder extends React.Component{
 
                         <Col md={2} lg={2} sm={12} xs={12}>
                           <Button bsStyle={"default"} className={"btn-sm btn-block margin-b-s"} onClick={this.viewClickHandler}>View</Button>
-                          <Button bsStyle={"primary"} className={"btn-sm btn-block"} onClick={this.handleAddToCart}>Buy Again</Button>
+                          <Button bsStyle={"primary"} className={"btn-sm btn-block"} onClick={this.props.handleAddToCart}>Buy Again</Button>
                         </Col>
                     </Row>
                 </div>
@@ -53,4 +46,4 @@ class CustomListGroupItemOrder extends React.Component{
     }
 }
 
-export default connect()(withRouter(CustomListGroupItemOrder));
+export default withRouter(CustomListGroupItemOrder);

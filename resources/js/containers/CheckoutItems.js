@@ -16,7 +16,6 @@ class CheckoutItems extends React.Component{
         if (this.props.users.cartEditRequested !== nextProps.users.cartEditRequested &&
             ! nextProps.users.cartEditRequested
         ) {
-            console.log('test');
             this.props.dispatch(getCartTotals());
         }
 

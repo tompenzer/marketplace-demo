@@ -6,11 +6,10 @@ marketplace where users can add stores and list products with them. This project
 has a Laravel 5.7-based back-end with MySQL and Redis for data storage, and a
 React/Redux front-end with Passport-implemented OAuth2 authentication.
 
-The front-end architecture and component design is inspired by the
+The front-end design is inspired by the
 https://github.com/mithunjmistry/ecommerce-React-Redux-Laravel project, though
-only portions of the markup and workflow behavior remain; styles and front-end
-component data architecture are mostly rewritten, and the back-end only shares
-a few lines of code with the project.
+little of its code remains; most aspects of the front-end architecture have been
+refactored or rewritten, and the back-end only shares a few lines of code.
 
 
 ## Installation

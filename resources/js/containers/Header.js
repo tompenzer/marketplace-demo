@@ -19,7 +19,7 @@ import MenuList from '@material-ui/core/MenuList';
 import MenuItemMUI from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import { ROUTES } from "../api/strings";
-import ShoppingCart from '../components/ShoppingCart';
+import ShoppingCart from '../containers/ShoppingCart';
 import styleVariables from '../../sass/base/_variables.scss';
 
 const glyphIconStyle = {

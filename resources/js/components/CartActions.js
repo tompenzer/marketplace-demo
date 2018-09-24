@@ -64,6 +64,8 @@ export default class CartActions extends React.Component {
             this.props.dispatch(
                 removeFromCart({ productId: this.state.addedToCartProductId })
             );
+
+            this.props.onUndone();
         }
 
         this.handleSnackbarClose();

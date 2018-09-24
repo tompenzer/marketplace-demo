@@ -1,5 +1,14 @@
 import React from 'react';
-import { Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Panel } from 'react-bootstrap';
+import {
+    Button,
+    Grid,
+    Row,
+    Col,
+    ControlLabel,
+    FormGroup,
+    FormControl,
+    Panel
+} from 'react-bootstrap';
 import { loadStoreDetails, checkStoreAuth, saveStore } from "../actions/stores";
 import { ROUTES } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
@@ -69,7 +78,10 @@ class StoreAdd extends React.Component{
         if (this.props.stores.storeCreated !== nextProps.stores.storeCreated &&
             parseInt(nextProps.stores.storeCreated) == nextProps.stores.storeCreated
         ) {
-            this.props.history.push(ROUTES.stores.show.split(':')[0] + nextProps.stores.storeCreated);
+            this.props.history.push(
+                ROUTES.stores.show
+                    .replace(':storeId', nextProps.stores.storeCreated)
+            );
         }
 
         // Require auth; redirect to login if the auth check comes back negative.
@@ -93,7 +105,7 @@ class StoreAdd extends React.Component{
         this.props.dispatch(loadStoreDetails(storeId));
     }
 
-    updateStoreInfo = (storeDetails) => {
+    updateStoreInfo = storeDetails => {
         this.setState({
             storeName: storeDetails.name,
             storeNameValidation: s,
@@ -102,7 +114,7 @@ class StoreAdd extends React.Component{
         });
     }
 
-    handleNameChange = (e) => {
+    handleNameChange = e => {
         const storeName = e.target.value.toString();
         let status = "error";
 
@@ -113,7 +125,7 @@ class StoreAdd extends React.Component{
         this.setState({ storeName, storeNameValidation: status });
     };
 
-    handleDescriptionChange = (e) => {
+    handleDescriptionChange = e => {
         const description = e.target.value.toString();
         let status = "error";
 
@@ -124,7 +136,7 @@ class StoreAdd extends React.Component{
         this.setState({ description, descriptionValidation: status });
     };
 
-    handleSubmit = (e) => {
+    handleSubmit = e => {
         e.preventDefault();
 
         if (this.state.storeName.length && this.state.description.length) {
@@ -157,11 +169,13 @@ class StoreAdd extends React.Component{
             errors = (
                 <Panel bsStyle="danger">
                     <Panel.Heading>
-                        <Panel.Title componentClass="h3">Error adding store</Panel.Title>
+                        <Panel.Title componentClass="h3">
+                            Error adding store
+                        </Panel.Title>
                     </Panel.Heading>
                     <Panel.Body>
                         <ul>
-                            {this.props.stores.storeCreateErrors.map((item) => (
+                            {this.props.stores.storeCreateErrors.map(item => (
                                 item.map((error, k) => (
                                     <li key={k}>{error}</li>
                                 ))
@@ -176,14 +190,15 @@ class StoreAdd extends React.Component{
             <Grid>
                 <Row>
                     <Col mdOffset={2} lgOffset={2} lg={7} md={7}>
-                        <h3 className={"text-center"}>{addOrEdit + (this.state.storeId ? '' : ' a')} store</h3>
+                        <h3 className="text-center">
+                            {addOrEdit + (this.state.storeId ? '' : ' a')} store
+                        </h3>
                         {errors}
                         <form onSubmit={this.handleSubmit}>
 
                             <FormGroup
                                 controlId="formStoreName"
-                                validationState={this.state.storeNameValidation}
-                            >
+                                validationState={this.state.storeNameValidation}>
                                 <ControlLabel>Store name</ControlLabel>
                                 <FormControl
                                     type="text"
@@ -196,8 +211,7 @@ class StoreAdd extends React.Component{
 
                             <FormGroup
                                 controlId="formDescription"
-                                validationState={this.state.descriptionValidation}
-                            >
+                                validationState={this.state.descriptionValidation}>
                                 <ControlLabel>Store description</ControlLabel>
                                 <FormControl
                                     componentClass="textarea"
@@ -210,7 +224,9 @@ class StoreAdd extends React.Component{
 
                             {this.state.storeNameValidation === s &&
                             this.state.descriptionValidation === s &&
-                            <Button type={"submit"} bsStyle={"primary"}>{addOrEdit} store</Button>
+                            <Button type="submit" bsStyle="primary">
+                                {addOrEdit} store
+                            </Button>
                             }
                         </form>
                     </Col>
@@ -220,7 +236,7 @@ class StoreAdd extends React.Component{
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
     authentication: state.authentication,
     stores: state.stores
 });

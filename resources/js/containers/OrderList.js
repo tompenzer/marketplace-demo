@@ -97,6 +97,10 @@ class OrderList extends React.Component {
         this.setState({ cartProduct: product });
     };
 
+    handleUnAddedToCart = () => {
+        this.setState({ cartProduct: {} });
+    }
+
     render() {
 
         if (this.props.users.ordersRequested) {
@@ -142,6 +146,7 @@ class OrderList extends React.Component {
               }
               <CartActions
                   product={this.state.cartProduct}
+                  onUndone={this.handleUnAddedToCart}
                   dispatch={this.props.dispatch}
               />
           </div>

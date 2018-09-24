@@ -52,15 +52,19 @@ class OrderDetail extends React.Component{
     // component CartActions.
     handleAddToCart = (product) => {
         this.setState({ cartProduct: product });
-    };
+    }
+
+    handleUnAddedToCart = () => {
+        this.setState({ cartProduct: {} });
+    }
 
     render() {
 
         if (this.props.users.orderInfoError) {
             return <InformationPanel
-                panelTitle={"Invalid Order"}
-                informationHeading={"You are on invalid order page!"}
-                message={"Please try viewing the order details again."}
+                panelTitle="Invalid Order"
+                informationHeading="You are on invalid order page!"
+                message="Please try viewing the order details again."
             />
         }
 
@@ -76,7 +80,7 @@ class OrderDetail extends React.Component{
                             <Col lg={4} md={4}>
                                 <h2 className="page-heading">
                                     <Link to={ROUTES.orders.index}>
-                                        <Glyphicon glyph={"chevron-left"}/>
+                                        <Glyphicon glyph="chevron-left"/>
                                         My Orders
                                     </Link>
                                 </h2>
@@ -87,7 +91,7 @@ class OrderDetail extends React.Component{
                                     <span style={headingLabelStyle}>
                                         Order Identification:
                                     </span>{' '}
-                                    <span className={"order-panel-attributes"}>
+                                    <span className="order-panel-attributes">
                                         {this.props.match.params.orderId}
                                     </span>
                                 </p>
@@ -196,7 +200,7 @@ class OrderDetail extends React.Component{
                             </Panel.Heading>
                             <Panel.Body>
                                 <ListGroup>
-                                    {this.props.users.order.items.map((item) => (
+                                    {this.props.users.order.items.map(item => (
                                         <CustomListGroupItem
                                             key={'orderItem' + item.product.id}
                                             productName={item.product.name}
@@ -221,6 +225,7 @@ class OrderDetail extends React.Component{
 
                 <CartActions
                     product={this.state.cartProduct}
+                    onUndone={this.handleUnAddedToCart}
                     dispatch={this.props.dispatch}
                 />
             </Grid>

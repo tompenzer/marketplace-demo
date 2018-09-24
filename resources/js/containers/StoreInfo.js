@@ -32,6 +32,10 @@ class StoreInfo extends React.Component {
         this.setState({ cartProduct: product });
     };
 
+    handleUnAddedToCart = () => {
+        this.setState({ cartProduct: {} });
+    }
+
     render() {
         if (this.props.stores.storesRequested) {
             return <LoadingScreen/>
@@ -115,7 +119,10 @@ class StoreInfo extends React.Component {
                     </Col>
                 </Row>
 
-                <CartActions product={this.state.cartProduct} dispatch={this.props.dispatch}/>
+                <CartActions
+                    product={this.state.cartProduct}
+                    onUndone={this.handleUnAddedToCart}
+                    dispatch={this.props.dispatch}/>
             </Grid>
 
         )

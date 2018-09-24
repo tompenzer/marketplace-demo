@@ -76,7 +76,7 @@ class Products extends React.Component {
             this.props.dispatch(removeFromCart({ productId: this.state.cartProductId }));
         }
 
-        this.handleSnackbarRequestClose();
+        this.handleSnackbarClose();
     };
 
     render() {

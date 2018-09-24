@@ -1,8 +1,8 @@
 import React from 'react';
 import { Navbar, Grid, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import styleVariables from '../../sass/base/_variables.scss';
 import { ROUTES } from "../api/strings";
+import styleVariables from '../../sass/base/_variables.scss';
 
 const footerLinkStyle = {
     color: styleVariables.offBlack

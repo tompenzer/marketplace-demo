@@ -23,7 +23,7 @@ const cartTotalAmountStyle = {
     marginRight: styleVariables.spacingL
 }
 
-class ShoppingCart extends React.Component{
+class ShoppingCart extends React.Component {
 
     handleCheckoutClick = () => {
       this.props.handleClose();
@@ -83,19 +83,26 @@ class ShoppingCart extends React.Component{
             )
         }
         return (
-            <Modal show={this.props.show} onHide={this.props.handleClose} bsSize="large">
+            <Modal
+                show={this.props.show}
+                onHide={this.props.handleClose}
+                bsSize="large">
                 <Modal.Header closeButton>
                     <Modal.Title>Shopping Cart</Modal.Title>
                 </Modal.Header>
 
-                <Modal.Body>
-                    {cartContent}
-                </Modal.Body>
+                <Modal.Body>{cartContent}</Modal.Body>
 
                 <Modal.Footer>
-                    <Button onClick={this.props.handleClose}>Continue Shopping</Button>
+                    <Button onClick={this.props.handleClose}>
+                        Continue Shopping
+                    </Button>
                     {this.props.shoppingCart.length > 0 &&
-                        <Button bsStyle="primary" onClick={this.handleCheckoutClick}>Checkout</Button>
+                        <Button
+                            bsStyle="primary"
+                            onClick={this.handleCheckoutClick}>
+                            Checkout
+                        </Button>
                     }
                 </Modal.Footer>
             </Modal>
@@ -103,10 +110,6 @@ class ShoppingCart extends React.Component{
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        shoppingCart: state.shoppingCart
-    };
-};
+const mapStateToProps = state => ({ shoppingCart: state.shoppingCart });
 
 export default connect(mapStateToProps)(withRouter(ShoppingCart));

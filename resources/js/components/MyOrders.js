@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid, Row, Col, Glyphicon } from "react-bootstrap";
-import OrderList from "../components/OrderList";
+import OrderList from "../containers/OrderList";
 import ScrollToTop from "react-scroll-up";
 
 const MyOrders = () => (

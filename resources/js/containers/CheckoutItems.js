@@ -31,7 +31,7 @@ class CheckoutItems extends React.Component{
         this.props.dispatch(editCart(productId, { quantity }));
     };
 
-    removeFromCart = productId => {
+    handleRemoveFromCart = productId => {
         this.props.dispatch(removeFromCart({ productId }));
     };
 
@@ -51,7 +51,7 @@ class CheckoutItems extends React.Component{
                             key={item.productId}
                             {...item}
                             onChangeCartQuantity={this.handleChangeCartQuantity}
-                            onRemoveFromCart={() => this.removeFromCart(item.productId)}
+                            onRemoveFromCart={() => this.handleRemoveFromCart(item.productId)}
                          />
                     ))}
                 </ListGroup>

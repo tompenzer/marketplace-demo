@@ -2,10 +2,10 @@ import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import { ROUTES } from "../api/strings";
-import LoginComponent from "../components/LoginComponent";
-import RegistrationComponent from "../components/RegistrationComponent";
-import LogoutComponent from "../components/LogoutComponent";
-import Header from '../components/Header';
+import LoginComponent from "../containers/LoginComponent";
+import RegistrationComponent from "../containers/RegistrationComponent";
+import LogoutComponent from "../containers/LogoutComponent";
+import Header from '../containers/Header';
 import Footer from '../components/Footer';
 import Products from "../containers/Products";
 import ProductInfo from '../components/ProductInfo';
@@ -13,11 +13,11 @@ import ProductAdd from "../components/ProductAdd";
 import Stores from "../containers/Stores";
 import StoreInfo from '../containers/StoreInfo';
 import StoreAdd from "../components/StoreAdd";
-import MyAccount from "../components/MyAccount";
+import MyAccount from "../containers/MyAccount";
 import MyOrders from "../components/MyOrders";
 import Checkout from "../containers/Checkout";
 import Order from "../components/Order";
-import OrderDetail from "../components/OrderDetail";
+import OrderDetail from "../containers/OrderDetail";
 import About from "../components/About";
 import NotFoundPage from "../components/NotFoundPage";
 

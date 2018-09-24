@@ -1,11 +1,20 @@
 import React from 'react';
-import { FormGroup, ControlLabel, FormControl, HelpBlock, Button, Grid, Row, Col } from 'react-bootstrap';
+import {
+    FormGroup,
+    ControlLabel,
+    FormControl,
+    HelpBlock,
+    Button,
+    Grid,
+    Row,
+    Col
+} from 'react-bootstrap';
 import { withRouter, Link } from 'react-router-dom';
-import { logIn } from "../actions/authentication";
 import { connect } from 'react-redux';
-import { ROUTES } from "../api/strings";
-import LoadingScreen from "../components/LoadingScreen";
+import { logIn } from "../actions/authentication";
 import { getCart } from "../actions/shoppingCart";
+import LoadingScreen from "../components/LoadingScreen";
+import { ROUTES } from "../api/strings";
 
 const FieldGroup = ({ id, label, help, ...props }) => (
         <FormGroup controlId={id}>

@@ -1,14 +1,26 @@
 import React from 'react';
-import { Navbar, FormControl, FormGroup, Nav, NavItem, MenuItem, Button, Glyphicon, Badge, DropdownButton, InputGroup } from 'react-bootstrap';
+import {
+    Navbar,
+    FormControl,
+    FormGroup,
+    Nav,
+    NavItem,
+    MenuItem,
+    Button,
+    Glyphicon,
+    Badge,
+    DropdownButton,
+    InputGroup
+} from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
-import ShoppingCart from '../components/ShoppingCart';
 import { connect } from 'react-redux';
 import Popover, { PopoverAnimationVertical } from '@material-ui/core/Popover';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItemMUI from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
-import styleVariables from '../../sass/base/_variables.scss';
 import { ROUTES } from "../api/strings";
+import ShoppingCart from '../components/ShoppingCart';
+import styleVariables from '../../sass/base/_variables.scss';
 
 const glyphIconStyle = {
     fontSize: styleVariables.textSizeXl
@@ -52,7 +64,8 @@ class Header extends React.Component{
             accountMenuTarget: null
         };
 
-        this.props.history.listen((location, action) => {
+        // Listen for history updates to update the active state of nav items.
+        this.props.history.listen(location => {
             this.setState({ location });
         });
     }
@@ -71,15 +84,16 @@ class Header extends React.Component{
         }
     }
 
-    searchMenuSelectHelper = (itemId) => {
+    searchMenuSelectHelper = itemId => {
         this.setState({
             searchFieldPlaceholder: this.state.searchMenuItems[itemId].placeholder,
-            searchMenuItemsActive: [...this.state.searchMenuItems.keys()].filter(id => id != itemId),
+            searchMenuItemsActive: [...this.state.searchMenuItems.keys()]
+                .filter(id => id != itemId),
             searchMenuItemSelected: itemId
         });
     };
 
-    setUserMenuOptions = (authenticated) => {
+    setUserMenuOptions = authenticated => {
         let options = [{
             label: 'Log In',
             path: ROUTES.auth.login
@@ -105,7 +119,7 @@ class Header extends React.Component{
         this.setState({ userMenuItems: options });
     };
 
-    handleSearchFieldChange = (e) => {
+    handleSearchFieldChange = e => {
         const searchFieldText = e.target.value;
 
         if (searchFieldText.length < 255) {
@@ -113,7 +127,7 @@ class Header extends React.Component{
         }
     };
 
-    handleSearchFormSubmit = (e) => {
+    handleSearchFormSubmit = e => {
         e.preventDefault();
 
         const path = this.state.searchMenuItems[this.state.searchMenuItemSelected].path;
@@ -127,22 +141,25 @@ class Header extends React.Component{
         this.props.history.push(path + searchQuery);
     };
 
-    handleUserAccountClick = (e) => {
+    handleUserAccountClick = e => {
         // This prevents ghost click.
         e.preventDefault();
 
         this.setState({
-            accountMenuTarget: e.target,
-            accountMenuOpen: true
+            accountMenuOpen: true,
+            accountMenuTarget: e.target
         });
     };
 
     handleUserAccountClose = () => {
-        this.setState({ accountMenuOpen: false });
+        this.setState({
+            accountMenuOpen: false,
+            accountMenuTarget: null
+        });
     };
 
-    handleUserAccountMenuOptionClick = (url) => {
-        this.setState({ accountMenuOpen: false });
+    handleUserAccountMenuOptionClick = url => {
+        this.handleUserAccountClose();
         this.props.history.push(url);
     };
 
@@ -189,7 +206,8 @@ class Header extends React.Component{
                             title="Stores"
                             href={ROUTES.stores.index}
                             to={ROUTES.stores.index}
-                            active={this.state.location.pathname && this.state.location.pathname === ROUTES.stores.index}
+                            active={this.state.location.pathname &&
+                                this.state.location.pathname === ROUTES.stores.index}
                         >
                           Stores
                         </NavItem>
@@ -199,10 +217,10 @@ class Header extends React.Component{
                             <FormGroup>
                                 <InputGroup>
                                 <FormControl type="text"
-                                             placeholder={this.state.searchFieldPlaceholder}
-                                             value={this.state.searchFieldText}
-                                             onChange={this.handleSearchFieldChange}
-                                             inputRef={ref => { this.input = ref; }}
+                                     placeholder={this.state.searchFieldPlaceholder}
+                                     value={this.state.searchFieldText}
+                                     onChange={this.handleSearchFieldChange}
+                                     inputRef={ref => { this.input = ref; }}
                                 />
                                 <DropdownButton
                                     componentClass={InputGroup.Button}
@@ -219,9 +237,14 @@ class Header extends React.Component{
                                     ))}
                                 </DropdownButton>
                                 </InputGroup>
-                                <Button className="margin-l-xs" type="submit"><Glyphicon glyph={"search"}/></Button>
+                                <Button className="margin-l-xs" type="submit">
+                                    <Glyphicon glyph="search"/>
+                                </Button>
                             </FormGroup>
-                            <Button className="margin-l-s" onClick={this.shoppingCartModalShow} bsStyle={"link"}>
+                            <Button
+                                className="margin-l-s"
+                                onClick={this.shoppingCartModalShow}
+                                bsStyle="link">
                                 <Glyphicon glyph="shopping-cart" style={glyphIconStyle}/>
                                 {shoppingCartTotal > 0 &&
                                 <Badge style={cartBadgeStyle}>{shoppingCartTotal}</Badge>
@@ -237,33 +260,38 @@ class Header extends React.Component{
                                 open={this.state.accountMenuOpen}
                                 anchorEl={this.state.accountMenuTarget}
                                 onClose={this.handleUserAccountClose}
-                                anchorOrigin={{horizontal: 'center', vertical: 'top'}}
-                                transformOrigin={{horizontal: 'center', vertical: 'top'}}
-                            >
+                                anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
+                                transformOrigin={{ horizontal: 'center', vertical: 'top' }}>
                                 <MenuList open={this.state.accountMenuOpen}>
                                     {this.state.userMenuItems.map((item, key) => {
-                                        if (item === "divider") {
+                                        if (item === 'divider') {
                                             return <Divider key={key}/>
                                         }
 
-                                        return <MenuItemMUI key={key} onClick={() => this.handleUserAccountMenuOptionClick(item.path)}>{item.label}</MenuItemMUI>
+                                        return (
+                                            <MenuItemMUI
+                                                key={key}
+                                                onClick={() => this.handleUserAccountMenuOptionClick(item.path)}>
+                                                {item.label}
+                                            </MenuItemMUI>
+                                        )
                                     })}
                                 </MenuList>
                             </Popover>
                         </form>
                     </Navbar.Form>
-                    <ShoppingCart handleClose={this.shoppingCartModalHide} show={this.state.shoppingCartOpen}/>
+                    <ShoppingCart
+                        handleClose={this.shoppingCartModalHide}
+                        show={this.state.shoppingCartOpen}/>
                 </Navbar.Collapse>
             </Navbar>
         )
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        shoppingCart: state.shoppingCart,
-        authentication: state.authentication
-    };
-};
+const mapStateToProps = state => ({
+    shoppingCart: state.shoppingCart,
+    authentication: state.authentication
+});
 
 export default connect(mapStateToProps)(withRouter(Header));

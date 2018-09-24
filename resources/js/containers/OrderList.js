@@ -2,12 +2,11 @@ import React from "react";
 import { Row, Col, Panel, ListGroup } from "react-bootstrap";
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
-import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
-import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { getUserOrders } from "../actions/users";
-import Snackbar from '@material-ui/core/Snackbar';
-import LoadingScreen from "../components/LoadingScreen";
+import { ROUTES } from "../api/strings";
+import CartActions from '../components/CartActions';
 import CustomListGroupItem from '../components/CustomListGroupItemOrder';
+import LoadingScreen from "../components/LoadingScreen";
 import styleVariables from '../../sass/base/_variables.scss';
 
 const headingLabelStyle = {
@@ -21,7 +20,7 @@ const headingTextStyle = {
     fontSize: styleVariables.textSizeS
 };
 
-const OrderPanels = (props) => (
+const OrderPanels = props => (
     <Panel>
         <Panel.Heading>
             <Panel.Title>
@@ -37,7 +36,8 @@ const OrderPanels = (props) => (
                     </Col>
                     <Col lg={2} md={2}>
                         <Link to={{
-                            pathname: ROUTES.orders.show.split(':')[0] + props.orderID,
+                            pathname: ROUTES.orders.show
+                                .replace(':orderId', props.orderID),
                             state: { authenticated: true }
                         }}>
                             View details
@@ -47,10 +47,14 @@ const OrderPanels = (props) => (
 
                 <Row>
                     <Col lg={3} md={3}>
-                        <span style={headingTextStyle}>{props.orderDate.split(" ")[0]}</span>
+                        <span style={headingTextStyle}>
+                            {props.orderDate.split(" ")[0]}
+                        </span>
                     </Col>
                     <Col lg={3} md={3}>
-                        <span style={headingTextStyle}>${props.orderTotal}</span>
+                        <span style={headingTextStyle}>
+                            ${props.orderTotal}
+                        </span>
                     </Col>
                     <Col lg={3} md={3}>
                         <span style={headingTextStyle}>{props.itemCount}</span>
@@ -70,10 +74,7 @@ const OrderPanels = (props) => (
 class OrderList extends React.Component {
 
     state = {
-        addedToCartProductId: null,
-        snackbarOpen: false,
-        snackbarMessage: '',
-        autoHideDuration: 3000
+      cartProduct: {}
     };
 
     componentDidMount() {
@@ -90,25 +91,10 @@ class OrderList extends React.Component {
         }
     }
 
-    handleAddToCart = (product = {}) => {
-        this.props.dispatch(addToCart(product));
-        this.setState({
-            addedToCartProductId: product.productId,
-            snackbarOpen: true,
-            snackbarMessage: ADDED_TO_CART_SNACKBAR
-        });
-    };
-
-    handleSnackbarRequestClose = () => {
-        this.setState({ snackbarOpen: false });
-    };
-
-    handleUndoAction = () => {
-        if (this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR) {
-            this.props.dispatch(removeFromCart({ productId: this.state.addedToCartProductId }));
-            this.setState({ addedToCartProductId: null });
-        }
-        this.handleSnackbarRequestClose();
+    // Pass the product added to cart from the ProductList to its sibling
+    // component CartActions.
+    handleAddToCart = (product) => {
+        this.setState({ cartProduct: product });
     };
 
     render() {
@@ -143,11 +129,8 @@ class OrderList extends React.Component {
                                     quantity={item.quantity}
                                     pricePaid={item.price}
                                     handleAddToCart={() => this.handleAddToCart({
-                                        name: item.product.name,
-                                        quantity: item.quantity,
-                                        price: item.product.price,
-                                        currency: item.product.currency.abbreviation,
-                                        productId: item.product.id
+                                        ...item.product,
+                                        quantity: item.quantity
                                     })}
                                 >
                                     {item.product.name}
@@ -157,13 +140,9 @@ class OrderList extends React.Component {
                     </OrderPanels>
               })
               }
-              <Snackbar
-                  open={this.state.snackbarOpen}
-                  message={this.state.snackbarMessage}
-                  action="undo"
-                  autoHideDuration={this.state.autoHideDuration}
-                  onClick={this.handleUndoAction}
-                  onClose={this.handleSnackbarRequestClose}
+              <CartActions
+                  product={this.state.cartProduct}
+                  dispatch={this.props.dispatch}
               />
           </div>
         );

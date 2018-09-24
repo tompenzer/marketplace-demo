@@ -3,7 +3,7 @@ import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { ADDED_TO_CART_SNACKBAR } from "../api/strings";
 import Snackbar from '@material-ui/core/Snackbar';
 
-class CartActions extends React.Component {
+export default class CartActions extends React.Component {
 
     state = {
         snackbarOpen: false,
@@ -28,11 +28,19 @@ class CartActions extends React.Component {
 
     handleAddToCart = (product) => {
         const { id, name, price, currency } = product;
+        let quantity = 1;
+
+        if (product.quantity &&
+            parseInt(product.quantity) == product.quantity
+        ) {
+            quantity = product.quantity;
+        }
+
         // Dispatch the cart add redux store action.
         this.props.dispatch(addToCart({
             productId: id,
             name,
-            quantity: 1,
+            quantity,
             price,
             currency: currency.abbreviation
         }));
@@ -75,5 +83,3 @@ class CartActions extends React.Component {
         )
     }
 }
-
-export default CartActions;

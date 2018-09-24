@@ -1,26 +1,16 @@
 import React from "react";
 import { Grid, Row, Col } from "react-bootstrap";
-import OrderList from "../components/OrderList";
+import OrderList from "../containers/OrderList";
 import OrderConfirmation from "./OrderConfirmation";
 import { connect } from "react-redux";
-import { emptyCart } from "../actions/shoppingCart";
 import { SUCCESSFUL_ORDER, ROUTES } from "../api/strings";
 import { withRouter } from "react-router-dom";
 
 class Order extends React.Component {
 
     componentDidMount() {
-        if (! this.props.location.state &&
-            this.props.location.state.order.toString() === SUCCESSFUL_ORDER
-        ) {
-            this.props.history.push(ROUTES.orders.index);
-        }
-    }
-
-    componentDidUpdate() {
-        if (! this.props.location.state &&
-            this.props.shoppingCart.length > 0 &&
-            this.props.location.state.order === SUCCESSFUL_ORDER
+        if (! this.props.location.state ||
+            this.props.location.state.order !== SUCCESSFUL_ORDER
         ) {
             this.props.history.push(ROUTES.orders.index);
         }
@@ -31,8 +21,8 @@ class Order extends React.Component {
             <Grid className="page-min-height">
                 <Row>
                     <Col lg={12} md={12}>
-                        <OrderConfirmation isAuthenticated={this.props.authentication.isAuthenticated}/>
-                        {this.props.authentication.isAuthenticated && <OrderList/>}
+                        <OrderConfirmation/>
+                        <OrderList/>
                     </Col>
                 </Row>
             </Grid>
@@ -40,11 +30,4 @@ class Order extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        shoppingCart: state.shoppingCart,
-        authentication: state.authentication
-    };
-};
-
-export default connect(mapStateToProps)(withRouter(Order));
+export default withRouter(Order);

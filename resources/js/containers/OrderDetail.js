@@ -2,16 +2,15 @@ import React from "react";
 import { Grid, Row, Col, Panel, ListGroup, Glyphicon } from "react-bootstrap";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from 'react-redux';
-import { ADDED_TO_CART_SNACKBAR, ROUTES } from "../api/strings";
-import { addToCart, removeFromCart } from "../actions/shoppingCart";
+import { ROUTES } from "../api/strings";
 import { getOrderInfo } from "../actions/users";
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import Snackbar from '@material-ui/core/Snackbar';
-import LoadingScreen from "../components/LoadingScreen";
-import InformationPanel from "../components/InformationPanel";
+import CartActions from '../components/CartActions';
 import CustomListGroupItem from '../components/CustomListGroupItemOrder';
+import InformationPanel from "../components/InformationPanel";
+import LoadingScreen from "../components/LoadingScreen";
 import styleVariables from '../../sass/base/_variables.scss';
 
 const headingLabelStyle = {
@@ -28,10 +27,7 @@ const headingTextStyle = {
 class OrderDetail extends React.Component{
 
     state = {
-        snackbarOpen: false,
-        snackbarMessage: '',
-        addedToCartProductId: null,
-        autoHideDuration: 3000
+      cartProduct: {}
     };
 
     componentDidMount() {
@@ -52,26 +48,10 @@ class OrderDetail extends React.Component{
         }
     }
 
-    handleAddToCart = (product = {}) => {
-        this.props.dispatch(addToCart(product));
-        this.setState({
-            snackbarOpen: true,
-            snackbarMessage: ADDED_TO_CART_SNACKBAR,
-            addedToCartProductId: product.productId
-        });
-    };
-
-    handleSnackbarRequestClose = () => {
-        this.setState({ snackbarOpen: false });
-    };
-
-    handleUndoAction = () => {
-        if (this.state.snackbarMessage === ADDED_TO_CART_SNACKBAR) {
-            this.props.dispatch(removeFromCart({ productId: this.state.addedToCartProductId }))
-            this.setState({ addedToCartProductId: null });
-        }
-
-        this.handleSnackbarRequestClose();
+    // Pass the product added to cart from the ProductList to its sibling
+    // component CartActions.
+    handleAddToCart = (product) => {
+        this.setState({ cartProduct: product });
     };
 
     render() {
@@ -119,42 +99,60 @@ class OrderDetail extends React.Component{
                     <Col lgOffset={1} mdOffset={1} md={10} lg={10}>
                         <Panel>
                             <Panel.Heading>
-                                <Panel.Title componentClass="h4">Order Details</Panel.Title>
+                                <Panel.Title componentClass="h4">
+                                    Order Details
+                                </Panel.Title>
                             </Panel.Heading>
                             <Panel.Body>
                                 <Row>
                                     <Col lg={2} md={2}>
-                                        <span style={headingLabelStyle}>Order Date: </span>
+                                        <span style={headingLabelStyle}>
+                                            Order Date:
+                                        </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span style={headingTextStyle}>{this.props.users.order.created_at.split(" ")[0]}</span>
+                                        <span style={headingTextStyle}>
+                                            {this.props.users.order.created_at.split(" ")[0]}
+                                        </span>
                                     </Col>
 
                                     <Col lg={2} md={2}>
-                                        <span style={headingLabelStyle}>Order Time: </span>
+                                        <span style={headingLabelStyle}>
+                                            Order Time:
+                                        </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span style={headingTextStyle}>{this.props.users.order.created_at.split(" ")[1]} EST</span>
+                                        <span style={headingTextStyle}>
+                                            {this.props.users.order.created_at.split(" ")[1]} EST
+                                        </span>
                                     </Col>
                                 </Row>
 
                                 <Row>
                                     <Col lg={2} md={2}>
-                                        <span style={headingLabelStyle}>Total Amount: </span>
+                                        <span style={headingLabelStyle}>
+                                            Total Amount:
+                                        </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span style={headingTextStyle}>${parseFloat(this.props.users.order.total).toFixed(2)}</span>
+                                        <span style={headingTextStyle}>
+                                            ${parseFloat(this.props.users.order.total).toFixed(2)}
+                                        </span>
                                     </Col>
 
                                     <Col lg={2} md={2}>
-                                        <span style={headingLabelStyle}>Total items: </span>
+                                        <span style={headingLabelStyle}>
+                                            Total items:
+                                        </span>
                                     </Col>
 
                                     <Col lg={4} md={4}>
-                                        <span style={headingTextStyle}>{this.props.users.order.items.length}</span>
+                                        <span style={headingTextStyle}>
+                                            {this.props.users.order.items.length}
+                                        </span>
                                     </Col>
                                 </Row>
                             </Panel.Body>
@@ -166,7 +164,9 @@ class OrderDetail extends React.Component{
                     <Col lgOffset={1} mdOffset={1} md={10} lg={10}>
                         <Panel>
                             <Panel.Heading>
-                                <Panel.Title componentClass="h4">Order Status</Panel.Title>
+                                <Panel.Title componentClass="h4">
+                                    Order Status
+                                </Panel.Title>
                             </Panel.Heading>
                             <Panel.Body>
                                 <Stepper activeStep={1}>
@@ -206,11 +206,8 @@ class OrderDetail extends React.Component{
                                             quantity={item.quantity}
                                             pricePaid={item.price}
                                             handleAddToCart={() => this.handleAddToCart({
-                                                name: item.product.name,
-                                                quantity: item.quantity,
-                                                price: item.product.price,
-                                                currency: item.product.currency.abbreviation,
-                                                productId: item.product.id
+                                                ...item.product,
+                                                quantity: item.quantity
                                             })}
                                         >
                                             {item.product.name}
@@ -222,13 +219,9 @@ class OrderDetail extends React.Component{
                     </Col>
                 </Row>
 
-                <Snackbar
-                    open={this.state.snackbarOpen}
-                    message={this.state.snackbarMessage}
-                    action="undo"
-                    autoHideDuration={this.state.autoHideDuration}
-                    onClick={this.handleUndoAction}
-                    onClose={this.handleSnackbarRequestClose}
+                <CartActions
+                    product={this.state.cartProduct}
+                    dispatch={this.props.dispatch}
                 />
             </Grid>
         )

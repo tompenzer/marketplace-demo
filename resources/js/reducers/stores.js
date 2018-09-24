@@ -4,6 +4,8 @@ import {
     STORES_ERROR,
     STORES_INVALIDATE,
     STORE_AUTH,
+    STORE_AUTH_REQUESTED,
+    STORE_AUTH_ERROR,
     STORE_DETAILS,
     STORE_CREATED,
     STORE_CREATE_ERRORS
@@ -14,7 +16,9 @@ const storesReducerDefaultState = {
     storeDetails: {},
     storesRequested: false,
     storesError: false,
-    storeAuth: false,
+    storeAuth: null,
+    storeAuthRequested: false,
+    storeAuthError: false,
     storeCreated: null,
     storeCreateErrors: []
 };
@@ -31,13 +35,13 @@ export default (state = storesReducerDefaultState, action) => {
         case STORES_REQUESTED:
             return {
                 ...state,
-                ...storesReducerDefaultState,
-                storesRequested: true
+                storesRequested: true,
+                storesError: false
             };
         case STORES_ERROR:
             return {
                 ...state,
-                ...storesReducerDefaultState,
+                storesRequested: true,
                 storesError: true
             };
         case STORES_INVALIDATE:
@@ -48,7 +52,24 @@ export default (state = storesReducerDefaultState, action) => {
         case STORE_AUTH:
             return {
                 ...state,
-                storeAuth: action.storeAuth
+                storeAuth: action.storeAuth,
+                storeAuthRequested: false,
+                storeAuthError: false
+            };
+        case STORE_AUTH_REQUESTED:
+            return {
+                ...state,
+                storeAuth: null,
+                storeAuthRequested: true,
+                storeAuthError: false
+            };
+        case STORE_AUTH_ERROR:
+            // Default to storeAuth = false if we can't check it.
+            return {
+                ...state,
+                storeAuth: false,
+                storeAuthRequested: false,
+                storeAuthError: true
             };
         case STORE_DETAILS:
             return {

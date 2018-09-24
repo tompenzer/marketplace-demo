@@ -1,6 +1,22 @@
 import axios, { getAuthHeaders } from "../api/axiosInstance";
-import { STORES, STORES_REQUESTED, STORES_ERROR, STORES_INVALIDATE, STORE_AUTH, STORE_DETAILS, STORE_CREATED, STORE_CREATE_ERRORS } from "../api/strings";
-import { storesApi, storeAuthApi, storeInfoApi, storeUpdateApi } from "../api/apiURLs";
+import {
+    STORES,
+    STORES_REQUESTED,
+    STORES_ERROR,
+    STORES_INVALIDATE,
+    STORE_AUTH,
+    STORE_AUTH_REQUESTED,
+    STORE_AUTH_ERROR,
+    STORE_DETAILS,
+    STORE_CREATED,
+    STORE_CREATE_ERRORS
+} from "../api/strings";
+import {
+    storesApi,
+    storeAuthApi,
+    storeInfoApi,
+    storeUpdateApi
+} from "../api/apiURLs";
 
 export const addStoresHelper = (stores = []) => ({
     type: STORES,
@@ -22,6 +38,14 @@ export const invalidateStores = () => ({
 export const checkStoreAuthHelper = (authorization = false) => ({
     type: STORE_AUTH,
     storeAuth: authorization
+});
+
+export const storeAuthRequested = () => ({
+    type: STORE_AUTH_REQUESTED
+});
+
+export const storeAuthError = () => ({
+    type: STORE_AUTH_ERROR
 });
 
 export const addStoreDetailsHelper = (storeDetails = {}) => ({
@@ -58,8 +82,11 @@ export const loadStores = (query = '') => {
 // Check if logged in user has authorization to edit store.
 export const checkStoreAuth = (storeId) => {
     return (dispatch, getState) => {
+        dispatch(storeAuthRequested);
+
         axios.get(storeAuthApi(storeId), getAuthHeaders())
-            .then(response => dispatch(checkStoreAuthHelper(response.data)));
+            .then(response => dispatch(checkStoreAuthHelper(response.data)))
+            .catch(error => dispatch(storeAuthError()));
     }
 };
 

@@ -9,7 +9,7 @@ import Header from '../containers/Header';
 import Footer from '../components/Footer';
 import Products from "../containers/Products";
 import ProductInfo from '../components/ProductInfo';
-import ProductAdd from "../components/ProductAdd";
+import ProductAdd from "../containers/ProductAdd";
 import Stores from "../containers/Stores";
 import StoreInfo from '../containers/StoreInfo';
 import StoreAdd from "../components/StoreAdd";

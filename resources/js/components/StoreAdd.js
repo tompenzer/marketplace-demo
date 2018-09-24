@@ -78,9 +78,17 @@ class StoreAdd extends React.Component{
         ) {
             this.props.history.push(ROUTES.auth.login);
         }
+
+        // Update mode require store auth; redirect to login if the store auth
+        // check was performed (update mode) and it comes back negative.
+        if (this.props.stores.storeAuth !== nextProps.stores.storeAuth &&
+            nextProps.stores.storeAuth === false
+        ) {
+            this.props.history.push(ROUTES.auth.login);
+        }
     }
 
-    getStore = (storeId) => {
+    getStore = storeId => {
         this.props.dispatch(checkStoreAuth(storeId));
         this.props.dispatch(loadStoreDetails(storeId));
     }

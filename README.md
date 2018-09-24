@@ -2,9 +2,11 @@
 
 The source for the marketplace demo repo hosted at
 https://github.com/tompenzer/marketplace-demo. This is a demonstration of a
-marketplace where users can add stores and list products with them. This project
-has a Laravel 5.7-based back-end with MySQL and Redis for data storage, and a
-React/Redux front-end with Passport-implemented OAuth2 authentication.
+marketplace where users can add stores and list products with them, and users
+can purchase those productsApi. This project has a Laravel 5.7-based back-end
+API with MySQL and Redis for data storage, a React/Redux front-end with
+Passport-implemented OAuth2 authentication, and Docker managing the dev
+environment.
 
 The front-end design is inspired by the
 https://github.com/mithunjmistry/ecommerce-React-Redux-Laravel project, though

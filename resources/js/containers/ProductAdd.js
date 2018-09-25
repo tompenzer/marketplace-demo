@@ -317,11 +317,13 @@ class ProductAdd extends React.Component {
             errors = (
                 <Panel bsStyle="danger">
                     <Panel.Heading>
-                        <Panel.Title componentClass="h3">Error adding product</Panel.Title>
+                        <Panel.Title componentClass="h3">
+                            Error adding product
+                        </Panel.Title>
                     </Panel.Heading>
                     <Panel.Body>
                         <ul>
-                            {this.props.products.productCreateErrors.map((item) => (
+                            {this.props.products.productCreateErrors.map(item => (
                                 item.map((error, k) => (
                                     <li key={k}>{error}</li>
                                 ))
@@ -343,7 +345,7 @@ class ProductAdd extends React.Component {
             <Grid>
                 <Row>
                     <Col mdOffset={2} lgOffset={2} lg={7} md={7}>
-                        <h3 className={"text-center"}>{addOrEdit} a product</h3>
+                        <h3 className="text-center">{addOrEdit} a product</h3>
                         {errors}
                         <form onSubmit={this.handleSubmit}>
 

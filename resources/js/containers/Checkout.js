@@ -5,7 +5,7 @@ import CheckoutItems from "../containers/CheckoutItems";
 import CheckoutNoItems from "../components/CheckoutNoItems";
 import CheckoutInformation from "../containers/CheckoutInformation";
 
-const Checkout = (props) => (
+const Checkout = props => (
     <Grid className="page-min-height">
         <h2 className="page-title">Checkout</h2>
 
@@ -26,10 +26,6 @@ const Checkout = (props) => (
     </Grid>
 );
 
-const mapStateToProps = (state) => {
-    return {
-        shoppingCart: state.shoppingCart
-    };
-};
+const mapStateToProps = state => ({ shoppingCart: state.shoppingCart });
 
 export default connect(mapStateToProps)(Checkout);

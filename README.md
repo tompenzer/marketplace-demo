@@ -10,8 +10,9 @@ environment.
 
 The front-end design is inspired by the
 https://github.com/mithunjmistry/ecommerce-React-Redux-Laravel project, though
-little of its code remains; most aspects of the front-end architecture have been
-refactored or rewritten, and the back-end only shares a few lines of code.
+little of its code remains intact; most aspects of the front-end architecture
+have been refactored or rewritten, and the back-end only shares a few lines of
+code.
 
 
 ## Installation

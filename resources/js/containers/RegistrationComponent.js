@@ -1,10 +1,20 @@
 import React from 'react';
-import { Button, Grid, Row, Col, ControlLabel, FormGroup, FormControl, Panel, HelpBlock } from 'react-bootstrap';
+import {
+    Button,
+    Grid,
+    Row,
+    Col,
+    ControlLabel,
+    FormGroup,
+    FormControl,
+    Panel,
+    HelpBlock
+} from 'react-bootstrap';
 import { withRouter, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { registerUser } from "../actions/authentication";
 import { ROUTES } from "../api/strings";
 import LoadingScreen from "../components/LoadingScreen";
-import { connect } from 'react-redux';
 
 const s = 'success';
 
@@ -114,11 +124,13 @@ class RegistrationComponent extends React.Component{
                         <div>
                             <Panel bsStyle="danger">
                                 <Panel.Heading>
-                                    <Panel.Title componentClass="h3">Error while registering</Panel.Title>
+                                    <Panel.Title componentClass="h3">
+                                        Error while registering
+                                    </Panel.Title>
                                 </Panel.Heading>
                                 <Panel.Body>
                                     <ul>
-                                        {this.props.authentication.registrationErrors.map((item) => (
+                                        {this.props.authentication.registrationErrors.map(item => (
                                             item.map((error, k) => (
                                                 <li key={k}>{error}</li>
                                             ))
@@ -128,7 +140,7 @@ class RegistrationComponent extends React.Component{
                             </Panel>
                         </div>
                         }
-                        <form onSubmit={(e) => { e.preventDefault(); }}>
+                        <form onSubmit={e => e.preventDefault()}>
 
                             <FormGroup
                                 controlId="formBasicFullName"
@@ -160,8 +172,8 @@ class RegistrationComponent extends React.Component{
 
                             <FormGroup
                                 controlId="formBasicPassword"
-                                validationState={this.state.passwordValidation ? s : null}
-                            >
+                                validationState={this.state.passwordValidation ?
+                                    s : null}>
                                 <ControlLabel>Password</ControlLabel>
                                 <FormControl
                                     type="password"
@@ -169,13 +181,20 @@ class RegistrationComponent extends React.Component{
                                     placeholder="Password"
                                     onChange={this.passwordChange}
                                 />
-                                <HelpBlock>Password must of at least 6 characters.</HelpBlock>
-                                {this.state.confirmPassword.length > 0 && ! this.state.passwordValidation ? <span className="error-message margin-t-s">Password doesn't match.</span> : ''}
+                                <HelpBlock>
+                                    Password must of at least 6 characters.
+                                </HelpBlock>
+                                {this.state.confirmPassword.length > 0 &&
+                                    ! this.state.passwordValidation &&
+                                        <span className="error-message margin-t-s">
+                                            Password doesn't match.
+                                        </span>}
                             </FormGroup>
 
                             <FormGroup
                                 controlId="formBasicConfirmPassword"
-                                validationState={this.state.passwordValidation ? s : null}
+                                validationState={this.state.passwordValidation ?
+                                    s : null}
                             >
                                 <ControlLabel>Confirm Password</ControlLabel>
                                 <FormControl
@@ -184,19 +203,32 @@ class RegistrationComponent extends React.Component{
                                     placeholder="Confirm Password"
                                     onChange={this.confirmPasswordChange}
                                 />
-                                {this.state.password.length > 0 && ! this.state.passwordValidation && <span className="error-message margin-t-s">Password doesn't match.</span>}
+                                {this.state.password.length > 0 &&
+                                    ! this.state.passwordValidation &&
+                                        <span className="error-message margin-t-s">
+                                            Password doesn't match.
+                                        </span>}
                             </FormGroup>
 
                             {this.state.fullNameValidation === s &&
                             this.state.emailValidation === s &&
                             this.state.passwordValidation &&
-                            <Button type="submit" onClick={this.onRegisterSubmit} bsStyle="primary">Register</Button>
+                            <Button
+                                type="submit"
+                                onClick={this.onRegisterSubmit}
+                                bsStyle="primary">
+                                Register
+                            </Button>
                             }
                         </form>
                         <div>
                             <br/>
                             <p>Already have an account?</p>
-                            <Link to={ROUTES.auth.login} className='btn btn-default'>Login</Link>
+                            <Link
+                                to={ROUTES.auth.login}
+                                className='btn btn-default'>
+                                Login
+                            </Link>
                         </div>
                     </Col>
                 </Row>
@@ -206,7 +238,7 @@ class RegistrationComponent extends React.Component{
 }
 
 const mapStateToProps = state => ({
-    authentication: state.authentication,
+    authentication: state.authentication
 });
 
 export default connect(mapStateToProps)(withRouter(RegistrationComponent));

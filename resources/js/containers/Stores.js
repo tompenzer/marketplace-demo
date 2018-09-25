@@ -26,7 +26,9 @@ class Stores extends React.Component {
                 <Grid>
                     <Row className="margin-b-m">
                         <Col md={12} sm={12}>
-                            <h2 className="text-center">retrieving stores...</h2>
+                            <h2 className="text-center">
+                                retrieving stores...
+                            </h2>
                         </Col>
                     </Row>
 
@@ -43,14 +45,15 @@ class Stores extends React.Component {
             return (
                 <div>
                     <InformationPanel
-                        panelTitle={"There are no stores currently available"}
-                        informationHeading={"Something went wrong."}
-                        message={"We were unable to find any stores, which wasn't expected. Please try again later in the hopes it's been fixed."}
+                        panelTitle="There are no stores currently available"
+                        informationHeading="Something went wrong."
+                        message="We were unable to find any stores, which wasn't expected. Please try again later in the hopes it's been fixed."
                         />
                     <Button
                         bsStyle={"primary"}
                         className={"add-store"}
-                        onClick={() => (this.props.history.push(ROUTES.stores.store))}
+                        onClick={() => (
+                            this.props.history.push(ROUTES.stores.store))}
                     >Add store
                     </Button>
                 </div>
@@ -62,14 +65,17 @@ class Stores extends React.Component {
                 <Button
                     bsStyle={"primary"}
                     className={"add-store"}
-                    onClick={() => (this.props.history.push(ROUTES.stores.store))}
+                    onClick={() => (
+                        this.props.history.push(ROUTES.stores.store))}
                 >
                     Add store
                 </Button>
 
                 <Row className="margin-b-m">
                     <Col md={12} sm={12}>
-                        <h2 className="text-center">Choose from a selection of stores listed below</h2>
+                        <h2 className="text-center">
+                            Choose from a selection of stores listed below
+                        </h2>
                     </Col>
                 </Row>
 
@@ -83,10 +89,6 @@ class Stores extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        stores: state.stores
-    };
-};
+const mapStateToProps = state => ({ stores: state.stores });
 
 export default connect(mapStateToProps)(Stores);

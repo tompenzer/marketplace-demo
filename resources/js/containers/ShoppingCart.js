@@ -46,15 +46,15 @@ class ShoppingCart extends React.Component {
             cartContent = (
                 <div>
                     <ListGroup>
-                        {this.props.shoppingCart.map((item) => {
-                            return <CustomListGroupItem
+                        {this.props.shoppingCart.map(item => (
+                            <CustomListGroupItem
                                 key={item.productId}
                                 {...item}
                                 {...this.props}
                                 onChangeCartQuantity={this.handleChangeCartQuantity}
                                 onRemoveFromCart={() => this.handleRemoveFromCart(item.productId)}
                             />
-                        })}
+                        ))}
                     </ListGroup>
 
                     <hr/>

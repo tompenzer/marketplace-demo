@@ -117,7 +117,8 @@ class OrderDetail extends React.Component{
 
                                     <Col lg={4} md={4}>
                                         <span style={headingTextStyle}>
-                                            {this.props.users.order.created_at.split(" ")[0]}
+                                            {this.props.users.order.created_at
+                                                .split(" ")[0]}
                                         </span>
                                     </Col>
 
@@ -129,7 +130,8 @@ class OrderDetail extends React.Component{
 
                                     <Col lg={4} md={4}>
                                         <span style={headingTextStyle}>
-                                            {this.props.users.order.created_at.split(" ")[1]} EST
+                                            {this.props.users.order.created_at
+                                                .split(" ")[1]} EST
                                         </span>
                                     </Col>
                                 </Row>
@@ -143,7 +145,8 @@ class OrderDetail extends React.Component{
 
                                     <Col lg={4} md={4}>
                                         <span style={headingTextStyle}>
-                                            ${parseFloat(this.props.users.order.total).toFixed(2)}
+                                            ${parseFloat(this.props.users.order.total)
+                                                .toFixed(2)}
                                         </span>
                                     </Col>
 

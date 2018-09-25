@@ -48,15 +48,23 @@ class MyAccount extends React.Component{
                       <Col lg={12} md={12}>
                           <Panel>
                               <Panel.Heading>
-                                  <Panel.Title componentClass="h3" className="text-center">My Account</Panel.Title>
+                                  <Panel.Title
+                                      componentClass="h3"
+                                      className="text-center">
+                                      My Account
+                                  </Panel.Title>
                               </Panel.Heading>
                               <Panel.Body>
                                   <Row>
                                       <Col lg={2} md={2}>
-                                          <p style={fieldLabelStyle}>Full Name: </p>
+                                          <p style={fieldLabelStyle}>
+                                              Full Name:
+                                          </p>
                                       </Col>
                                       <Col lg={10} md={10}>
-                                          <p className="text-l">{this.props.users.user.name}</p>
+                                          <p className="text-l">
+                                              {this.props.users.user.name}
+                                          </p>
                                       </Col>
                                   </Row>
 
@@ -65,7 +73,9 @@ class MyAccount extends React.Component{
                                           <p style={fieldLabelStyle}>Email: </p>
                                       </Col>
                                       <Col lg={10} md={10}>
-                                          <p className="text-l">{this.props.users.user.email}</p>
+                                          <p className="text-l">
+                                              {this.props.users.user.email}
+                                          </p>
                                       </Col>
                                   </Row>
                               </Panel.Body>

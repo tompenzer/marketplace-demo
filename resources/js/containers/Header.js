@@ -175,9 +175,10 @@ class Header extends React.Component{
         let shoppingCartTotal = 0;
 
         if (this.props.shoppingCart) {
-            shoppingCartTotal = this.props.shoppingCart.reduce((accumulator, item) => {
-                return accumulator + parseInt(item.quantity);
-            }, 0);
+            shoppingCartTotal = this.props.shoppingCart
+                .reduce((accumulator, item) => {
+                    return accumulator + parseInt(item.quantity);
+                }, 0);
         }
 
         return (
@@ -227,11 +228,10 @@ class Header extends React.Component{
                                     id="input-dropdown-addon"
                                     title={this.state.searchMenuItems[this.state.searchMenuItemSelected].label}
                                 >
-                                    {this.state.searchMenuItemsActive.map((itemId) => (
+                                    {this.state.searchMenuItemsActive.map(itemId => (
                                         <MenuItem
                                             key={'searchMenuItem' + itemId}
-                                            onSelect={() => this.searchMenuSelectHelper(itemId)}
-                                        >
+                                            onSelect={() => this.searchMenuSelectHelper(itemId)}>
                                             {this.state.searchMenuItems[itemId].label}
                                         </MenuItem>
                                     ))}
@@ -245,23 +245,32 @@ class Header extends React.Component{
                                 className="margin-l-s"
                                 onClick={this.shoppingCartModalShow}
                                 bsStyle="link">
-                                <Glyphicon glyph="shopping-cart" style={glyphIconStyle}/>
+                                <Glyphicon
+                                    glyph="shopping-cart"
+                                    style={glyphIconStyle}/>
                                 {shoppingCartTotal > 0 &&
-                                <Badge style={cartBadgeStyle}>{shoppingCartTotal}</Badge>
+                                <Badge style={cartBadgeStyle}>
+                                    {shoppingCartTotal}
+                                </Badge>
                                 }
                             </Button>
                             <Button
                                 onClick={this.handleUserAccountClick}
-                                bsStyle="link"
-                            >
+                                bsStyle="link">
                                 <Glyphicon glyph="user" style={glyphIconStyle}/>
                             </Button>
                             <Popover
                                 open={this.state.accountMenuOpen}
                                 anchorEl={this.state.accountMenuTarget}
                                 onClose={this.handleUserAccountClose}
-                                anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
-                                transformOrigin={{ horizontal: 'center', vertical: 'top' }}>
+                                anchorOrigin={{
+                                    horizontal: 'center',
+                                    vertical: 'top'
+                                }}
+                                transformOrigin={{
+                                    horizontal: 'center',
+                                    vertical: 'top'
+                                }}>
                                 <MenuList open={this.state.accountMenuOpen}>
                                     {this.state.userMenuItems.map((item, key) => {
                                         if (item === 'divider') {

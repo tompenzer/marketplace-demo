@@ -28,7 +28,7 @@ class StoreInfo extends React.Component {
 
     // Pass the product added to cart from the ProductList to its sibling
     // component CartActions.
-    handleAddToCart = (product) => {
+    handleAddToCart = product => {
         this.setState({ cartProduct: product });
     };
 
@@ -43,10 +43,10 @@ class StoreInfo extends React.Component {
 
         if (this.props.stores.storesError) {
             return <InformationPanel
-                    panelTitle={"Store Not available"}
-                    informationHeading={"The requested store was not found."}
-                    message={"Something went wrong; not sure how you got here, but that wasn't supposed to happen..."}
-                    />
+                panelTitle="Store Not available"
+                informationHeading="The requested store was not found."
+                message="Something went wrong; not sure how you got here, but that wasn't supposed to happen..."
+                />
         }
 
         let editStore,
@@ -55,10 +55,12 @@ class StoreInfo extends React.Component {
         if (this.props.stores.storeAuth) {
             editStore = (
                 <Button
-                    bsStyle={"info"}
-                    className={"edit-store margin-b-s"}
-                    onClick={() => (this.props.history.push(ROUTES.stores.update.split(':storeId')[0] + this.props.stores.storeDetails.id + ROUTES.stores.update.split(':storeId')[1]))}
-                >
+                    bsStyle="info"
+                    className="edit-store margin-b-s"
+                    onClick={() => (
+                        this.props.history.push(
+                            ROUTES.stores.update
+                                .replace(':storeId', this.props.stores.storeDetails.id)))}>
                     Edit store
                 </Button>
             )
@@ -66,8 +68,10 @@ class StoreInfo extends React.Component {
                 <Button
                     bsStyle={"primary"}
                     className={"add-store-product margin-b-s"}
-                    onClick={() => (this.props.history.push(ROUTES.products.store.split(':storeId')[0] + this.props.stores.storeDetails.id + ROUTES.products.store.split(':storeId')[1]))}
-                >
+                    onClick={() => (
+                        this.props.history.push(
+                            ROUTES.products.store
+                                .replace(':storeId', this.props.stores.storeDetails.id)))}>
                     Add store product
                 </Button>
             )
@@ -83,7 +87,9 @@ class StoreInfo extends React.Component {
                                 <span className="margin-l-a">{editStore}</span>
                             </h2>
                             <div className="store-info-seller-name">
-                                <span>{this.props.stores.storeDetails.sellerName}</span>
+                                <span>
+                                    {this.props.stores.storeDetails.sellerName}
+                                </span>
                             </div>
                             <hr />
                         </div>
@@ -95,9 +101,13 @@ class StoreInfo extends React.Component {
                 <Row>
                     <Col lg={12} md={12}>
                         <div className={"store-info-left-margin"}>
-                            <h3 className={"store-description-heading"}>Store Description:</h3>
+                            <h3 className={"store-description-heading"}>
+                                Store Description:
+                            </h3>
                             <hr/>
-                            <p className={"store-description"}>{this.props.stores.storeDetails.description}</p>
+                            <p className={"store-description"}>
+                                {this.props.stores.storeDetails.description}
+                            </p>
                         </div>
                     </Col>
                 </Row>
@@ -106,16 +116,18 @@ class StoreInfo extends React.Component {
 
                 <Row>
                     <Col lg={12} md={12}>
-                        <h3 className={"store-description-heading"}>Our products:</h3>
+                        <h3 className={"store-description-heading"}>
+                            Our products:
+                        </h3>
                         {addProduct}
                         {this.props.stores.storeDetails.products &&
                         <ProductList
                             products={this.props.stores.storeDetails.products}
-                            store={{ id: this.props.stores.storeDetails.id, name: this.props.stores.storeDetails.name }}
+                            store={this.props.stores.storeDetails}
                             handleAddToCart={this.handleAddToCart}
                             userHasAuth={this.props.stores.storeAuth}
-                            history={this.props.history}
-                        />}
+                            history={this.props.history}/>
+                        }
                     </Col>
                 </Row>
 
@@ -129,10 +141,6 @@ class StoreInfo extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        stores: state.stores
-    };
-};
+const mapStateToProps = state => ({ stores: state.stores });
 
 export default connect(mapStateToProps)(StoreInfo);

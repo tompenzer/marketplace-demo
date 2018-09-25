@@ -62,7 +62,8 @@ class CheckoutInformation extends React.Component {
             <Row>
                 <Col lg={12} md={12}>
                     <AddressForm
-                        loadedAddresses={this.props.users.user ? this.props.users.user.addresses : []}
+                        loadedAddresses={this.props.users.user ?
+                            this.props.users.user.addresses : []}
                         countries={this.props.utilities.countries}
                         handleSubmit={this.handleSubmit}
                     />
@@ -72,13 +73,11 @@ class CheckoutInformation extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        authentication: state.authentication,
-        shoppingCart: state.shoppingCart,
-        users: state.users,
-        utilities: state.utilities,
-    };
-};
+const mapStateToProps = state => ({
+    authentication: state.authentication,
+    shoppingCart: state.shoppingCart,
+    users: state.users,
+    utilities: state.utilities,
+});
 
 export default connect(mapStateToProps)(withRouter(CheckoutInformation));

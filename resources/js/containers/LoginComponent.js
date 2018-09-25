@@ -43,7 +43,7 @@ class LoginComponent extends React.Component{
         }
     }
 
-    onLoginSubmit = (e) => {
+    onLoginSubmit = e => {
         e.preventDefault();
 
         const email = e.target.formControlsUsername.value;
@@ -62,8 +62,6 @@ class LoginComponent extends React.Component{
         }
 
         if (email.length && password.length) {
-            this.setState(() => ({ isLoading: true }));
-
             this.props.dispatch(logIn(email, password));
         }
     };
@@ -75,10 +73,10 @@ class LoginComponent extends React.Component{
         }
 
         return (
-            <Grid className={"page-min-height"}>
+            <Grid className="page-min-height">
                 <Row>
                     <Col mdOffset={2} lgOffset={2} lg={7} md={7}>
-                        <h3 className={"text-center"}>Login</h3>
+                        <h3 className="text-center">Login</h3>
                         <form onSubmit={this.onLoginSubmit}>
                             <FieldGroup
                                 id="formControlsUsername"
@@ -94,13 +92,22 @@ class LoginComponent extends React.Component{
                                 placeholder="Enter password"
                                 help={this.state.passwordHelp}
                             />
-                            {this.props.authentication.loginError && <p className="error-message margin-t-s">Username or password not valid.</p>}
-                            <Button type={"submit"} className={'btn btn-primary'}>Login</Button>
+                            {this.props.authentication.loginError &&
+                                <p className="error-message margin-t-s">
+                                    Username or password not valid.
+                                </p>}
+                            <Button type="submit" className="btn btn-primary">
+                                Login
+                            </Button>
                         </form>
                         <div>
                             <br/>
                             <p>Don't have an account?</p>
-                            <Link to={ROUTES.auth.register} className='btn btn-default'>Register</Link>
+                            <Link
+                                to={ROUTES.auth.register}
+                                className="btn btn-default">
+                                Register
+                            </Link>
                         </div>
                     </Col>
                 </Row>
@@ -110,7 +117,7 @@ class LoginComponent extends React.Component{
 }
 
 const mapStateToProps = state => ({
-    authentication: state.authentication,
+    authentication: state.authentication
 });
 
 export default connect(mapStateToProps)(withRouter(LoginComponent));

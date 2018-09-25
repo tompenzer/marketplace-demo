@@ -20,17 +20,13 @@ class LogoutComponent extends React.Component{
 
     render() {
         return (
-            <div className={"page-min-height padding-2xl"} ref={"logout-div"}>
+            <div className="page-min-height padding-2xl" ref="logout-div">
                 <h3>{this.state.logoutMessage}</h3>
             </div>
         )
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        authentication: state.authentication
-    };
-};
+const mapStateToProps = state => ({ authentication: state.authentication });
 
 export default connect(mapStateToProps)(withRouter(LogoutComponent));

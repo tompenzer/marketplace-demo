@@ -1,0 +1,10 @@
+.store-list-row {
+    > td {
+        cursor: pointer;
+        transition: $transition-all;
+    }
+
+    &:hover > td {
+        background-color: $darken5;
+    }
+}

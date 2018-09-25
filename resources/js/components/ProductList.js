@@ -53,7 +53,7 @@ const ProductList = props => (
                             </TableCell>}
                             <TableCell numeric>{
                                 item.currency.abbreviation + ' ' +
-                                Number.parseFloat(item.price).toFixed(2)
+                                parseFloat(item.price).toFixed(2)
                             }</TableCell>
                             <TableCell numeric>{
                                 item.width + ' ' +
@@ -64,20 +64,20 @@ const ProductList = props => (
                                 item.length_unit.abbreviation
                             }</TableCell>
                             <TableCell numeric>{
-                                Number.parseFloat(item.weight).toFixed(2) +
+                                parseFloat(item.weight).toFixed(2) +
                                 ' ' + item.weight_unit.abbreviation
                             }</TableCell>
                             <TableCell numeric>
                                 <Button
                                     bsStyle="primary"
-                                    className="add-to-cart-product margin-b-s"
+                                    className="add-to-cart-product margin-s"
                                     onClick={() => props.handleAddToCart(item)}
                                 >Add to Cart
                                 </Button>
                                 {props.userHasAuth &&
                                 <Button
                                     bsStyle="info"
-                                    className="edit-store-product margin-l-m"
+                                    className="edit-store-product margin-s"
                                     onClick={() => props.history.push(
                                         ROUTES.products.update
                                             .replace(':storeId', store.id)

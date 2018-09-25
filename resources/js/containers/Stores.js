@@ -13,7 +13,7 @@ class Stores extends React.Component {
         this.props.dispatch(loadStores(this.props.match.params.q));
     }
 
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         if (this.props.match.params.q !== nextProps.match.params.q) {
             this.props.dispatch(loadStores(nextProps.match.params.q));
         }
@@ -41,6 +41,20 @@ class Stores extends React.Component {
             )
         }
 
+        let addStoreButton = '';
+
+        if (this.props.authentication.isAuthenticated) {
+            addStoreButton = (
+                <Button
+                    bsStyle="primary"
+                    className="add-store"
+                    onClick={() => (
+                        this.props.history.push(ROUTES.stores.store))}>
+                    Add store
+                </Button>
+            )
+        }
+
         if (this.props.stores.storesError) {
             return (
                 <div>
@@ -49,27 +63,14 @@ class Stores extends React.Component {
                         informationHeading="Something went wrong."
                         message="We were unable to find any stores, which wasn't expected. Please try again later in the hopes it's been fixed."
                         />
-                    <Button
-                        bsStyle={"primary"}
-                        className={"add-store"}
-                        onClick={() => (
-                            this.props.history.push(ROUTES.stores.store))}
-                    >Add store
-                    </Button>
+                    {addStoreButton}
                 </div>
             )
         }
 
         return (
             <Grid>
-                <Button
-                    bsStyle={"primary"}
-                    className={"add-store"}
-                    onClick={() => (
-                        this.props.history.push(ROUTES.stores.store))}
-                >
-                    Add store
-                </Button>
+                {addStoreButton}
 
                 <Row className="margin-b-m">
                     <Col md={12} sm={12}>
@@ -89,6 +90,9 @@ class Stores extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ stores: state.stores });
+const mapStateToProps = state => ({
+    authentication: state.authentication,
+    stores: state.stores
+});
 
 export default connect(mapStateToProps)(Stores);

@@ -42,6 +42,7 @@ Route::post('logout', 'AuthenticationController@logoutApi');
 Route::group(["middleware" => 'auth:api'], function () {
     // Authenticated user info.
     Route::get('user', 'UserController@showSelf');
+    Route::get('login', 'AuthenticationController@loggedInApi');
 
     // Create/delete stores, get store auth status
     Route::post('stores', 'StoreController@store');

@@ -37,6 +37,10 @@ Route::get('units/{unit}', 'UnitController@show');
 // Custom API auth
 Route::post('register', 'Auth\RegisterController@register');
 Route::post('logout', 'AuthenticationController@logoutApi');
+// Route for auth middleware to send users who fail an auth check.
+Route::get('login-required', function () {
+    abort(401, 'Unauthenticated.');
+})->name('login-required');
 
 // Authenticated routes
 Route::group(["middleware" => 'auth:api'], function () {

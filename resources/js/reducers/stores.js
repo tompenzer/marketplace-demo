@@ -64,7 +64,7 @@ export default (state = storesReducerDefaultState, action) => {
                 storeAuthError: false
             };
         case STORE_AUTH_ERROR:
-            // Default to storeAuth = false if we can't check it.
+            // Default to storeAuth = false if we get a 401 or can't check it.
             return {
                 ...state,
                 storeAuth: false,

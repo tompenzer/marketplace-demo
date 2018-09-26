@@ -11,6 +11,12 @@
 |
 */
 
+// Route for auth middleware to send users who fail an auth check.
+Route::get('login-required', function () {
+    abort(401, 'Unauthenticated.');
+});
+
+
 Route::get('/{any}', function () {
     return view('welcome');
 })->where('any', '.*');

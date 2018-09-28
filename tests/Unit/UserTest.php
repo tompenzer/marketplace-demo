@@ -55,6 +55,8 @@ class UserTest extends TestCase
 
         $email = $faker->safeEmail;
 
+        $this->assertTrue(User::email($email)->count() === 0);
+
         $user = factory(User::class)->create(['email' => $email]);
 
         $this->assertTrue(User::email($email)->find($user->id)->count() > 0);

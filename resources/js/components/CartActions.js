@@ -1,9 +1,10 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import { addToCart, removeFromCart } from "../actions/shoppingCart";
 import { ADDED_TO_CART_SNACKBAR } from "../api/strings";
 import Snackbar from '@material-ui/core/Snackbar';
 
-export default class CartActions extends React.Component {
+class CartActions extends React.Component {
 
     state = {
         snackbarOpen: false,
@@ -85,3 +86,21 @@ export default class CartActions extends React.Component {
         )
     }
 }
+
+CartActions.propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    onUndone: PropTypes.func.isRequired,
+    product: PropTypes.shape({
+        id: PropTypes.number,
+        name: PropTypes.string,
+        price: PropTypes.number,
+        currency: PropTypes.shape({
+            id: PropTypes.number,
+            name: PropTypes.string,
+            abbreviation: PropTypes.string.isRequired
+        }),
+        quantity: PropTypes.number
+    })
+};
+
+export default CartActions;

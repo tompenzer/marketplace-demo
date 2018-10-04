@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import {
     Row,
@@ -15,7 +16,7 @@ import { ROUTES } from "../api/strings";
 import styleVariables from '../../sass/base/_variables.scss';
 
 const cartListItemStyle = {
-    borderColor: 'rgba(0, 0, 0, 0.1)'
+    borderColor: styleVariables.darken10
 };
 
 const cartListGroupRowStyle = {
@@ -36,7 +37,7 @@ const tooltip = (
     </Tooltip>
 );
 
-export default class CustomListGroupItemCart extends React.Component{
+class CustomListGroupItemCart extends React.Component{
 
     state = {
         quantity: this.props.quantity
@@ -145,3 +146,14 @@ export default class CustomListGroupItemCart extends React.Component{
         )
     }
 }
+
+CustomListGroupItemCart.propTypes = {
+    onChangeCartQuantity: PropTypes.func.isRequired,
+    onRemoveFromCart: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    productId: PropTypes.number.isRequired,
+    quantity: PropTypes.number.isRequired
+};
+
+export default CustomListGroupItemCart;

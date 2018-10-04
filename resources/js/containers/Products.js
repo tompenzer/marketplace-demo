@@ -31,7 +31,7 @@ class Products extends React.Component {
     }
 
     handleAddToCart = product => {
-        this.setState({ cartProduct: { product }});
+        this.setState({ cartProduct: product });
     }
 
     handleUnAddedToCart = () => {

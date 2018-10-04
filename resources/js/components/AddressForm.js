@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import {
     FormGroup,
     ControlLabel,
@@ -10,7 +11,7 @@ import {
 
 const s = "success";
 
-export default class AddressForm extends React.Component {
+class AddressForm extends React.Component {
 
     state = {
         id: null,
@@ -332,3 +333,23 @@ export default class AddressForm extends React.Component {
         )
     }
 }
+
+AddressForm.propTypes = {
+    countries: PropTypes.objectOf(PropTypes.string.isRequired).isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    loadedAddresses: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number,
+            recipient: PropTypes.string,
+            street_1: PropTypes.string,
+            street_2: PropTypes.string,
+            city: PropTypes.string,
+            state: PropTypes.string,
+            postal_code: PropTypes.string,
+            country_id: PropTypes.number,
+            phone: PropTypes.string
+        })
+    )
+};
+
+export default AddressForm;

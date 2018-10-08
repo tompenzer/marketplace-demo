@@ -1,8 +1,18 @@
+// SASS variables.
 @import './base/variables';
-@import './components/error';
-@import './components/page';
-@import './components/stores';
+
+// Bootstrap 3 with variable overrides.
+@import './base/bootstrap_config';
+$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+// Utilities
 @import './utilities/display';
 @import './utilities/margin';
 @import './utilities/padding';
 @import './utilities/text';
+
+// Components
+@import './components/error';
+@import './components/page';
+@import './components/stores';

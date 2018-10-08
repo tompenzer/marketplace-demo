@@ -21,9 +21,10 @@ yarn-error.log
 npm-debug.log
 
 # Public dir
+/public/css
+/public/fonts
 /public/images
 /public/js
-/public/css
 
 # Secrets
 provisioning/deploy.sh

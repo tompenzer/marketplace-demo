@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { Button } from "react-bootstrap";
 import Paper from '@material-ui/core/Paper';
@@ -94,5 +95,49 @@ const ProductList = props => (
         </Table>
     </Paper>
 );
+
+ProductList.propTypes = {
+    products: PropTypes.arrayOf(
+        PropTypes.shape({
+            store: PropTypes.shape({
+                id: PropTypes.number,
+                name: PropTypes.string
+            }),
+            id: PropTypes.number,
+            name: PropTypes.string,
+            currency: PropTypes.shape({
+                abbreviation: PropTypes.string
+            }),
+            price: PropTypes.number,
+            width: PropTypes.number,
+            width_unit: PropTypes.shape({
+                abbreviation: PropTypes.string
+            }),
+            height: PropTypes.number,
+            height_unit: PropTypes.shape({
+                abbreviation: PropTypes.string
+            }),
+            length: PropTypes.number,
+            length_unit: PropTypes.shape({
+                abbreviation: PropTypes.string
+            }),
+            weight: PropTypes.number,
+            weight_unit: PropTypes.shape({
+                abbreviation: PropTypes.string
+            }),
+            state: PropTypes.string,
+            postal_code: PropTypes.string,
+            country_id: PropTypes.number,
+            phone: PropTypes.string
+        })
+    ).isRequired,
+    handleAddToCart: PropTypes.func.isRequired,
+    store: PropTypes.shape({
+        id: PropTypes.number,
+        name: PropTypes.string
+    }),
+    userHasAuth: PropTypes.bool,
+    history: PropTypes.object
+};
 
 export default ProductList;

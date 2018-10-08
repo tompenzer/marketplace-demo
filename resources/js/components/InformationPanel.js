@@ -8,12 +8,14 @@ const iconStyle = {
 }
 
 const InformationPanel = (props) => (
-    <Grid className={"page-min-height"}>
+    <Grid className="page-min-height">
         <Row>
             <Col lg={12}>
                 <Panel bsStyle="primary">
                     <Panel.Heading>
-                        <Panel.Title componentClass="h3">{props.panelTitle}</Panel.Title>
+                        <Panel.Title componentClass="h3">
+                            {props.panelTitle}
+                        </Panel.Title>
                     </Panel.Heading>
 
                     <Panel.Body>
@@ -21,7 +23,7 @@ const InformationPanel = (props) => (
 
                         <p>{props.message}</p>
 
-                        <Glyphicon glyph={"shopping-cart"} style={iconStyle}/>
+                        <Glyphicon glyph="shopping-cart" style={iconStyle}/>
 
                         <Link to={ROUTES.root}>Continue Shopping</Link>
                     </Panel.Body>

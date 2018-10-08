@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -63,9 +64,11 @@ class StoreList extends React.Component {
                                 key={item.id}
                                 className="store-list-row"
                                 onTouchStart={this.handleStoreRowPress}
-                                onTouchEnd={() => this.handleStoreRowRelease(item.id)}
+                                onTouchEnd={
+                                    () => this.handleStoreRowRelease(item.id)}
                                 onMouseDown={this.handleStoreRowPress}
-                                onMouseUp={() => this.handleStoreRowRelease(item.id)}>
+                                onMouseUp={
+                                    () => this.handleStoreRowRelease(item.id)}>
                                 <TableCell>
                                     <Link to={ROUTES.stores.show
                                         .replace(':storeId', item.id)}>
@@ -80,6 +83,16 @@ class StoreList extends React.Component {
             </Paper>
         );
     }
+};
+
+StoreList.propTypes = {
+    stores: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number,
+            name: PropTypes.string,
+            description: PropTypes.string
+        })
+    ).isRequired
 };
 
 export default withRouter(StoreList);

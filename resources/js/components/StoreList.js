@@ -27,15 +27,20 @@ class StoreList extends React.Component {
      *
      * @return {void} attaches a timer to the component.
      */
-    handleStoreRowPress = () => {
-        this.storeRowPressTimer = setTimeout(
-            () => {
-                clearTimeout(this.storeRowPressTimer);
-                // Setting to 0 so we can check that it's been cleared.
-                this.storeRowPressTimer = 0;
-            },
-            500
-        );
+    handleStoreRowPress = e => {
+        // Act only on touch and left clicks.
+        if (! e.button || e.button === 0) {
+            this.storeRowPressTimer = setTimeout(
+                () => {
+                    clearTimeout(this.storeRowPressTimer);
+                    // Setting to 0 so we can check that it's been cleared.
+                    this.storeRowPressTimer = 0;
+                },
+                500
+            );
+        } else {
+            this.storeRowPressTimer = 0;
+        }
     }
 
     handleStoreRowRelease = storeId => {

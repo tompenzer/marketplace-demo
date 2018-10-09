@@ -3,7 +3,7 @@
 The source for the marketplace demo repo hosted at
 https://github.com/tompenzer/marketplace-demo. This is a demonstration of a
 marketplace where users can add stores and list products with them, and users
-can purchase those productsApi. This project has a Laravel 5.7-based back-end
+can purchase those products. This project has a Laravel 5.7-based back-end
 API with MySQL and Redis for data storage, a React/Redux front-end with
 Passport-implemented OAuth2 authentication, and Docker managing the dev
 environment.
@@ -73,7 +73,7 @@ pass: secret
 
 And then try running the database migrations manually:
 ```
-$ docker-compose run --rm blog-server php artisan migrate --seed
+$ docker-compose run --rm marketplace-server php artisan migrate --seed
 ```
 
 This will create the default admin user that you can use to sign in.

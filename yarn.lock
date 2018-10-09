@@ -3669,6 +3669,10 @@ laravel-mix@^2.1.14:
     webpack-notifier "^1.5.1"
     yargs "^8.0.2"
 
+lato-webfont@^2.15.1:
+  version "2.15.1"
+  resolved "https://registry.yarnpkg.com/lato-webfont/-/lato-webfont-2.15.1.tgz#a3b0870b79c17051602fbaa1051f8c00f1d0c773"
+
 lazy-cache@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/lazy-cache/-/lazy-cache-1.0.4.tgz#a1d78fc3a50474cb80845d3b3b6e1da49a446e8e"

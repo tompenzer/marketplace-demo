@@ -113,7 +113,7 @@ class ProductController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $product->destroy();
+        $product->delete();
 
         Cache::tags(self::CACHE_TAG)->flush();
 

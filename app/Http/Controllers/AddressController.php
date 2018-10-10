@@ -82,7 +82,7 @@ class AddressController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $address->destroy();
+        $address->delete();
 
         return response()->json([
             'status' => 'success',

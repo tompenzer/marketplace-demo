@@ -49,7 +49,7 @@ class UserController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $user->destroy();
+        $user->delete();
 
         return response()->json([
             'status' => 'success',

@@ -13,9 +13,7 @@ const About = () => (
             <hr/>
 
             <Col lg={12} md={12}>
-                <a
-                    href={REPO_URL}
-                    target="_blank">
+                <a href={REPO_URL} target="_blank">
                     Project Github link
                 </a>
 
@@ -27,17 +25,19 @@ const About = () => (
                                        distance={30}
                                        speed={1000}
                                        wait={300}>
-                    <p className={"bold"}>Libraries and Technologies used :</p>
+                    <p className="bold">Libraries and Technologies used:</p>
                     <Row>
                         <Col lg={6} md={6}>
                             <ListGroup>
+                                <ListGroupItem>
+                                    JavaScript ES6 with Babel
+                                </ListGroupItem>
                                 <ListGroupItem>React</ListGroupItem>
                                 <ListGroupItem>
                                     Redux with Redux Thunk
                                 </ListGroupItem>
                                 <ListGroupItem>React-Bootstrap</ListGroupItem>
                                 <ListGroupItem>Material UI</ListGroupItem>
-                                <ListGroupItem>Babel</ListGroupItem>
                             </ListGroup>
                         </Col>
 
@@ -62,7 +62,7 @@ const About = () => (
                                        distance={30}
                                        speed={1000}
                                        wait={1000}>
-                    <p className={"bold"}>
+                    <p className="bold">
                         Data storage & environment management:
                     </p>
                     <Row>

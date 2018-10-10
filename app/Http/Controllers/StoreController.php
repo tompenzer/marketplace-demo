@@ -94,7 +94,7 @@ class StoreController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $store->destroy();
+        $store->delete();
 
         Cache::tags(self::CACHE_TAG)->flush();
 

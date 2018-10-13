@@ -25,6 +25,39 @@ you don't already have it installed.
 Mac, you can download the installer directly without needing a Docker account
 [here](https://download.docker.com/mac/stable/Docker.dmg). For Windows, it's
 available [here](https://download.docker.com/win/stable/Docker%20for%20Windows%20Installer.exe).
+- [Selenium Server](https://docs.seleniumhq.org/download/)
+
+## Detour - configuring Selenium-Server - skip if you don't need feature tests
+
+For efficiency of resource usage, we're going to configure selenium so that the
+Docker container host runs the Selenium Server, using local web browsers running
+on the host.
+
+On Mac, you can use Homebrew to install Selenium Server as such:
+`brew install selenium-server-standalone`. To have launchd start
+selenium-server-standalone now and restart at login:
+```
+$ brew services start selenium-server-standalone
+```
+Or, if you don't want/need a background service you can just run:
+```
+$ selenium-server -port 4444
+```
+
+Then, we need to configure the .env.testing file to have the correct host IP
+to access the selenium server running on your container host from within the
+container. To get the host local IP, run the following command:
+```
+$ ifconfig | grep 'inet 192'| awk '{ print $2}'
+```
+
+Then, copy/paste the local IP address into the `SELENIUM_HOST` key in the
+`.env.testing` file.
+
+If you prefer not using Firefox as your Selenium test browser, you can modify
+the `SELENIUM_BROWSER` key in the `.env.testing` file.
+
+## End of detour
 
 Clone the repo and start up the development environment using the terminal on
 your local machine:

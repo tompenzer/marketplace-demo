@@ -7,7 +7,7 @@ const loadingDivStyle = {
 }
 
 const LoadingScreen = () => (
-    <div style={loadingDivStyle}>
+    <div class="loading-spinner" style={loadingDivStyle}>
         <CircularProgress size={80} thickness={5} className="margin-t-3xl" />
     </div>
 );

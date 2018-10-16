@@ -60,24 +60,22 @@ export const checkLogin = () => {
 
 export const logIn = (email, password) => {
     return (dispatch, getState) => {
-        const data = {
+        dispatch(loginRequested());
+
+        axios.post(loginAPI, {
           grant_type: "password",
           client_id: window.Laravel.clientId,
           client_secret: window.Laravel.clientSecret,
           username: email,
           password: password,
           scope: "*"
-        };
-
-        dispatch(loginRequested());
-
-        axios.post(loginAPI, data)
-            .then((response) => {
+        })
+            .then(response => {
                 window.localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
                 window.localStorage.setItem(REFRESH_TOKEN, response.data.refresh_token);
                 dispatch(loginUser());
             })
-            .catch((error) => {
+            .catch(() => {
                 dispatch(loginError());
             });
     }

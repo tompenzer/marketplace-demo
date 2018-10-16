@@ -25,17 +25,27 @@ you don't already have it installed.
 Mac, you can download the installer directly without needing a Docker account
 [here](https://download.docker.com/mac/stable/Docker.dmg). For Windows, it's
 available [here](https://download.docker.com/win/stable/Docker%20for%20Windows%20Installer.exe).
-- [Selenium Server](https://docs.seleniumhq.org/download/)
+- [Selenium Server](https://docs.seleniumhq.org/download/) - for feature tests.
+    - A web browser for Selenium-based automated feature testing. By default,
+    Chrome is required to run the Selenium feature tests, but you can configure
+    any preferred browser per the instructions below.
+    - If sticking with Chrome, you'll need the
+    [Chrome webdriver](https://sites.google.com/a/chromium.org/chromedriver/downloads)
+    executable for your OS present in the `/usr/local/bin` directory.
 
 ## Detour - configuring Selenium-Server - skip if you don't need feature tests
 
-For efficiency of resource usage, we're going to configure selenium so that the
-Docker container host runs the Selenium Server, using local web browsers running
-on the host.
+For efficiency of resource usage, we're going to configure Selenium, the web
+browser automation tool used to run our feature tests, so that the Docker
+container host (your main OS environment) runs the Selenium Server, using local
+web browsers running on the host, thus avoiding the need for an extra Docker
+image with a full windowing system needed to run its own browser(s).
 
 On Mac, you can use Homebrew to install Selenium Server as such:
-`brew install selenium-server-standalone`. To have launchd start
-selenium-server-standalone now and restart at login:
+```
+$ brew install selenium-server-standalone
+```
+To have launchd start selenium-server-standalone now and restart at login:
 ```
 $ brew services start selenium-server-standalone
 ```
@@ -44,13 +54,16 @@ Or, if you don't want/need a background service you can just run:
 $ selenium-server -port 4444
 ```
 
-The .env.testing file is currently configured with the `SELENIUM_HOST` set to
+The `.env.testing` file is currently configured with the `SELENIUM_HOST` set to
 `host.docker.internal`, which should route to the Docker container host on all
 platforms. This can be changed if you'd rather connect to a different Selenium
 Server host.
 
-If you prefer not using Firefox as your Selenium test browser, you can modify
-the `SELENIUM_BROWSER` key in the `.env.testing` file.
+All feature tests are configured to run using a single web browser, currently
+set to Chrome. If you prefer using a different Selenium test browser, you can
+modify the `SELENIUM_BROWSER` key in the `.env.testing` file. Note that most
+feature tests appear unsuccessful with the Firefox/gecko Selenium webdriver,
+so tread carefully when switching browsers.
 
 ## End of detour
 

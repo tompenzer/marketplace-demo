@@ -32,13 +32,13 @@ class LoginComponent extends React.Component{
     };
 
     componentDidMount() {
-        if (this.props.authentication.isAuthenticated) {
+        if (this.props.authentication.isAuthenticated === true) {
             this.props.history.push(ROUTES.root);
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.authentication.isAuthenticated) {
+        if (nextProps.authentication.isAuthenticated === true) {
             this.props.history.push(ROUTES.root);
         }
     }
@@ -77,7 +77,7 @@ class LoginComponent extends React.Component{
                 <Row>
                     <Col mdOffset={2} lgOffset={2} lg={7} md={7}>
                         <h3 className="text-center">Login</h3>
-                        <form onSubmit={this.onLoginSubmit}>
+                        <form id="form-login" onSubmit={this.onLoginSubmit}>
                             <FieldGroup
                                 id="formControlsUsername"
                                 type="email"
@@ -92,7 +92,7 @@ class LoginComponent extends React.Component{
                                 placeholder="Enter password"
                                 help={this.state.passwordHelp}
                             />
-                            {this.props.authentication.loginError &&
+                            {this.props.authentication.loginFailed &&
                                 <p className="error-message margin-t-s">
                                     Username or password not valid.
                                 </p>}

@@ -100,7 +100,9 @@ class RegistrationComponent extends React.Component{
         this.setState({ email, emailValidation });
     };
 
-    onRegisterSubmit = () => {
+    onRegisterSubmit = e => {
+        e.preventDefault();
+
         this.props.dispatch(registerUser({
             name: this.state.fullName,
             email: this.state.email,
@@ -140,7 +142,7 @@ class RegistrationComponent extends React.Component{
                             </Panel>
                         </div>
                         }
-                        <form onSubmit={e => e.preventDefault()}>
+                        <form id="form-register" onSubmit={this.onRegisterSubmit}>
 
                             <FormGroup
                                 controlId="formBasicFullName"
@@ -215,7 +217,6 @@ class RegistrationComponent extends React.Component{
                             this.state.passwordValidation &&
                             <Button
                                 type="submit"
-                                onClick={this.onRegisterSubmit}
                                 bsStyle="primary">
                                 Register
                             </Button>

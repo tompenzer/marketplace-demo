@@ -56,7 +56,7 @@ class AddressForm extends React.Component {
 
     // Setting id to null if we make any edits, so we add it to the user.
     handleRecipientChange = (e) => {
-        let recipient = e.target.value.trim(),
+        let recipient = e.target.value,
             recipientValidation = 'error';
 
         if (recipient.length > 0 && recipient.length <= 255) {
@@ -71,7 +71,7 @@ class AddressForm extends React.Component {
     };
 
     handleAddressOneChange = (e) => {
-        let street_1 = e.target.value.trim(),
+        let street_1 = e.target.value,
             addressValidation = 'error';
 
         if (street_1.length > 0 && street_1.length <= 255) {
@@ -86,7 +86,7 @@ class AddressForm extends React.Component {
     };
 
     handleAddressTwoChange = (e) => {
-        let street_2 = e.target.value.trim();
+        let street_2 = e.target.value;
 
         if (street_2.length <= 255) {
             this.setState({ street_2, id: null });
@@ -94,7 +94,7 @@ class AddressForm extends React.Component {
     };
 
     handleCityChange = (e) => {
-        let city = e.target.value.trim(),
+        let city = e.target.value,
             cityValidation = 'error';
 
         if (city.length > 0 && city.length <= 255) {
@@ -109,7 +109,7 @@ class AddressForm extends React.Component {
     };
 
     handleStateChange = (e) => {
-        let state = e.target.value.trim(),
+        let state = e.target.value,
             stateValidation = 'error';
 
         if (state.length > 0 && state.length <= 255) {
@@ -124,7 +124,7 @@ class AddressForm extends React.Component {
     };
 
     handlePostalCodeChange = (e) => {
-        let postal_code = e.target.value.trim(),
+        let postal_code = e.target.value,
             postalCodeValidation = 'error';
 
         if (postal_code.length > 0 && postal_code.length <= 255) {
@@ -139,7 +139,7 @@ class AddressForm extends React.Component {
     };
 
     handleCountryChange = (e) => {
-        let country_id = e.target.value.trim();
+        let country_id = e.target.value;
 
         if (this.props.countries[country_id]) {
             this.setState({ country_id, id: null });
@@ -147,7 +147,7 @@ class AddressForm extends React.Component {
     };
 
     handlePhoneChange = (e) => {
-        let phone = e.target.value.trim(),
+        let phone = e.target.value,
             phoneValidation = 'error';
 
         if (phone.length > 0 && phone.length <= 255) {

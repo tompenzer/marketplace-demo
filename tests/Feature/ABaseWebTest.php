@@ -8,7 +8,8 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 /**
  * Named to run as the first feature test, so we can install Passport in the
- * testing environment, thus allowing subsequent feature tests to complete.
+ * testing environment once, allowing subsequent feature tests to work without
+ * that concern.
  */
 class ABaseWebTest extends \PHPUnit_Extensions_Selenium2TestCase
 {

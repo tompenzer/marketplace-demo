@@ -2,22 +2,23 @@
 
 namespace Tests\Feature;
 
+use Artisan;
 use App\Models\Role;
 use App\Models\RoleScope;
 use App\Models\User;
 use Faker\Factory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use PHPUnit_Extensions_Selenium2TestCase_Keys as Keys;
 
 class UserWebTest extends \PHPUnit_Extensions_Selenium2TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
-    private $name = 'test user';
+    protected $name = 'test user';
 
-    private $email = 'test1234567890@example.com';
+    protected $email = 'test1234567890@example.com';
 
-    private $password = 'secret';
+    protected $password = 'secret';
 
     protected function setUp()
     {

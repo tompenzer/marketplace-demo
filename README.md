@@ -75,18 +75,6 @@ $ cd marketplace-demo
 $ ./startup.sh
 ```
 
-Once the entire startup.sh process is complete, you will need to generate an
-OAuth client for password-based authentication by running the following command,
-hitting the 'enter' key when prompted for a client name:
-```
-$ docker-compose run --rm marketplace-server php artisan passport:client --password
-```
-
-You should be given a client ID and a client secret, both of which need to be
-copied into the `.env` file that got created by the startup script in the
-project root, in the `PASSWORD_CLIENT_ID` and `PASSWORD_CLIENT_SECRET` fields,
-respectively.
-
 The commands run by the `startup.sh` script might be useful to run individually
 as needed, so I'll copy them here for reference:
 ```

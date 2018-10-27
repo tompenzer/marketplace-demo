@@ -43,6 +43,21 @@ $app->singleton(
 
 /*
 |--------------------------------------------------------------------------
+| Load Testing Environment On Port 8080
+|--------------------------------------------------------------------------
+|
+| In order for integration browser tests to run in the testing
+| database environment, we use port 8080 when running those
+| tests, and we load the testing environment in response.
+|
+*/
+
+if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] === '8080') {
+    $app->loadEnvironmentFrom('.env.testing');
+}
+
+/*
+|--------------------------------------------------------------------------
 | Return The Application
 |--------------------------------------------------------------------------
 |

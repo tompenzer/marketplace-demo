@@ -130,6 +130,11 @@ $ docker-compose run --rm marketplace-server ./vendor/bin/phpunit
 ```
 These tests are run automatically at the end of the `startup.sh` script.
 
+Note that these tests run in their own testing data storage (DB, Redis)
+environment, including the Selenium-driven browser integration tests. The
+`bootstrap/app.php` script is configured to load the testing environment when
+requests are made on port 8080, as is the case for all such testing.
+
 
 ## Stopping the dev environment
 

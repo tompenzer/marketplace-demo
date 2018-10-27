@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Artisan;
 use App\Models\Role;
 use App\Models\RoleScope;
 use App\Models\User;
@@ -16,7 +15,7 @@ class UserWebTest extends \PHPUnit_Extensions_Selenium2TestCase
 
     protected $name = 'test user';
 
-    protected $email = 'test1234567890@example.com';
+    protected $email = 'test123@example.com';
 
     protected $password = 'secret';
 

@@ -5,9 +5,12 @@ namespace Tests\Feature;
 use PHPUnit_Extensions_Selenium2TestCase_Keys as Keys;
 use Tests\CreatesApplication;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Passport\ClientRepository;
 
-class BaseWebTest extends \PHPUnit_Extensions_Selenium2TestCase
+/**
+ * Named to run as the first feature test, so we can install Passport in the
+ * testing environment, thus allowing subsequent feature tests to complete.
+ */
+class ABaseWebTest extends \PHPUnit_Extensions_Selenium2TestCase
 {
     use DatabaseMigrations, CreatesApplication;
 

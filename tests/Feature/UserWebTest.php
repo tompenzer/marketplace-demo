@@ -39,6 +39,8 @@ class UserWebTest extends \PHPUnit_Extensions_Selenium2TestCase
         $this->byClassName('loading-spinner');
         $this->byId('form-login');
 
+        // Login should have failed for this unregistered user, redirecting back
+        // to /login.
         $this->assertStringEndsWith('/login', $this->url());
     }
 

@@ -258,9 +258,10 @@ class CartController extends Controller
 
         $products = $products->get();
 
-        foreach ($products as $i => $product) {
+        foreach ($cart as $i => $item) {
             $currency = 'USD';
             $exchange = 1;
+            $product = $products->firstWhere('id', $item['product_id']);
 
             if ($product->currency_id !== $billing_currency_id) {
                 $currency = $product->currency()->first()->abbreviation;
@@ -274,7 +275,7 @@ class CartController extends Controller
 
             $subtotal = number_format(
                 $subtotal + (
-                    $product->price * (integer) $cart[$i]['quantity'] * $exchange
+                    $product->price * (integer) $item['quantity'] * $exchange
                 ),
                 2,
                 '.',

@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AccessToken extends Model
+class AuthClient extends Model
 {
     /**
      * The table for the model.
      *
      * @var array
      */
-    protected $table = "oauth_access_tokens";
+    protected $table = "oauth_clients";
 }

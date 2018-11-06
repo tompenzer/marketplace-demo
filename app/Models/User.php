@@ -97,9 +97,9 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function accessToken()
+    public function authToken()
     {
-        return $this->hasMany(AccessToken::class);
+        return $this->hasMany(AuthToken::class);
     }
 
     /**

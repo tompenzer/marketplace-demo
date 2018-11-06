@@ -72,4 +72,27 @@ class UserWebTest extends \PHPUnit_Extensions_Selenium2TestCase
 
         $this->assertEquals(env('APP_URL') . '/', $this->url());
     }
+
+    public function testUserProfile()
+    {
+        $this->timeouts()->implicitWait(10000);
+        $this->url('/login');
+
+        $this->byId('formControlsUsername')->value($this->email);
+        $this->byId('formControlsPassword')->value($this->password);
+        $this->byId('form-login')->submit();
+
+        // Make the test await the spinner and then the landing page with table.
+        $this->byClassName('loading-spinner');
+        $this->byTag('table');
+
+        $this->url('/account');
+
+        // Await the spinner and then the account page.
+        $this->byClassName('loading-spinner');
+        $this->byTag('h3');
+
+        $this->assertEquals($this->name, $this->byClassName('user-name')->text());
+        $this->assertEquals($this->email, $this->byClassName('user-email')->text());
+    }
 }

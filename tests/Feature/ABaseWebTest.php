@@ -25,6 +25,7 @@ class ABaseWebTest extends \PHPUnit_Extensions_Selenium2TestCase
         // to install Passport in this environment.
         $this->createApplication();
         \Artisan::call('passport:install');
+        \Artisan::call('cache:clear');// Clear oauth client cache.
     }
 
     public function testTitle()

@@ -62,7 +62,7 @@ class MyAccount extends React.Component{
                                           </p>
                                       </Col>
                                       <Col lg={10} md={10}>
-                                          <p className="text-l">
+                                          <p className="text-l user-name">
                                               {this.props.users.user.name}
                                           </p>
                                       </Col>
@@ -73,7 +73,7 @@ class MyAccount extends React.Component{
                                           <p style={fieldLabelStyle}>Email: </p>
                                       </Col>
                                       <Col lg={10} md={10}>
-                                          <p className="text-l">
+                                          <p className="text-l user-email">
                                               {this.props.users.user.email}
                                           </p>
                                       </Col>

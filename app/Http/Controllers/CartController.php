@@ -244,13 +244,10 @@ class CartController extends Controller
         $tax_rate = 0.1;// Mock a flat 10% sales tax
         $total = 0;
         $billing_currency_id = 1;// Pretend sales are in USD
-        $currency_exchanges = self::getCurrencyExchangeRates();
 
         $cart = self::getCart($cart_uid);
 
-        $product_ids = array_pluck($cart, 'product_id');
-
-        $products = Product::whereIn('id', $product_ids);
+        $products = Product::whereIn('id', array_pluck($cart, 'product_id'));
 
         if (count($cart) !== $products->count()) {
             abort(500, 'There appears to be an invalid item in your cart. Not sure how that happened.');
@@ -259,11 +256,12 @@ class CartController extends Controller
         $products = $products->get();
 
         foreach ($cart as $i => $item) {
+            $product = $products->firstWhere('id', $item['product_id']);
             $currency = 'USD';
             $exchange = 1;
-            $product = $products->firstWhere('id', $item['product_id']);
 
             if ($product->currency_id !== $billing_currency_id) {
+                $currency_exchanges = self::getCurrencyExchangeRates();
                 $currency = $product->currency()->first()->abbreviation;
 
                 if (! isset($currency_exchanges[$currency])) {
@@ -275,7 +273,7 @@ class CartController extends Controller
 
             $subtotal = number_format(
                 $subtotal + (
-                    $product->price * (integer) $item['quantity'] * $exchange
+                    $product->price * $exchange * (integer) $item['quantity']
                 ),
                 2,
                 '.',

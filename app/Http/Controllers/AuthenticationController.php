@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\AuthClient;
 use Auth;
 use Cache;
-use DB;
 
 class AuthenticationController extends Controller
 {
@@ -32,7 +31,7 @@ class AuthenticationController extends Controller
     public function logoutApi()
     {
         if (Auth::check()) {
-            Auth::user()->authToken()->delete();
+            Auth::user()->authTokens()->delete();
         }
 
         return response("logged out", 200);
